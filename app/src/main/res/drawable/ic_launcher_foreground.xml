@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Shield icon centered in launcher safe zone (72x72 centered in 108x108) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,14L22.5,29v27c0,24.975 17.28,48.33 40.5,54 23.22,-5.67 40.5,-29.025 40.5,-54V29L54,14zM54,53.955h31.5c-2.385,18.54 -14.76,35.055 -31.5,40.23V54H22.5V28.35L54,14.445v39.51z" />
+</vector>

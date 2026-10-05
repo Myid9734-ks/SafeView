@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_shield"
+        app:tint="@color/red_inactive" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="접속 차단됨"
+        android:textColor="@color/red_inactive"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="YouTube"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvBlockedMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="YouTube 접속이 차단되었습니다."
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="TubeGuard가 YouTube 접속을 보호하고 있습니다.\n보호를 해제하려면 TubeGuard 앱에서\nPIN을 입력하세요."
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <Button
+        android:id="@+id/btnGoHome"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_blue"
+        android:text="확인"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</LinearLayout>
