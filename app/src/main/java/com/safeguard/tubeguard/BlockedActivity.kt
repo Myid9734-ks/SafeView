@@ -14,27 +14,31 @@ class BlockedActivity : Activity() {
         const val EXTRA_BLOCKED_SOURCE = "blocked_source"
         const val SOURCE_APP = "app"
         const val SOURCE_BROWSER = "browser"
+        const val SOURCE_KAKAO_GAME = "kakao_game"
     }
+
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var source: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blocked)
 
-        val source = intent.getStringExtra(EXTRA_BLOCKED_SOURCE) ?: SOURCE_APP
+        source = intent.getStringExtra(EXTRA_BLOCKED_SOURCE) ?: SOURCE_APP
         val tvMessage = findViewById<TextView>(R.id.tvBlockedMessage)
 
-        tvMessage.text = if (source == SOURCE_BROWSER) {
-            "브라우저에서 YouTube 접속이 차단되었습니다."
-        } else {
-            "YouTube 앱 실행이 차단되었습니다."
+        tvMessage.text = when (source) {
+            SOURCE_BROWSER -> "브라우저에서 YouTube 접속이 차단되었습니다."
+            SOURCE_KAKAO_GAME -> "카카오톡 게임이 차단되었습니다."
+            else -> "YouTube 앱 실행이 차단되었습니다."
         }
 
         findViewById<Button>(R.id.btnGoHome).setOnClickListener {
+            handler.removeCallbacksAndMessages(null)
             goHome()
         }
 
-        // Auto-dismiss after 5 seconds
-        Handler(Looper.getMainLooper()).postDelayed({ goHome() }, 5000)
+        handler.postDelayed({ goHome() }, 5000)
     }
 
     private fun goHome() {
@@ -47,6 +51,7 @@ class BlockedActivity : Activity() {
     }
 
     override fun onBackPressed() {
+        handler.removeCallbacksAndMessages(null)
         goHome()
     }
 }

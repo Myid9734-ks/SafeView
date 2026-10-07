@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Storage permission for debug log -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <!-- Network and VPN permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -18,6 +22,12 @@
 
     <!-- Wake lock to keep service alive -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Exact alarm for precise timer expiry -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Kill background processes (used to force-stop KakaoTalk after game block) -->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <application
         android:allowBackup="true"
@@ -109,6 +119,16 @@
                 android:resource="@xml/device_admin" />
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Timer Expired / Midnight Reset Receiver -->
+        <receiver
+            android:name=".receiver.TimerExpiredReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.safeguard.tubeguard.TIMER_EXPIRED" />
+                <action android:name="com.safeguard.tubeguard.MIDNIGHT_RESET" />
             </intent-filter>
         </receiver>
 

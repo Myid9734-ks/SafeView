@@ -246,7 +246,6 @@ class TubeGuardVpnService : VpnService() {
         val dstIpLong = ipToLong(formatIp(packet, 16))
         if (isBlockedIp(dstIpLong)) {
             Log.d(TAG, "Blocked IP packet to: ${formatIp(packet, 16)}")
-            prefsManager.incrementBlockCount()
             return null // Drop the packet
         }
 
@@ -269,7 +268,6 @@ class TubeGuardVpnService : VpnService() {
         // Check if domain should be blocked
         if (isDomainBlocked(normalizedDomain)) {
             Log.i(TAG, "Blocking DNS query for: $normalizedDomain")
-            prefsManager.incrementBlockCount()
             val dnsResponse = buildNxdomainResponse(dnsPayload)
             return buildIpUdpPacket(
                 srcIp = dstIp,

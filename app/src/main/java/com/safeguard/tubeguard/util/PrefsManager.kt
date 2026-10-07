@@ -26,6 +26,11 @@ class PrefsManager(context: Context) {
         private const val MAX_LOG_ENTRIES = 100
         private const val LOG_SEPARATOR = "\n"
         private const val FIELD_SEPARATOR = "|"
+        const val KEY_ALLOWED_SECONDS = "allowed_seconds"
+        const val KEY_TIMER_SAVED_REMAINING = "timer_saved_remaining"
+        const val KEY_TIMER_IS_RUNNING = "timer_is_running"
+        const val KEY_TIMER_START_EPOCH = "timer_start_epoch"
+        const val KEY_TIMER_RESET_DATE = "timer_reset_date"
 
         @Volatile
         private var instance: PrefsManager? = null
@@ -90,6 +95,61 @@ class PrefsManager(context: Context) {
 
     fun clearBlockLogs() {
         prefs.edit().remove(KEY_BLOCK_LOG).apply()
+    }
+
+    var allowedSeconds: Long
+        get() = prefs.getLong(KEY_ALLOWED_SECONDS, 3600L)
+        set(value) = prefs.edit().putLong(KEY_ALLOWED_SECONDS, value).apply()
+
+    var timerSavedRemaining: Long
+        get() = prefs.getLong(KEY_TIMER_SAVED_REMAINING, -1L).let {
+            if (it == -1L) allowedSeconds else it
+        }
+        set(value) = prefs.edit().putLong(KEY_TIMER_SAVED_REMAINING, value).apply()
+
+    var timerIsRunning: Boolean
+        get() = prefs.getBoolean(KEY_TIMER_IS_RUNNING, false)
+        set(value) = prefs.edit().putBoolean(KEY_TIMER_IS_RUNNING, value).apply()
+
+    var timerStartEpoch: Long
+        get() = prefs.getLong(KEY_TIMER_START_EPOCH, 0L)
+        set(value) = prefs.edit().putLong(KEY_TIMER_START_EPOCH, value).apply()
+
+    var timerResetDate: String
+        get() = prefs.getString(KEY_TIMER_RESET_DATE, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_TIMER_RESET_DATE, value).apply()
+
+    fun getTimerRemainingSeconds(): Long {
+        checkMidnightReset()
+        val saved = timerSavedRemaining
+        if (!timerIsRunning) return saved
+        val elapsed = (System.currentTimeMillis() - timerStartEpoch) / 1000L
+        return maxOf(0L, saved - elapsed)
+    }
+
+    fun checkMidnightReset() {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        if (timerResetDate != today) {
+            timerResetDate = today
+            timerSavedRemaining = allowedSeconds
+            timerIsRunning = false
+            timerStartEpoch = 0L
+            blockCount = 0
+        }
+    }
+
+    fun pauseTimer() {
+        if (timerIsRunning) {
+            timerSavedRemaining = getTimerRemainingSeconds()
+            timerIsRunning = false
+            timerStartEpoch = 0L
+        }
+    }
+
+    fun startTimerNow() {
+        checkMidnightReset()
+        timerIsRunning = true
+        timerStartEpoch = System.currentTimeMillis()
     }
 
     fun clearAll() {
