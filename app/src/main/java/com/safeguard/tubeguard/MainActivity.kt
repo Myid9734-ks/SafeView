@@ -18,6 +18,8 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
@@ -62,14 +64,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardDeviceAdminStatus: MaterialCardView
     private lateinit var tvDeviceAdminStatus: TextView
 
+    // Admin section
+    private lateinit var adminSection: LinearLayout
+    private lateinit var cardAdminUnlock: MaterialCardView
+
     // Timer views
     private lateinit var tvAllowedTime: TextView
     private lateinit var tvRemainingTime: TextView
     private lateinit var tvTimerStatus: TextView
     private lateinit var btnTimerStartStop: MaterialButton
-    private lateinit var btnEditAllowedTime: TextView
+    private lateinit var cardTimerSettings: MaterialCardView
+    private lateinit var tvTimerSettingsStatus: TextView
 
     private var pendingEnableBlocking = false
+    private var adminUnlocked = false
+    private var pendingAdminUnlock = false
+    private var initialSetupRunning = false
 
     // Timer handler
     private val timerHandler = Handler(Looper.getMainLooper())
@@ -93,11 +103,15 @@ class MainActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             Log.i(TAG, "VPN permission granted")
-            startVpnService()
+            if (!initialSetupRunning) {
+                startVpnService()
+            }
         } else {
             Log.w(TAG, "VPN permission denied")
-            pendingEnableBlocking = false
-            switchBlocking.isChecked = false
+            if (!initialSetupRunning) {
+                pendingEnableBlocking = false
+                switchBlocking.isChecked = false
+            }
             Toast.makeText(this, "YouTube 차단을 위해 VPN 권한이 필요합니다", Toast.LENGTH_LONG).show()
         }
     }
@@ -117,7 +131,16 @@ class MainActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == PinSetupActivity.RESULT_PIN_SET) {
             updatePinStatusDisplay()
-            Toast.makeText(this, "PIN 보호가 활성화되었습니다", Toast.LENGTH_SHORT).show()
+            if (initialSetupRunning) {
+                showAdminSection()
+                proceedSetupWizard()
+            } else {
+                pendingAdminUnlock = false
+                showAdminSection()
+                Toast.makeText(this, "PIN이 설정되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            pendingAdminUnlock = false
         }
     }
 
@@ -139,11 +162,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val pinVerifyForTimerSettingLauncher = registerForActivityResult(
+    private val pinVerifyForAdminMenuLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
+        pendingAdminUnlock = false
         if (result.resultCode == PinVerifyActivity.RESULT_PIN_VERIFIED) {
-            showAllowedTimePickerDialog()
+            showAdminSection()
         }
     }
 
@@ -182,8 +206,10 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         requestNotificationPermission()
         requestStoragePermissionIfNeeded()
-        checkExactAlarmPermission()
         scheduleMidnightReset()
+        if (!prefsManager.initialSetupComplete) {
+            ensurePinSetup()
+        }
     }
 
     private fun requestStoragePermissionIfNeeded() {
@@ -226,13 +252,24 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         prefsManager.checkMidnightReset()
-        updateAllStatusDisplays()
+        if (initialSetupRunning) {
+            pendingAdminUnlock = true
+            updateAllStatusDisplays()
+            proceedSetupWizard()
+        } else {
+            pendingAdminUnlock = false
+            updateAdminSectionVisibility()
+            updateAllStatusDisplays()
+        }
         startTimerTick()
     }
 
     override fun onPause() {
         super.onPause()
         timerHandler.removeCallbacks(timerTickRunnable)
+        if (!pendingAdminUnlock) {
+            adminUnlocked = false
+        }
     }
 
     private fun initViews() {
@@ -247,12 +284,17 @@ class MainActivity : AppCompatActivity() {
         cardDeviceAdminStatus = findViewById(R.id.cardDeviceAdminStatus)
         tvDeviceAdminStatus = findViewById(R.id.tvDeviceAdminStatus)
 
+        // Admin section
+        adminSection = findViewById(R.id.adminSection)
+        cardAdminUnlock = findViewById(R.id.cardAdminUnlock)
+
         // Timer views
         tvAllowedTime = findViewById(R.id.tvAllowedTime)
         tvRemainingTime = findViewById(R.id.tvRemainingTime)
         tvTimerStatus = findViewById(R.id.tvTimerStatus)
         btnTimerStartStop = findViewById(R.id.btnTimerStartStop)
-        btnEditAllowedTime = findViewById(R.id.btnEditAllowedTime)
+        cardTimerSettings = findViewById(R.id.cardTimerSettings)
+        tvTimerSettingsStatus = findViewById(R.id.tvTimerSettingsStatus)
     }
 
     private fun setupListeners() {
@@ -264,9 +306,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        cardVpnStatus.setOnClickListener { openVpnPermission() }
-        cardAccessibilityStatus.setOnClickListener { openAccessibilitySettings() }
-        cardDeviceAdminStatus.setOnClickListener { handleDeviceAdminCard() }
+        cardAdminUnlock.setOnClickListener {
+            if (pinManager.hasPin()) {
+                pendingAdminUnlock = true
+                pinVerifyForAdminMenuLauncher.launch(Intent(this, PinVerifyActivity::class.java))
+            } else {
+                pendingAdminUnlock = true
+                ensurePinSetup()
+            }
+        }
+
+        cardVpnStatus.setOnClickListener {
+            if (adminUnlocked) pendingAdminUnlock = true
+            openVpnPermission()
+        }
+        cardAccessibilityStatus.setOnClickListener {
+            if (adminUnlocked) pendingAdminUnlock = true
+            openAccessibilitySettings()
+        }
+        cardDeviceAdminStatus.setOnClickListener {
+            if (adminUnlocked) pendingAdminUnlock = true
+            handleDeviceAdminCard()
+        }
 
         findViewById<MaterialCardView>(R.id.cardPinSetup).setOnClickListener {
             if (pinManager.hasPin()) {
@@ -278,13 +339,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Timer buttons
-        btnEditAllowedTime.setOnClickListener {
-            if (pinManager.hasPin()) {
-                pinVerifyForTimerSettingLauncher.launch(Intent(this, PinVerifyActivity::class.java))
-            } else {
-                showAllowedTimePickerDialog()
-            }
+        // Timer settings (in admin section)
+        cardTimerSettings.setOnClickListener {
+            showAllowedTimePickerDialog()
         }
 
         btnTimerStartStop.setOnClickListener {
@@ -294,6 +351,95 @@ class MainActivity : AppCompatActivity() {
                 handleTimerStart()
             }
         }
+    }
+
+    // ─────────────────────────── Admin Section ───────────────────────────
+
+    private fun updateAdminSectionVisibility() {
+        if (adminUnlocked) {
+            adminSection.visibility = View.VISIBLE
+            cardAdminUnlock.visibility = View.GONE
+        } else {
+            adminSection.visibility = View.GONE
+            cardAdminUnlock.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showAdminSection() {
+        adminUnlocked = true
+        adminSection.visibility = View.VISIBLE
+        cardAdminUnlock.visibility = View.GONE
+    }
+
+    private fun ensurePinSetup() {
+        if (!pinManager.hasPin()) {
+            initialSetupRunning = true
+            pendingAdminUnlock = true
+            AlertDialog.Builder(this)
+                .setTitle("관리자 비밀번호 설정")
+                .setMessage("앱을 사용하려면 관리자 비밀번호(PIN)를 먼저 설정해야 합니다.")
+                .setPositiveButton("설정하기") { _, _ ->
+                    pinSetupLauncher.launch(Intent(this, PinSetupActivity::class.java))
+                }
+                .setCancelable(false)
+                .show()
+        }
+    }
+
+    private fun proceedSetupWizard() {
+        // VPN 확인
+        val vpnIntent = VpnService.prepare(this)
+        if (vpnIntent != null) {
+            AlertDialog.Builder(this)
+                .setTitle("초기 설정 (1/3)")
+                .setMessage("YouTube 차단을 위해 VPN 권한을 허용해 주세요.")
+                .setPositiveButton("설정") { _, _ ->
+                    pendingAdminUnlock = true
+                    vpnPermissionLauncher.launch(vpnIntent)
+                }
+                .setCancelable(false)
+                .show()
+            return
+        }
+
+        // 접근성 확인
+        if (!isAccessibilityServiceEnabled()) {
+            AlertDialog.Builder(this)
+                .setTitle("초기 설정 (2/3)")
+                .setMessage("YouTube 앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설정 → TubeGuard → 활성화")
+                .setPositiveButton("설정으로 이동") { _, _ ->
+                    pendingAdminUnlock = true
+                    openAccessibilitySettings()
+                }
+                .setCancelable(false)
+                .show()
+            return
+        }
+
+        // 기기 관리자 확인
+        if (!devicePolicyManager.isAdminActive(adminComponentName)) {
+            AlertDialog.Builder(this)
+                .setTitle("초기 설정 (3/3)")
+                .setMessage("앱 삭제 방지를 위해 기기 관리자를 활성화해 주세요.")
+                .setPositiveButton("설정") { _, _ ->
+                    pendingAdminUnlock = true
+                    requestDeviceAdmin()
+                }
+                .setCancelable(false)
+                .show()
+            return
+        }
+
+        // 모든 설정 완료
+        initialSetupRunning = false
+        pendingAdminUnlock = false
+        adminUnlocked = false
+        prefsManager.initialSetupComplete = true
+        // YouTube 차단 자동 활성화
+        handleEnableBlocking()
+        updateAdminSectionVisibility()
+        checkExactAlarmPermission()
+        Toast.makeText(this, "초기 설정이 완료되었습니다! YouTube 차단이 활성화됩니다.", Toast.LENGTH_LONG).show()
     }
 
     // ─────────────────────────── Timer Logic ───────────────────────────
@@ -627,6 +773,7 @@ class MainActivity : AppCompatActivity() {
         updateAccessibilityStatusDisplay()
         updateDeviceAdminStatusDisplay()
         updatePinStatusDisplay()
+        updateTimerSettingsDisplay()
         updateTimerDisplay(prefsManager.getTimerRemainingSeconds())
         updateTimerButtons()
     }
@@ -710,6 +857,13 @@ class MainActivity : AppCompatActivity() {
         tvDeviceAdminStatus.text = "기기 관리자: 비활성화 - 탭하여 삭제 방지 설정"
         tvDeviceAdminStatus.setTextColor(getColor(R.color.red_inactive))
         Toast.makeText(this, "기기 관리자가 비활성화되었습니다", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun updateTimerSettingsDisplay() {
+        val totalAllowed = prefsManager.allowedSeconds
+        val h = totalAllowed / 3600
+        val m = (totalAllowed % 3600) / 60
+        tvTimerSettingsStatus.text = "허용 시간 설정: ${h}시간 ${"%02d".format(m)}분"
     }
 
     private fun updatePinStatusDisplay() {

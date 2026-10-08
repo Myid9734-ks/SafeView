@@ -31,6 +31,7 @@ class PrefsManager(context: Context) {
         const val KEY_TIMER_IS_RUNNING = "timer_is_running"
         const val KEY_TIMER_START_EPOCH = "timer_start_epoch"
         const val KEY_TIMER_RESET_DATE = "timer_reset_date"
+        private const val KEY_INITIAL_SETUP_COMPLETE = "initial_setup_complete"
 
         @Volatile
         private var instance: PrefsManager? = null
@@ -69,6 +70,10 @@ class PrefsManager(context: Context) {
     var deviceAdminEnabled: Boolean
         get() = prefs.getBoolean(KEY_DEVICE_ADMIN_ENABLED, false)
         set(value) = prefs.edit().putBoolean(KEY_DEVICE_ADMIN_ENABLED, value).apply()
+
+    var initialSetupComplete: Boolean
+        get() = prefs.getBoolean(KEY_INITIAL_SETUP_COMPLETE, false)
+        set(value) = prefs.edit().putBoolean(KEY_INITIAL_SETUP_COMPLETE, value).apply()
 
     fun incrementBlockCount() {
         blockCount = blockCount + 1
