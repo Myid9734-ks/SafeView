@@ -1,31 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TubeGuard</string>
-    <string name="accessibility_service_label">TubeGuard - YouTube Blocker</string>
-    <string name="accessibility_service_description">TubeGuard uses accessibility services to detect when the YouTube app is opened and immediately close it, providing comprehensive parental control protection.</string>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - YouTube Blocker</string>
+    <string name="accessibility_service_description">SafeScreen uses accessibility services to detect when the YouTube app is opened and immediately close it, providing comprehensive parental control protection.</string>
 
+    <!-- Main Screen -->
     <string name="status_blocking">YouTube Blocked</string>
     <string name="status_not_blocking">Protection Off</string>
+    <string name="block_count_format">Total blocks: %d</string>
+    <string name="timer_title">Allowed Time Timer</string>
+    <string name="allowed_time_format">Allowed time: %1$dh %2$02dm</string>
+    <string name="timer_status_waiting">Waiting</string>
+    <string name="timer_status_running">Running - YouTube allowed</string>
+    <string name="timer_status_expired">Time used up</string>
+    <string name="timer_start">▶  Start</string>
+    <string name="timer_pause">⏸  Pause</string>
+    <string name="admin_settings">Admin Settings</string>
+    <string name="youtube_blocking">YouTube Blocking</string>
+    <string name="dns_app_blocking">DNS + App level blocking</string>
 
+    <!-- VPN Status -->
     <string name="vpn_active">VPN: Active - DNS blocking enabled</string>
+    <string name="vpn_permission_granted">VPN: Permission granted (tap to start)</string>
     <string name="vpn_permission_needed">VPN: Tap to grant permission</string>
+
+    <!-- Accessibility Status -->
     <string name="accessibility_active">Accessibility: Active - App blocking enabled</string>
     <string name="accessibility_needed">Accessibility: Tap to enable (required)</string>
 
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">Device Admin: Active - Uninstall protection on</string>
+    <string name="device_admin_inactive">Device Admin: Inactive - Tap to enable</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">Allowed time setting: %1$dh %2$02dm</string>
+
+    <!-- PIN Status -->
     <string name="pin_set">PIN Protection: Enabled - tap to change</string>
     <string name="pin_not_set">PIN Protection: Not set - tap to set up</string>
 
-    <string name="blocking_enabled">YouTube blocking enabled</string>
-    <string name="blocking_disabled">YouTube blocking disabled</string>
-    <string name="pin_set_success">PIN set successfully</string>
+    <!-- Info Card -->
+    <string name="info_title">Enable all for full protection:</string>
+    <string name="info_steps">1. VPN permission (DNS blocking)\n2. Accessibility service (YouTube app blocking)\n3. Device admin (uninstall protection)\n4. PIN setup (disable protection prevention)</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">Access Blocked</string>
+    <string name="blocked_message_app">YouTube app has been blocked.</string>
+    <string name="blocked_message_browser">YouTube access from browser has been blocked.</string>
+    <string name="blocked_message_kakao_game">KakaoTalk Game has been blocked.</string>
+    <string name="blocked_explanation">SafeScreen is protecting YouTube access.\nTo disable protection, enter PIN in SafeScreen app.</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">PIN Protection</string>
+    <string name="pin_setup_description">Set a PIN to prevent children from disabling protection</string>
+    <string name="hint_current_pin">Current PIN</string>
+    <string name="hint_new_pin">New PIN (4–8 digits)</string>
+    <string name="hint_confirm_pin">Confirm PIN</string>
+    <string name="btn_set_pin">Set PIN</string>
+    <string name="pin_remember_note">Remember this PIN – it will be required to disable SafeScreen</string>
+    <string name="pin_setup_action_title">Set PIN</string>
+    <string name="pin_change_action_title">Change PIN</string>
+    <string name="pin_required_error">PIN is required</string>
+    <string name="pin_format_error">PIN must be 4–8 digits</string>
+    <string name="pin_mismatch_error">PINs do not match</string>
+    <string name="pin_current_required_error">Current PIN is required</string>
     <string name="pin_incorrect">Incorrect PIN</string>
+    <string name="pin_set_success">PIN set successfully</string>
 
-    <string name="notification_title">TubeGuard Active</string>
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">Enter PIN</string>
+    <string name="enter_pin_description">Enter your PIN to change SafeScreen settings</string>
+    <string name="hint_pin">PIN</string>
+    <string name="btn_verify_pin">Verify PIN</string>
+    <string name="pin_empty_error">Please enter your PIN</string>
+    <string name="attempts_remaining">Attempts remaining: %d</string>
+    <string name="lockout_message">Too many attempts. Try again in %ds</string>
+    <string name="lockout_ended">You may try again</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">SafeScreen Active</string>
     <string name="notification_text">YouTube is blocked</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">SafeScreen is actively blocking YouTube</string>
+    <string name="notification_open_app">Open App</string>
 
+    <!-- Toasts -->
+    <string name="vpn_permission_required">VPN permission is required to block YouTube</string>
+    <string name="vpn_no_permission_timer">Cannot resume blocking without VPN permission</string>
+    <string name="vpn_already_granted">VPN permission is already granted</string>
+    <string name="notification_permission_warning">VPN status notification will not be shown without notification permission</string>
+    <string name="device_admin_enabled_toast">Uninstall protection activated</string>
+    <string name="device_admin_required">Device admin permission is required</string>
+    <string name="device_admin_deactivated">Device admin deactivated</string>
+    <string name="blocking_enabled_toast">YouTube blocking activated</string>
+    <string name="blocking_disabled_toast">YouTube blocking disabled</string>
+    <string name="timer_started">Timer started</string>
+    <string name="timer_stopped">Timer stopped</string>
+    <string name="timer_expired_toast">Allowed time has been used up</string>
+    <string name="timer_no_remaining">All allowed time for today has been used</string>
+    <string name="timer_reset_done">Timer has been reset</string>
+    <string name="allowed_time_saved">Allowed time has been set</string>
+    <string name="min_time_error">Must set at least 1 minute</string>
+    <string name="accessibility_cannot_open">Cannot open accessibility settings</string>
+    <string name="reset_done">Settings have been reset</string>
+    <string name="pin_set_admin_toast">PIN has been set.</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">Deactivate Device Admin</string>
+    <string name="device_admin_deactivate_message">Deactivating device admin will allow uninstalling the app. Continue?</string>
+    <string name="btn_deactivate">Deactivate</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="device_admin_explanation">Registering SafeScreen as device admin prevents unauthorized app uninstallation.</string>
+    <string name="disable_protection_title">Disable Protection</string>
+    <string name="disable_protection_message">Disable YouTube blocking?</string>
+    <string name="btn_disable">Disable</string>
+    <string name="allowed_time_setting_title">Allowed Time Setting</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_timer_reset">Reset Timer</string>
+    <string name="exact_alarm_title">Initial Setup (5/5) - Exact Alarm Permission</string>
+    <string name="exact_alarm_message">Exact alarm permission is needed for accurate timer operation.\nPlease allow in Settings.</string>
+    <string name="btn_go_settings">Go to Settings</string>
+    <string name="admin_pin_setup_title">Initial Setup (1/5)</string>
+    <string name="admin_pin_setup_message">You must set an admin password (PIN) to use this app.</string>
+    <string name="btn_setup">Set up</string>
+    <string name="setup_vpn_title">Initial Setup (2/5)</string>
+    <string name="setup_vpn_message">Please allow VPN permission to block YouTube.</string>
+    <string name="setup_accessibility_title">Initial Setup (3/5)</string>
+    <string name="setup_accessibility_message">Please enable accessibility service for YouTube app blocking.\n\nSettings → SafeScreen → Enable</string>
+    <string name="setup_device_admin_title">Initial Setup (4/5)</string>
+    <string name="setup_device_admin_message">Please enable device admin for uninstall protection.</string>
+    <string name="setup_complete">Initial setup is complete! YouTube blocking is activated.</string>
+    <string name="reset_title">Reset All Settings</string>
+    <string name="reset_message">Blocking will be disabled and PIN will be deleted. Continue?</string>
+    <string name="btn_reset">Reset</string>
+
+    <!-- Menu -->
     <string name="menu_about">About</string>
     <string name="menu_reset">Reset Settings</string>
+    <string name="menu_block_log">Block Log</string>
+    <string name="menu_timer_log">Timer Log</string>
 
-    <string name="about_title">About TubeGuard</string>
-    <string name="about_message">TubeGuard v1.0\n\nProtects children from YouTube by:\n• DNS-level blocking via VPN\n• App detection via Accessibility Service\n• PIN-protected settings\n\nBlocked domains include youtube.com, youtu.be, googlevideo.com, and more.</string>
+    <!-- About -->
+    <string name="about_title">About SafeScreen</string>
+    <string name="about_message">SafeScreen v1.0\n\nYouTube blocking methods:\n• DNS-level blocking via VPN\n• App detection via Accessibility Service\n• PIN-protected settings\n\nBlocked domains: youtube.com, youtu.be, googlevideo.com, etc.</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">Timer Debug Log</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">hours</string>
+    <string name="time_label_minutes">min</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">Block Log</string>
+    <string name="log_delete_title">Delete Logs</string>
+    <string name="log_delete_message">Delete all block logs?</string>
+    <string name="log_delete_confirm">Delete</string>
+    <string name="log_deleted">Logs have been deleted</string>
+    <string name="log_type_app">App launch</string>
+    <string name="log_type_browser">Browser</string>
+    <string name="log_type_kakao_game">KakaoTalk Game</string>
+    <string name="log_type_kakao_news">KakaoTalk News</string>
+    <string name="log_empty">No logs</string>
+    <string name="log_read_error">Failed to read logs</string>
 </resources>

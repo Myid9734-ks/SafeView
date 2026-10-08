@@ -314,9 +314,9 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 try {
                     // Check if screen mentions TubeGuard app
                     val screenText = extractAllText(root)
-                    if (screenText.contains("TubeGuard", ignoreCase = true) ||
-                        screenText.contains("tubeguard", ignoreCase = true)) {
-                        Log.i(TAG, "TubeGuard settings page blocked")
+                    if (screenText.contains("SafeScreen", ignoreCase = true) ||
+                        screenText.contains("safescreen", ignoreCase = true)) {
+                        Log.i(TAG, "SafeScreen settings page blocked")
                         // Redirect to PIN verify if PIN is set, else go home
                         if (prefsManager.deviceAdminEnabled) {
                             val intent = Intent(this, PinVerifyActivity::class.java).apply {

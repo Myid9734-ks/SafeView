@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - YouTubeブロッカー</string>
+    <string name="accessibility_service_description">SafeScreenはアクセシビリティサービスを使用して、YouTubeアプリが開かれたことを検知し、即座に閉じることで、包括的な保護者管理機能を提供します。</string>
+
+    <!-- Main Screen -->
+    <string name="status_blocking">YouTube ブロック中</string>
+    <string name="status_not_blocking">保護オフ</string>
+    <string name="block_count_format">合計ブロック数: %d</string>
+    <string name="timer_title">許可時間タイマー</string>
+    <string name="allowed_time_format">許可時間: %1$d時間 %2$02d分</string>
+    <string name="timer_status_waiting">待機中</string>
+    <string name="timer_status_running">実行中 - YouTube許可</string>
+    <string name="timer_status_expired">時間を使い切りました</string>
+    <string name="timer_start">▶  開始</string>
+    <string name="timer_pause">⏸  一時停止</string>
+    <string name="admin_settings">管理者設定</string>
+    <string name="youtube_blocking">YouTubeブロック</string>
+    <string name="dns_app_blocking">DNS + アプリレベルブロック</string>
+
+    <!-- VPN Status -->
+    <string name="vpn_active">VPN: 有効 - DNSブロック動作中</string>
+    <string name="vpn_permission_granted">VPN: 権限許可済み（タップして開始）</string>
+    <string name="vpn_permission_needed">VPN: タップして権限を許可</string>
+
+    <!-- Accessibility Status -->
+    <string name="accessibility_active">アクセシビリティ: 有効 - アプリブロック動作中</string>
+    <string name="accessibility_needed">アクセシビリティ: タップして有効にする（必須）</string>
+
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">デバイス管理者: 有効 - アンインストール保護オン</string>
+    <string name="device_admin_inactive">デバイス管理者: 無効 - タップして有効にする</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">許可時間設定: %1$d時間 %2$02d分</string>
+
+    <!-- PIN Status -->
+    <string name="pin_set">PIN保護: 有効 - タップして変更</string>
+    <string name="pin_not_set">PIN保護: 未設定 - タップして設定</string>
+
+    <!-- Info Card -->
+    <string name="info_title">完全な保護のためにすべて有効にしてください:</string>
+    <string name="info_steps">1. VPN権限（DNSブロック）\n2. アクセシビリティサービス（YouTubeアプリブロック）\n3. デバイス管理者（アンインストール保護）\n4. PIN設定（保護の無効化防止）</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">アクセスがブロックされました</string>
+    <string name="blocked_message_app">YouTubeアプリがブロックされました。</string>
+    <string name="blocked_message_browser">ブラウザからのYouTubeアクセスがブロックされました。</string>
+    <string name="blocked_message_kakao_game">カカオトークのゲームがブロックされました。</string>
+    <string name="blocked_explanation">SafeScreenがYouTubeアクセスを保護しています。\n保護を解除するには、SafeScreenアプリでPINを入力してください。</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">PIN保護</string>
+    <string name="pin_setup_description">お子様が保護を無効にできないようにPINを設定してください</string>
+    <string name="hint_current_pin">現在のPIN</string>
+    <string name="hint_new_pin">新しいPIN（4〜8桁）</string>
+    <string name="hint_confirm_pin">PINの確認</string>
+    <string name="btn_set_pin">PINを設定</string>
+    <string name="pin_remember_note">このPINを覚えておいてください。SafeScreenを無効にする際に必要です</string>
+    <string name="pin_setup_action_title">PIN設定</string>
+    <string name="pin_change_action_title">PIN変更</string>
+    <string name="pin_required_error">PINが必要です</string>
+    <string name="pin_format_error">PINは4〜8桁の数字で入力してください</string>
+    <string name="pin_mismatch_error">PINが一致しません</string>
+    <string name="pin_current_required_error">現在のPINが必要です</string>
+    <string name="pin_incorrect">PINが正しくありません</string>
+    <string name="pin_set_success">PINが正常に設定されました</string>
+
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">PINを入力</string>
+    <string name="enter_pin_description">SafeScreenの設定を変更するにはPINを入力してください</string>
+    <string name="hint_pin">PIN</string>
+    <string name="btn_verify_pin">PINを確認</string>
+    <string name="pin_empty_error">PINを入力してください</string>
+    <string name="attempts_remaining">残り試行回数: %d</string>
+    <string name="lockout_message">試行回数が多すぎます。%d秒後に再試行してください</string>
+    <string name="lockout_ended">再試行できます</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">SafeScreen 動作中</string>
+    <string name="notification_text">YouTubeはブロックされています</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">SafeScreenがYouTubeを積極的にブロックしています</string>
+    <string name="notification_open_app">アプリを開く</string>
+
+    <!-- Toasts -->
+    <string name="vpn_permission_required">YouTubeをブロックするにはVPN権限が必要です</string>
+    <string name="vpn_no_permission_timer">VPN権限なしではブロックを再開できません</string>
+    <string name="vpn_already_granted">VPN権限はすでに許可されています</string>
+    <string name="notification_permission_warning">通知権限がないとVPNステータス通知が表示されません</string>
+    <string name="device_admin_enabled_toast">アンインストール保護が有効になりました</string>
+    <string name="device_admin_required">デバイス管理者権限が必要です</string>
+    <string name="device_admin_deactivated">デバイス管理者が無効になりました</string>
+    <string name="blocking_enabled_toast">YouTubeブロックが有効になりました</string>
+    <string name="blocking_disabled_toast">YouTubeブロックが無効になりました</string>
+    <string name="timer_started">タイマーが開始されました</string>
+    <string name="timer_stopped">タイマーが停止されました</string>
+    <string name="timer_expired_toast">許可時間を使い切りました</string>
+    <string name="timer_no_remaining">今日の許可時間はすべて使い切りました</string>
+    <string name="timer_reset_done">タイマーがリセットされました</string>
+    <string name="allowed_time_saved">許可時間が設定されました</string>
+    <string name="min_time_error">最低1分以上に設定してください</string>
+    <string name="accessibility_cannot_open">アクセシビリティ設定を開けません</string>
+    <string name="reset_done">設定がリセットされました</string>
+    <string name="pin_set_admin_toast">PINが設定されました。</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">デバイス管理者を無効にする</string>
+    <string name="device_admin_deactivate_message">デバイス管理者を無効にすると、アプリのアンインストールが可能になります。続行しますか？</string>
+    <string name="btn_deactivate">無効にする</string>
+    <string name="btn_cancel">キャンセル</string>
+    <string name="device_admin_explanation">SafeScreenをデバイス管理者として登録すると、不正なアプリのアンインストールを防止できます。</string>
+    <string name="disable_protection_title">保護を無効にする</string>
+    <string name="disable_protection_message">YouTubeブロックを無効にしますか？</string>
+    <string name="btn_disable">無効にする</string>
+    <string name="allowed_time_setting_title">許可時間設定</string>
+    <string name="btn_save">保存</string>
+    <string name="btn_timer_reset">タイマーをリセット</string>
+    <string name="exact_alarm_title">初期設定（5/5）- 正確なアラーム権限が必要です</string>
+    <string name="exact_alarm_message">正確なタイマー動作のために正確なアラーム権限が必要です。\n設定で許可してください。</string>
+    <string name="btn_go_settings">設定へ移動</string>
+    <string name="admin_pin_setup_title">管理者パスワード設定 (1/5)</string>
+    <string name="admin_pin_setup_message">このアプリを使用するには管理者パスワード（PIN）を設定する必要があります。</string>
+    <string name="btn_setup">設定する</string>
+    <string name="setup_vpn_title">初期設定（2/5）</string>
+    <string name="setup_vpn_message">YouTubeをブロックするためにVPN権限を許可してください。</string>
+    <string name="setup_accessibility_title">初期設定（3/5）</string>
+    <string name="setup_accessibility_message">YouTubeアプリブロックのためにアクセシビリティサービスを有効にしてください。\n\n設定 → SafeScreen → 有効にする</string>
+    <string name="setup_device_admin_title">初期設定（4/5）</string>
+    <string name="setup_device_admin_message">アンインストール保護のためにデバイス管理者を有効にしてください。</string>
+    <string name="setup_complete">初期設定が完了しました！YouTubeブロックが有効になりました。</string>
+    <string name="reset_title">すべての設定をリセット</string>
+    <string name="reset_message">ブロックが無効になり、PINが削除されます。続行しますか？</string>
+    <string name="btn_reset">リセット</string>
+
+    <!-- Menu -->
+    <string name="menu_about">アプリについて</string>
+    <string name="menu_reset">設定をリセット</string>
+    <string name="menu_block_log">ブロック履歴</string>
+    <string name="menu_timer_log">タイマー履歴</string>
+
+    <!-- About -->
+    <string name="about_title">SafeScreenについて</string>
+    <string name="about_message">SafeScreen v1.0\n\nYouTubeブロック方法:\n• VPNによるDNSレベルブロック\n• アクセシビリティサービスによるアプリ検知\n• PIN保護された設定\n\nブロック対象ドメイン: youtube.com, youtu.be, googlevideo.com など</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">タイマーデバッグログ</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">時間</string>
+    <string name="time_label_minutes">分</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">ブロック履歴</string>
+    <string name="log_delete_title">ログを削除</string>
+    <string name="log_delete_message">すべてのブロックログを削除しますか？</string>
+    <string name="log_delete_confirm">削除</string>
+    <string name="log_deleted">ログが削除されました</string>
+    <string name="log_type_app">アプリ起動</string>
+    <string name="log_type_browser">ブラウザ</string>
+    <string name="log_type_kakao_game">カカオトーク ゲーム</string>
+    <string name="log_type_kakao_news">カカオトーク ニュース</string>
+    <string name="log_empty">ログがありません</string>
+    <string name="log_read_error">ログの読み込みに失敗しました</string>
+</resources>

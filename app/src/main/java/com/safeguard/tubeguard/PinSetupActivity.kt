@@ -36,7 +36,7 @@ class PinSetupActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "Set PIN"
+            title = getString(R.string.pin_setup_action_title)
         }
 
         pinManager = PinManager(this)
@@ -46,7 +46,7 @@ class PinSetupActivity : AppCompatActivity() {
         setupListeners()
 
         if (isChange) {
-            supportActionBar?.title = "Change PIN"
+            supportActionBar?.title = getString(R.string.pin_change_action_title)
             tilCurrentPin.visibility = android.view.View.VISIBLE
         } else {
             tilCurrentPin.visibility = android.view.View.GONE
@@ -93,18 +93,18 @@ class PinSetupActivity : AppCompatActivity() {
 
         // Validate new PIN
         if (newPin.isEmpty()) {
-            tilNewPin.error = "PIN is required"
+            tilNewPin.error = getString(R.string.pin_required_error)
             return
         }
 
         if (!PinManager.isValidPin(newPin)) {
-            tilNewPin.error = "PIN must be 4-8 digits"
+            tilNewPin.error = getString(R.string.pin_format_error)
             return
         }
 
         // Validate confirmation
         if (newPin != confirmPin) {
-            tilConfirmPin.error = "PINs do not match"
+            tilConfirmPin.error = getString(R.string.pin_mismatch_error)
             return
         }
 
@@ -112,11 +112,11 @@ class PinSetupActivity : AppCompatActivity() {
             // Verify current PIN first
             val currentPin = etCurrentPin.text?.toString()?.trim() ?: ""
             if (currentPin.isEmpty()) {
-                tilCurrentPin.error = "Current PIN is required"
+                tilCurrentPin.error = getString(R.string.pin_current_required_error)
                 return
             }
             if (!pinManager.verifyPin(currentPin)) {
-                tilCurrentPin.error = "Incorrect PIN"
+                tilCurrentPin.error = getString(R.string.pin_incorrect)
                 return
             }
             pinManager.changePin(currentPin, newPin)
@@ -124,7 +124,7 @@ class PinSetupActivity : AppCompatActivity() {
             pinManager.setPin(newPin)
         }
 
-        Toast.makeText(this, "PIN set successfully", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.pin_set_success), Toast.LENGTH_SHORT).show()
         setResult(RESULT_PIN_SET)
         finish()
     }

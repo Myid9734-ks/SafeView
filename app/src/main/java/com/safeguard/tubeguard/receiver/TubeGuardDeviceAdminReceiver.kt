@@ -25,6 +25,6 @@ class TubeGuardDeviceAdminReceiver : DeviceAdminReceiver() {
     }
 
     override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
-        return "TubeGuard 기기 관리자를 해제하면 앱 삭제 방지가 비활성화됩니다. PIN이 필요합니다."
+        return "SafeScreen 기기 관리자를 해제하면 앱 삭제 방지가 비활성화됩니다. PIN이 필요합니다."
     }
 }

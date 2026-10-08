@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - Chặn YouTube</string>
+    <string name="accessibility_service_description">SafeScreen sử dụng dịch vụ trợ năng để phát hiện khi ứng dụng YouTube được mở và đóng ngay lập tức, cung cấp khả năng kiểm soát của phụ huynh toàn diện.</string>
+
+    <!-- Main Screen -->
+    <string name="status_blocking">YouTube đã bị chặn</string>
+    <string name="status_not_blocking">Bảo vệ tắt</string>
+    <string name="block_count_format">Tổng số lần chặn: %d</string>
+    <string name="timer_title">Hẹn giờ thời gian cho phép</string>
+    <string name="allowed_time_format">Thời gian cho phép: %1$dg %2$02dp</string>
+    <string name="timer_status_waiting">Đang chờ</string>
+    <string name="timer_status_running">Đang chạy - YouTube được phép</string>
+    <string name="timer_status_expired">Đã hết thời gian</string>
+    <string name="timer_start">▶  Bắt đầu</string>
+    <string name="timer_pause">⏸  Tạm dừng</string>
+    <string name="admin_settings">Cài đặt quản trị</string>
+    <string name="youtube_blocking">Chặn YouTube</string>
+    <string name="dns_app_blocking">Chặn cấp DNS + Ứng dụng</string>
+
+    <!-- VPN Status -->
+    <string name="vpn_active">VPN: Đang hoạt động - Chặn DNS đã bật</string>
+    <string name="vpn_permission_granted">VPN: Đã cấp quyền (nhấn để bắt đầu)</string>
+    <string name="vpn_permission_needed">VPN: Nhấn để cấp quyền</string>
+
+    <!-- Accessibility Status -->
+    <string name="accessibility_active">Trợ năng: Đang hoạt động - Chặn ứng dụng đã bật</string>
+    <string name="accessibility_needed">Trợ năng: Nhấn để bật (bắt buộc)</string>
+
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">Quản trị thiết bị: Đang hoạt động - Bảo vệ gỡ cài đặt đã bật</string>
+    <string name="device_admin_inactive">Quản trị thiết bị: Không hoạt động - Nhấn để bật</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">Cài đặt thời gian cho phép: %1$dg %2$02dp</string>
+
+    <!-- PIN Status -->
+    <string name="pin_set">Bảo vệ PIN: Đã bật - nhấn để thay đổi</string>
+    <string name="pin_not_set">Bảo vệ PIN: Chưa đặt - nhấn để thiết lập</string>
+
+    <!-- Info Card -->
+    <string name="info_title">Bật tất cả để bảo vệ toàn diện:</string>
+    <string name="info_steps">1. Quyền VPN (chặn DNS)\n2. Dịch vụ trợ năng (chặn ứng dụng YouTube)\n3. Quản trị thiết bị (bảo vệ gỡ cài đặt)\n4. Thiết lập PIN (ngăn tắt bảo vệ)</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">Truy cập bị chặn</string>
+    <string name="blocked_message_app">Ứng dụng YouTube đã bị chặn.</string>
+    <string name="blocked_message_browser">Truy cập YouTube từ trình duyệt đã bị chặn.</string>
+    <string name="blocked_message_kakao_game">Trò chơi KakaoTalk đã bị chặn.</string>
+    <string name="blocked_explanation">SafeScreen đang bảo vệ quyền truy cập YouTube.\nĐể tắt bảo vệ, nhập PIN trong ứng dụng SafeScreen.</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">Bảo vệ PIN</string>
+    <string name="pin_setup_description">Đặt mã PIN để ngăn trẻ em tắt bảo vệ</string>
+    <string name="hint_current_pin">PIN hiện tại</string>
+    <string name="hint_new_pin">PIN mới (4–8 chữ số)</string>
+    <string name="hint_confirm_pin">Xác nhận PIN</string>
+    <string name="btn_set_pin">Đặt PIN</string>
+    <string name="pin_remember_note">Hãy nhớ mã PIN này – nó sẽ được yêu cầu khi tắt SafeScreen</string>
+    <string name="pin_setup_action_title">Đặt PIN</string>
+    <string name="pin_change_action_title">Đổi PIN</string>
+    <string name="pin_required_error">Yêu cầu nhập PIN</string>
+    <string name="pin_format_error">PIN phải có 4–8 chữ số</string>
+    <string name="pin_mismatch_error">PIN không khớp</string>
+    <string name="pin_current_required_error">Yêu cầu nhập PIN hiện tại</string>
+    <string name="pin_incorrect">PIN không đúng</string>
+    <string name="pin_set_success">Đặt PIN thành công</string>
+
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">Nhập PIN</string>
+    <string name="enter_pin_description">Nhập PIN để thay đổi cài đặt SafeScreen</string>
+    <string name="hint_pin">PIN</string>
+    <string name="btn_verify_pin">Xác minh PIN</string>
+    <string name="pin_empty_error">Vui lòng nhập PIN của bạn</string>
+    <string name="attempts_remaining">Số lần thử còn lại: %d</string>
+    <string name="lockout_message">Quá nhiều lần thử. Thử lại sau %d giây</string>
+    <string name="lockout_ended">Bạn có thể thử lại</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">SafeScreen đang hoạt động</string>
+    <string name="notification_text">YouTube đã bị chặn</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">SafeScreen đang chặn YouTube</string>
+    <string name="notification_open_app">Mở ứng dụng</string>
+
+    <!-- Toasts -->
+    <string name="vpn_permission_required">Cần quyền VPN để chặn YouTube</string>
+    <string name="vpn_no_permission_timer">Không thể tiếp tục chặn mà không có quyền VPN</string>
+    <string name="vpn_already_granted">Quyền VPN đã được cấp</string>
+    <string name="notification_permission_warning">Thông báo trạng thái VPN sẽ không hiển thị nếu không có quyền thông báo</string>
+    <string name="device_admin_enabled_toast">Bảo vệ gỡ cài đặt đã kích hoạt</string>
+    <string name="device_admin_required">Yêu cầu quyền quản trị thiết bị</string>
+    <string name="device_admin_deactivated">Quản trị thiết bị đã tắt</string>
+    <string name="blocking_enabled_toast">Chặn YouTube đã kích hoạt</string>
+    <string name="blocking_disabled_toast">Chặn YouTube đã tắt</string>
+    <string name="timer_started">Hẹn giờ đã bắt đầu</string>
+    <string name="timer_stopped">Hẹn giờ đã dừng</string>
+    <string name="timer_expired_toast">Thời gian cho phép đã hết</string>
+    <string name="timer_no_remaining">Đã sử dụng hết thời gian cho phép hôm nay</string>
+    <string name="timer_reset_done">Hẹn giờ đã được đặt lại</string>
+    <string name="allowed_time_saved">Thời gian cho phép đã được thiết lập</string>
+    <string name="min_time_error">Phải đặt ít nhất 1 phút</string>
+    <string name="accessibility_cannot_open">Không thể mở cài đặt trợ năng</string>
+    <string name="reset_done">Cài đặt đã được đặt lại</string>
+    <string name="pin_set_admin_toast">PIN đã được đặt.</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">Tắt quản trị thiết bị</string>
+    <string name="device_admin_deactivate_message">Tắt quản trị thiết bị sẽ cho phép gỡ cài đặt ứng dụng. Tiếp tục?</string>
+    <string name="btn_deactivate">Tắt</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="device_admin_explanation">Đăng ký SafeScreen làm quản trị thiết bị ngăn việc gỡ cài đặt ứng dụng trái phép.</string>
+    <string name="disable_protection_title">Tắt bảo vệ</string>
+    <string name="disable_protection_message">Tắt chặn YouTube?</string>
+    <string name="btn_disable">Tắt</string>
+    <string name="allowed_time_setting_title">Cài đặt thời gian cho phép</string>
+    <string name="btn_save">Lưu</string>
+    <string name="btn_timer_reset">Đặt lại hẹn giờ</string>
+    <string name="exact_alarm_title">Thiết lập ban đầu (5/5) - Yêu cầu quyền báo thức chính xác</string>
+    <string name="exact_alarm_message">Cần quyền báo thức chính xác để hẹn giờ hoạt động chính xác.\nVui lòng cho phép trong Cài đặt.</string>
+    <string name="btn_go_settings">Đi đến Cài đặt</string>
+    <string name="admin_pin_setup_title">Thiết lập mật khẩu quản trị (1/5)</string>
+    <string name="admin_pin_setup_message">Bạn phải đặt mật khẩu quản trị (PIN) để sử dụng ứng dụng này.</string>
+    <string name="btn_setup">Thiết lập</string>
+    <string name="setup_vpn_title">Thiết lập ban đầu (2/5)</string>
+    <string name="setup_vpn_message">Vui lòng cho phép quyền VPN để chặn YouTube.</string>
+    <string name="setup_accessibility_title">Thiết lập ban đầu (3/5)</string>
+    <string name="setup_accessibility_message">Vui lòng bật dịch vụ trợ năng để chặn ứng dụng YouTube.\n\nCài đặt → SafeScreen → Bật</string>
+    <string name="setup_device_admin_title">Thiết lập ban đầu (4/5)</string>
+    <string name="setup_device_admin_message">Vui lòng bật quản trị thiết bị để bảo vệ gỡ cài đặt.</string>
+    <string name="setup_complete">Thiết lập ban đầu hoàn tất! Chặn YouTube đã được kích hoạt.</string>
+    <string name="reset_title">Đặt lại tất cả cài đặt</string>
+    <string name="reset_message">Chặn sẽ bị tắt và PIN sẽ bị xóa. Tiếp tục?</string>
+    <string name="btn_reset">Đặt lại</string>
+
+    <!-- Menu -->
+    <string name="menu_about">Giới thiệu</string>
+    <string name="menu_reset">Đặt lại cài đặt</string>
+    <string name="menu_block_log">Nhật ký chặn</string>
+    <string name="menu_timer_log">Nhật ký hẹn giờ</string>
+
+    <!-- About -->
+    <string name="about_title">Giới thiệu SafeScreen</string>
+    <string name="about_message">SafeScreen v1.0\n\nPhương pháp chặn YouTube:\n• Chặn cấp DNS qua VPN\n• Phát hiện ứng dụng qua Dịch vụ trợ năng\n• Cài đặt được bảo vệ bằng PIN\n\nTên miền bị chặn: youtube.com, youtu.be, googlevideo.com, v.v.</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">Nhật ký gỡ lỗi hẹn giờ</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">giờ</string>
+    <string name="time_label_minutes">phút</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">Nhật ký chặn</string>
+    <string name="log_delete_title">Xóa nhật ký</string>
+    <string name="log_delete_message">Xóa tất cả nhật ký chặn?</string>
+    <string name="log_delete_confirm">Xóa</string>
+    <string name="log_deleted">Đã xóa nhật ký</string>
+    <string name="log_type_app">Mở ứng dụng</string>
+    <string name="log_type_browser">Trình duyệt</string>
+    <string name="log_type_kakao_game">Trò chơi KakaoTalk</string>
+    <string name="log_type_kakao_news">Tin tức KakaoTalk</string>
+    <string name="log_empty">Không có nhật ký</string>
+    <string name="log_read_error">Không thể đọc nhật ký</string>
+</resources>

@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                 pendingEnableBlocking = false
                 switchBlocking.isChecked = false
             }
-            Toast.makeText(this, "YouTube 차단을 위해 VPN 권한이 필요합니다", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.vpn_permission_required), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             startVpnServiceForTimer()
         } else {
-            Toast.makeText(this, "VPN 권한이 없어 차단을 재개할 수 없습니다", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.vpn_no_permission_timer), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -133,11 +133,11 @@ class MainActivity : AppCompatActivity() {
             updatePinStatusDisplay()
             if (initialSetupRunning) {
                 showAdminSection()
-                proceedSetupWizard()
+                // proceedSetupWizard()는 onResume()에서 호출되므로 중복 호출 제거
             } else {
                 pendingAdminUnlock = false
                 showAdminSection()
-                Toast.makeText(this, "PIN이 설정되었습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.pin_set_admin_toast), Toast.LENGTH_SHORT).show()
             }
         } else {
             pendingAdminUnlock = false
@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (!granted) {
-            Toast.makeText(this, "알림 권한이 없으면 VPN 상태 알림이 표시되지 않습니다", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.notification_permission_warning), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -185,10 +185,10 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             Log.i(TAG, "Device admin enabled")
             prefsManager.deviceAdminEnabled = true
-            Toast.makeText(this, "앱 삭제 방지가 활성화되었습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.device_admin_enabled_toast), Toast.LENGTH_SHORT).show()
         } else {
             Log.w(TAG, "Device admin not granted")
-            Toast.makeText(this, "기기 관리자 권한이 필요합니다", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.device_admin_required), Toast.LENGTH_LONG).show()
         }
         updateAllStatusDisplays()
     }
@@ -238,12 +238,12 @@ class MainActivity : AppCompatActivity() {
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (!alarmManager.canScheduleExactAlarms()) {
                 AlertDialog.Builder(this)
-                    .setTitle("정확한 알람 권한 필요")
-                    .setMessage("타이머가 정확히 동작하려면 '정확한 알람' 권한이 필요합니다.\n설정에서 허용해 주세요.")
-                    .setPositiveButton("설정으로 이동") { _, _ ->
+                    .setTitle(getString(R.string.exact_alarm_title))
+                    .setMessage(getString(R.string.exact_alarm_message))
+                    .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                         startActivity(android.content.Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
                     }
-                    .setNegativeButton("취소", null)
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
                     .show()
             }
         }
@@ -255,7 +255,10 @@ class MainActivity : AppCompatActivity() {
         if (initialSetupRunning) {
             pendingAdminUnlock = true
             updateAllStatusDisplays()
-            proceedSetupWizard()
+            // PIN이 설정된 후에만 마법사를 진행 (설정 전에는 PIN 다이얼로그가 먼저 처리되어야 함)
+            if (pinManager.hasPin()) {
+                proceedSetupWizard()
+            }
         } else {
             pendingAdminUnlock = false
             updateAdminSectionVisibility()
@@ -376,9 +379,9 @@ class MainActivity : AppCompatActivity() {
             initialSetupRunning = true
             pendingAdminUnlock = true
             AlertDialog.Builder(this)
-                .setTitle("관리자 비밀번호 설정")
-                .setMessage("앱을 사용하려면 관리자 비밀번호(PIN)를 먼저 설정해야 합니다.")
-                .setPositiveButton("설정하기") { _, _ ->
+                .setTitle(getString(R.string.admin_pin_setup_title))
+                .setMessage(getString(R.string.admin_pin_setup_message))
+                .setPositiveButton(getString(R.string.btn_setup)) { _, _ ->
                     pinSetupLauncher.launch(Intent(this, PinSetupActivity::class.java))
                 }
                 .setCancelable(false)
@@ -391,9 +394,9 @@ class MainActivity : AppCompatActivity() {
         val vpnIntent = VpnService.prepare(this)
         if (vpnIntent != null) {
             AlertDialog.Builder(this)
-                .setTitle("초기 설정 (1/3)")
-                .setMessage("YouTube 차단을 위해 VPN 권한을 허용해 주세요.")
-                .setPositiveButton("설정") { _, _ ->
+                .setTitle(getString(R.string.setup_vpn_title))
+                .setMessage(getString(R.string.setup_vpn_message))
+                .setPositiveButton(getString(R.string.btn_setup)) { _, _ ->
                     pendingAdminUnlock = true
                     vpnPermissionLauncher.launch(vpnIntent)
                 }
@@ -405,9 +408,9 @@ class MainActivity : AppCompatActivity() {
         // 접근성 확인
         if (!isAccessibilityServiceEnabled()) {
             AlertDialog.Builder(this)
-                .setTitle("초기 설정 (2/3)")
-                .setMessage("YouTube 앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설정 → TubeGuard → 활성화")
-                .setPositiveButton("설정으로 이동") { _, _ ->
+                .setTitle(getString(R.string.setup_accessibility_title))
+                .setMessage(getString(R.string.setup_accessibility_message))
+                .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                     pendingAdminUnlock = true
                     openAccessibilitySettings()
                 }
@@ -419,9 +422,9 @@ class MainActivity : AppCompatActivity() {
         // 기기 관리자 확인
         if (!devicePolicyManager.isAdminActive(adminComponentName)) {
             AlertDialog.Builder(this)
-                .setTitle("초기 설정 (3/3)")
-                .setMessage("앱 삭제 방지를 위해 기기 관리자를 활성화해 주세요.")
-                .setPositiveButton("설정") { _, _ ->
+                .setTitle(getString(R.string.setup_device_admin_title))
+                .setMessage(getString(R.string.setup_device_admin_message))
+                .setPositiveButton(getString(R.string.btn_setup)) { _, _ ->
                     pendingAdminUnlock = true
                     requestDeviceAdmin()
                 }
@@ -439,7 +442,7 @@ class MainActivity : AppCompatActivity() {
         handleEnableBlocking()
         updateAdminSectionVisibility()
         checkExactAlarmPermission()
-        Toast.makeText(this, "초기 설정이 완료되었습니다! YouTube 차단이 활성화됩니다.", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.setup_complete), Toast.LENGTH_LONG).show()
     }
 
     // ─────────────────────────── Timer Logic ───────────────────────────
@@ -447,7 +450,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleTimerStart() {
         val remaining = prefsManager.getTimerRemainingSeconds()
         if (remaining <= 0) {
-            Toast.makeText(this, "오늘 허용 시간을 모두 사용했습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.timer_no_remaining), Toast.LENGTH_SHORT).show()
             return
         }
         prefsManager.startTimerNow()
@@ -455,7 +458,7 @@ class MainActivity : AppCompatActivity() {
         performTimerDisableBlocking()
         startTimerTick()
         updateTimerButtons()
-        Toast.makeText(this, "타이머 시작됨", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.timer_started), Toast.LENGTH_SHORT).show()
     }
 
     private fun handleTimerStop() {
@@ -465,7 +468,7 @@ class MainActivity : AppCompatActivity() {
         performTimerEnableBlocking()
         updateTimerDisplay(prefsManager.getTimerRemainingSeconds())
         updateTimerButtons()
-        Toast.makeText(this, "타이머 정지됨", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.timer_stopped), Toast.LENGTH_SHORT).show()
     }
 
     private fun handleTimerExpiredInForeground() {
@@ -476,7 +479,7 @@ class MainActivity : AppCompatActivity() {
         updateTimerDisplay(0)
         updateTimerButtons()
         performTimerEnableBlocking()
-        Toast.makeText(this, "허용 시간이 모두 소진되었습니다", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.timer_expired_toast), Toast.LENGTH_LONG).show()
     }
 
     private fun performTimerDisableBlocking() {
@@ -524,7 +527,7 @@ class MainActivity : AppCompatActivity() {
         val totalAllowed = prefsManager.allowedSeconds
         val h = totalAllowed / 3600
         val m = (totalAllowed % 3600) / 60
-        tvAllowedTime.text = "허용 시간: ${h}시간 ${"%02d".format(m)}분"
+        tvAllowedTime.text = getString(R.string.allowed_time_format, h, m)
 
         val rh = remaining / 3600
         val rm = (remaining % 3600) / 60
@@ -539,9 +542,9 @@ class MainActivity : AppCompatActivity() {
         tvRemainingTime.setTextColor(getColor(colorRes))
 
         tvTimerStatus.text = when {
-            remaining <= 0 -> "시간 소진"
-            prefsManager.timerIsRunning -> "진행 중 - YouTube 허용됨"
-            else -> "대기 중"
+            remaining <= 0 -> getString(R.string.timer_status_expired)
+            prefsManager.timerIsRunning -> getString(R.string.timer_status_running)
+            else -> getString(R.string.timer_status_waiting)
         }
         tvTimerStatus.setTextColor(
             if (prefsManager.timerIsRunning) getColor(R.color.green_active)
@@ -554,10 +557,10 @@ class MainActivity : AppCompatActivity() {
         val isRunning = prefsManager.timerIsRunning
 
         if (isRunning) {
-            btnTimerStartStop.text = "⏸  정지"
+            btnTimerStartStop.text = getString(R.string.timer_pause)
             btnTimerStartStop.setBackgroundColor(getColor(R.color.orange_warning))
         } else {
-            btnTimerStartStop.text = "▶  시작"
+            btnTimerStartStop.text = getString(R.string.timer_start)
             btnTimerStartStop.setBackgroundColor(getColor(R.color.green_active))
         }
         btnTimerStartStop.isEnabled = remaining > 0 || isRunning
@@ -586,11 +589,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val labelH = TextView(this).apply {
-            text = "시간"
+            text = getString(R.string.time_label_hours)
             setPadding(8, 0, 16, 0)
         }
         val labelM = TextView(this).apply {
-            text = "분"
+            text = getString(R.string.time_label_minutes)
             setPadding(8, 0, 0, 0)
         }
 
@@ -600,12 +603,12 @@ class MainActivity : AppCompatActivity() {
         layout.addView(labelM)
 
         AlertDialog.Builder(this)
-            .setTitle("허용 시간 설정")
+            .setTitle(getString(R.string.allowed_time_setting_title))
             .setView(layout)
-            .setPositiveButton("저장") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_save)) { _, _ ->
                 val newSeconds = (pickerHours.value * 3600L) + (pickerMinutes.value * 60L)
                 if (newSeconds == 0L) {
-                    Toast.makeText(this, "최소 1분 이상 설정해야 합니다", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.min_time_error), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 prefsManager.allowedSeconds = newSeconds
@@ -615,9 +618,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 updateTimerDisplay(prefsManager.getTimerRemainingSeconds())
                 updateTimerButtons()
-                Toast.makeText(this, "허용 시간이 설정되었습니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.allowed_time_saved), Toast.LENGTH_SHORT).show()
             }
-            .setNeutralButton("타이머 초기화") { _, _ ->
+            .setNeutralButton(getString(R.string.btn_timer_reset)) { _, _ ->
                 // 타이머 실행 중이면 정지 후 초기화
                 if (prefsManager.timerIsRunning) {
                     prefsManager.pauseTimer()
@@ -627,9 +630,9 @@ class MainActivity : AppCompatActivity() {
                 prefsManager.timerSavedRemaining = prefsManager.allowedSeconds
                 updateTimerDisplay(prefsManager.getTimerRemainingSeconds())
                 updateTimerButtons()
-                Toast.makeText(this, "타이머가 초기화되었습니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.timer_reset_done), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("취소", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 
@@ -716,10 +719,10 @@ class MainActivity : AppCompatActivity() {
             pinVerifyLauncher.launch(Intent(this, PinVerifyActivity::class.java))
         } else {
             AlertDialog.Builder(this)
-                .setTitle("보호 해제")
-                .setMessage("YouTube 차단을 비활성화하시겠습니까?")
-                .setPositiveButton("해제") { _, _ -> performDisableBlocking() }
-                .setNegativeButton("취소") { _, _ -> switchBlocking.isChecked = true }
+                .setTitle(getString(R.string.disable_protection_title))
+                .setMessage(getString(R.string.disable_protection_message))
+                .setPositiveButton(getString(R.string.btn_disable)) { _, _ -> performDisableBlocking() }
+                .setNegativeButton(getString(R.string.btn_cancel)) { _, _ -> switchBlocking.isChecked = true }
                 .setCancelable(false)
                 .show()
         }
@@ -733,7 +736,7 @@ class MainActivity : AppCompatActivity() {
         startForegroundService(serviceIntent)
         pendingEnableBlocking = false
         updateAllStatusDisplays()
-        Toast.makeText(this, "YouTube 차단이 활성화되었습니다", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.blocking_enabled_toast), Toast.LENGTH_SHORT).show()
     }
 
     private fun performDisableBlocking() {
@@ -745,7 +748,7 @@ class MainActivity : AppCompatActivity() {
         startService(serviceIntent)
         switchBlocking.isChecked = false
         updateAllStatusDisplays()
-        Toast.makeText(this, "YouTube 차단이 비활성화되었습니다", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.blocking_disabled_toast), Toast.LENGTH_SHORT).show()
     }
 
     private fun updateBlockingSwitchSilently(checked: Boolean) {
@@ -761,13 +764,13 @@ class MainActivity : AppCompatActivity() {
 
         updateBlockingSwitchSilently(isBlocking)
 
-        tvStatus.text = if (isBlocking) "YouTube 차단 중" else "보호 비활성화"
+        tvStatus.text = if (isBlocking) getString(R.string.status_blocking) else getString(R.string.status_not_blocking)
         tvStatus.setTextColor(
             if (isBlocking) getColor(R.color.green_active) else getColor(R.color.red_inactive)
         )
 
         val blockCount = prefsManager.blockCount
-        tvBlockCount.text = "총 차단 횟수: $blockCount"
+        tvBlockCount.text = getString(R.string.block_count_format, blockCount)
 
         updateVpnStatusDisplay()
         updateAccessibilityStatusDisplay()
@@ -784,13 +787,13 @@ class MainActivity : AppCompatActivity() {
         val isRunning = prefsManager.vpnEnabled
 
         if (isRunning && hasPermission) {
-            tvVpnStatus.text = "VPN: 활성화 - DNS 차단 중"
+            tvVpnStatus.text = getString(R.string.vpn_active)
             tvVpnStatus.setTextColor(getColor(R.color.green_active))
         } else if (hasPermission) {
-            tvVpnStatus.text = "VPN: 권한 허용됨 (탭하여 시작)"
+            tvVpnStatus.text = getString(R.string.vpn_permission_granted)
             tvVpnStatus.setTextColor(getColor(R.color.orange_warning))
         } else {
-            tvVpnStatus.text = "VPN: 탭하여 권한 허용"
+            tvVpnStatus.text = getString(R.string.vpn_permission_needed)
             tvVpnStatus.setTextColor(getColor(R.color.red_inactive))
         }
     }
@@ -798,10 +801,10 @@ class MainActivity : AppCompatActivity() {
     private fun updateAccessibilityStatusDisplay() {
         val isEnabled = isAccessibilityServiceEnabled()
         if (isEnabled) {
-            tvAccessibilityStatus.text = "접근성: 활성화 - 앱 차단 중"
+            tvAccessibilityStatus.text = getString(R.string.accessibility_active)
             tvAccessibilityStatus.setTextColor(getColor(R.color.green_active))
         } else {
-            tvAccessibilityStatus.text = "접근성: 탭하여 활성화 (필수)"
+            tvAccessibilityStatus.text = getString(R.string.accessibility_needed)
             tvAccessibilityStatus.setTextColor(getColor(R.color.red_inactive))
         }
     }
@@ -810,10 +813,10 @@ class MainActivity : AppCompatActivity() {
         // isAdminActive()는 비동기 해제 시 즉시 반영 안 됨 → prefsManager와 AND 조건으로 판단
         val isAdmin = devicePolicyManager.isAdminActive(adminComponentName) && prefsManager.deviceAdminEnabled
         if (isAdmin) {
-            tvDeviceAdminStatus.text = "기기 관리자: 활성화 - 앱 삭제 방지 중"
+            tvDeviceAdminStatus.text = getString(R.string.device_admin_active)
             tvDeviceAdminStatus.setTextColor(getColor(R.color.green_active))
         } else {
-            tvDeviceAdminStatus.text = "기기 관리자: 비활성화 - 탭하여 삭제 방지 설정"
+            tvDeviceAdminStatus.text = getString(R.string.device_admin_inactive)
             tvDeviceAdminStatus.setTextColor(getColor(R.color.red_inactive))
         }
     }
@@ -828,10 +831,10 @@ class MainActivity : AppCompatActivity() {
                 pinVerifyForAdminLauncher.launch(verifyIntent)
             } else {
                 AlertDialog.Builder(this)
-                    .setTitle("기기 관리자 비활성화")
-                    .setMessage("기기 관리자를 비활성화하면 앱을 삭제할 수 있게 됩니다. 계속하시겠습니까?")
-                    .setPositiveButton("비활성화") { _, _ -> deactivateDeviceAdmin() }
-                    .setNegativeButton("취소", null)
+                    .setTitle(getString(R.string.device_admin_deactivate_title))
+                    .setMessage(getString(R.string.device_admin_deactivate_message))
+                    .setPositiveButton(getString(R.string.btn_deactivate)) { _, _ -> deactivateDeviceAdmin() }
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
                     .show()
             }
         } else {
@@ -844,7 +847,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponentName)
             putExtra(
                 DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                "TubeGuard를 기기 관리자로 등록하면 앱이 무단으로 삭제되는 것을 방지합니다."
+                getString(R.string.device_admin_explanation)
             )
         }
         deviceAdminLauncher.launch(intent)
@@ -854,23 +857,23 @@ class MainActivity : AppCompatActivity() {
         devicePolicyManager.removeActiveAdmin(adminComponentName)
         prefsManager.deviceAdminEnabled = false
         // removeActiveAdmin이 비동기라 isAdminActive()가 즉시 반영 안 됨 → 직접 UI 업데이트
-        tvDeviceAdminStatus.text = "기기 관리자: 비활성화 - 탭하여 삭제 방지 설정"
+        tvDeviceAdminStatus.text = getString(R.string.device_admin_inactive)
         tvDeviceAdminStatus.setTextColor(getColor(R.color.red_inactive))
-        Toast.makeText(this, "기기 관리자가 비활성화되었습니다", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.device_admin_deactivated), Toast.LENGTH_SHORT).show()
     }
 
     private fun updateTimerSettingsDisplay() {
         val totalAllowed = prefsManager.allowedSeconds
         val h = totalAllowed / 3600
         val m = (totalAllowed % 3600) / 60
-        tvTimerSettingsStatus.text = "허용 시간 설정: ${h}시간 ${"%02d".format(m)}분"
+        tvTimerSettingsStatus.text = getString(R.string.timer_settings_format, h, m)
     }
 
     private fun updatePinStatusDisplay() {
         tvPinStatus.text = if (pinManager.hasPin()) {
-            "PIN 보호: 활성화 - 탭하여 변경"
+            getString(R.string.pin_set)
         } else {
-            "PIN 보호: 미설정 - 탭하여 설정"
+            getString(R.string.pin_not_set)
         }
     }
 
@@ -895,7 +898,7 @@ class MainActivity : AppCompatActivity() {
         if (vpnIntent != null) {
             vpnPermissionLauncher.launch(vpnIntent)
         } else {
-            Toast.makeText(this, "VPN 권한이 이미 허용되어 있습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.vpn_already_granted), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -903,7 +906,7 @@ class MainActivity : AppCompatActivity() {
         try {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         } catch (e: Exception) {
-            Toast.makeText(this, "접근성 설정을 열 수 없습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.accessibility_cannot_open), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -937,24 +940,17 @@ class MainActivity : AppCompatActivity() {
     private fun showTimerLogDialog() {
         val content = FileLogger.getLogText(this).takeLast(3000)
         AlertDialog.Builder(this)
-            .setTitle("타이머 디버그 로그")
+            .setTitle(getString(R.string.timer_debug_log_title))
             .setMessage(content)
-            .setPositiveButton("확인", null)
+            .setPositiveButton(getString(R.string.btn_ok), null)
             .show()
     }
 
     private fun showAboutDialog() {
         AlertDialog.Builder(this)
-            .setTitle("TubeGuard 정보")
-            .setMessage(
-                "TubeGuard v1.0\n\n" +
-                "YouTube 차단 방법:\n" +
-                "• VPN을 통한 DNS 수준 차단\n" +
-                "• 접근성 서비스를 통한 앱 감지 차단\n" +
-                "• PIN 보호 설정\n\n" +
-                "차단 도메인: youtube.com, youtu.be, googlevideo.com 등"
-            )
-            .setPositiveButton("확인", null)
+            .setTitle(getString(R.string.about_title))
+            .setMessage(getString(R.string.about_message))
+            .setPositiveButton(getString(R.string.btn_ok), null)
             .show()
     }
 
@@ -968,16 +964,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun confirmReset() {
         AlertDialog.Builder(this)
-            .setTitle("전체 설정 초기화")
-            .setMessage("차단이 해제되고 PIN이 삭제됩니다. 계속하시겠습니까?")
-            .setPositiveButton("초기화") { _, _ ->
+            .setTitle(getString(R.string.reset_title))
+            .setMessage(getString(R.string.reset_message))
+            .setPositiveButton(getString(R.string.btn_reset)) { _, _ ->
                 performDisableBlocking()
                 pinManager.clearPin()
                 prefsManager.blockCount = 0
                 updateAllStatusDisplays()
-                Toast.makeText(this, "설정이 초기화되었습니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.reset_done), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("취소", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 }

@@ -119,7 +119,7 @@ class TubeGuardVpnService : VpnService() {
 
         try {
             val builder = Builder()
-            builder.setSession("TubeGuard")
+            builder.setSession("SafeScreen")
             builder.addAddress(VPN_ADDRESS, 32)
             builder.addDnsServer(DNS_SERVER)
             // Only route DNS server traffic through VPN — all other traffic bypasses VPN
@@ -450,10 +450,10 @@ class TubeGuardVpnService : VpnService() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "TubeGuard VPN",
+            getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "TubeGuard is actively blocking YouTube"
+            description = getString(R.string.notification_channel_desc)
             setShowBadge(false)
         }
         val notificationManager = getSystemService(NotificationManager::class.java)
@@ -474,13 +474,13 @@ class TubeGuardVpnService : VpnService() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("TubeGuard Active")
-            .setContentText("YouTube is blocked")
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(getString(R.string.notification_text))
             .setSmallIcon(R.drawable.ic_shield)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .addAction(0, "Open App", pendingIntent)
+            .addAction(0, getString(R.string.notification_open_app), pendingIntent)
             .build()
     }
 

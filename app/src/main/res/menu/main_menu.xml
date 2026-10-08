@@ -4,12 +4,12 @@
 
     <item
         android:id="@+id/action_log"
-        android:title="차단 로그"
+        android:title="@string/menu_block_log"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_timer_log"
-        android:title="타이머 로그"
+        android:title="@string/menu_timer_log"
         app:showAsAction="never" />
 
     <item

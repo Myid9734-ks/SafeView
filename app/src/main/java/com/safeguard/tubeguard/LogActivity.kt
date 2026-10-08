@@ -25,7 +25,7 @@ class LogActivity : AppCompatActivity() {
         setContentView(R.layout.activity_log)
 
         supportActionBar?.apply {
-            title = "차단 로그"
+            title = getString(R.string.log_title)
             setDisplayHomeAsUpEnabled(true)
         }
 
@@ -39,14 +39,14 @@ class LogActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btnClearLog).setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("로그 삭제")
-                .setMessage("모든 차단 로그를 삭제하시겠습니까?")
-                .setPositiveButton("삭제") { _, _ ->
+                .setTitle(getString(R.string.log_delete_title))
+                .setMessage(getString(R.string.log_delete_message))
+                .setPositiveButton(getString(R.string.log_delete_confirm)) { _, _ ->
                     prefsManager.clearBlockLogs()
                     loadLogs()
-                    Toast.makeText(this, "로그가 삭제되었습니다", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.log_deleted), Toast.LENGTH_SHORT).show()
                 }
-                .setNegativeButton("취소", null)
+                .setNegativeButton(getString(R.string.btn_cancel), null)
                 .show()
         }
 
@@ -87,8 +87,15 @@ class LogActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
+            val context = holder.itemView.context
             holder.tvTimestamp.text = item.timestamp
-            holder.tvType.text = item.type
+            holder.tvType.text = when (item.type) {
+                "앱 실행" -> context.getString(R.string.log_type_app)
+                "브라우저" -> context.getString(R.string.log_type_browser)
+                "카카오톡 게임" -> context.getString(R.string.log_type_kakao_game)
+                "카카오톡 소식" -> context.getString(R.string.log_type_kakao_news)
+                else -> item.type
+            }
             holder.tvDetail.text = item.detail
 
             val typeColor = when (item.type) {

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - YouTube Blocker</string>
+    <string name="accessibility_service_description">Ginagamit ng SafeScreen ang mga serbisyo ng accessibility upang matukoy kung kailan binuksan ang YouTube app at agad itong isara, na nagbibigay ng komprehensibong proteksyon para sa mga magulang.</string>
+
+    <!-- Main Screen -->
+    <string name="status_blocking">Naka-block ang YouTube</string>
+    <string name="status_not_blocking">Naka-off ang Proteksyon</string>
+    <string name="block_count_format">Kabuuang na-block: %d</string>
+    <string name="timer_title">Timer ng Pinapayagang Oras</string>
+    <string name="allowed_time_format">Pinapayagang oras: %1$dh %2$02dm</string>
+    <string name="timer_status_waiting">Naghihintay</string>
+    <string name="timer_status_running">Tumatakbo - Pinapayagan ang YouTube</string>
+    <string name="timer_status_expired">Naubos na ang oras</string>
+    <string name="timer_start">▶  Simulan</string>
+    <string name="timer_pause">⏸  I-pause</string>
+    <string name="admin_settings">Mga Setting ng Admin</string>
+    <string name="youtube_blocking">Pag-block sa YouTube</string>
+    <string name="dns_app_blocking">DNS + App level na pag-block</string>
+
+    <!-- VPN Status -->
+    <string name="vpn_active">VPN: Aktibo - Naka-enable ang DNS blocking</string>
+    <string name="vpn_permission_granted">VPN: Naibigay na ang pahintulot (i-tap para simulan)</string>
+    <string name="vpn_permission_needed">VPN: I-tap para magbigay ng pahintulot</string>
+
+    <!-- Accessibility Status -->
+    <string name="accessibility_active">Accessibility: Aktibo - Naka-enable ang App blocking</string>
+    <string name="accessibility_needed">Accessibility: I-tap para i-enable (kinakailangan)</string>
+
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">Device Admin: Aktibo - Naka-on ang proteksyon sa pag-uninstall</string>
+    <string name="device_admin_inactive">Device Admin: Hindi aktibo - I-tap para i-enable</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">Setting ng pinapayagang oras: %1$dh %2$02dm</string>
+
+    <!-- PIN Status -->
+    <string name="pin_set">Proteksyon ng PIN: Naka-enable - i-tap para palitan</string>
+    <string name="pin_not_set">Proteksyon ng PIN: Hindi pa naka-set - i-tap para i-set up</string>
+
+    <!-- Info Card -->
+    <string name="info_title">I-enable lahat para sa buong proteksyon:</string>
+    <string name="info_steps">1. Pahintulot sa VPN (DNS blocking)\n2. Accessibility service (pag-block ng YouTube app)\n3. Device admin (proteksyon sa pag-uninstall)\n4. Setup ng PIN (pag-iwas sa pag-disable ng proteksyon)</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">Na-block ang Access</string>
+    <string name="blocked_message_app">Na-block ang YouTube app.</string>
+    <string name="blocked_message_browser">Na-block ang pag-access sa YouTube mula sa browser.</string>
+    <string name="blocked_message_kakao_game">Na-block ang KakaoTalk Game.</string>
+    <string name="blocked_explanation">Pinoprotektahan ng SafeScreen ang access sa YouTube.\nPara i-disable ang proteksyon, ilagay ang PIN sa SafeScreen app.</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">Proteksyon ng PIN</string>
+    <string name="pin_setup_description">Mag-set ng PIN upang mapigilan ang mga bata na i-disable ang proteksyon</string>
+    <string name="hint_current_pin">Kasalukuyang PIN</string>
+    <string name="hint_new_pin">Bagong PIN (4–8 na digit)</string>
+    <string name="hint_confirm_pin">Kumpirmahin ang PIN</string>
+    <string name="btn_set_pin">I-set ang PIN</string>
+    <string name="pin_remember_note">Tandaan ang PIN na ito – kakailanganin ito para i-disable ang SafeScreen</string>
+    <string name="pin_setup_action_title">I-set ang PIN</string>
+    <string name="pin_change_action_title">Palitan ang PIN</string>
+    <string name="pin_required_error">Kinakailangan ang PIN</string>
+    <string name="pin_format_error">Ang PIN ay dapat 4–8 na digit</string>
+    <string name="pin_mismatch_error">Hindi magkatugma ang mga PIN</string>
+    <string name="pin_current_required_error">Kinakailangan ang kasalukuyang PIN</string>
+    <string name="pin_incorrect">Maling PIN</string>
+    <string name="pin_set_success">Matagumpay na na-set ang PIN</string>
+
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">Ilagay ang PIN</string>
+    <string name="enter_pin_description">Ilagay ang iyong PIN para baguhin ang mga setting ng SafeScreen</string>
+    <string name="hint_pin">PIN</string>
+    <string name="btn_verify_pin">I-verify ang PIN</string>
+    <string name="pin_empty_error">Mangyaring ilagay ang iyong PIN</string>
+    <string name="attempts_remaining">Natitirang pagsubok: %d</string>
+    <string name="lockout_message">Masyadong maraming pagsubok. Subukan muli sa %ds</string>
+    <string name="lockout_ended">Maaari ka nang subukan muli</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">Aktibo ang SafeScreen</string>
+    <string name="notification_text">Naka-block ang YouTube</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">Aktibong bina-block ng SafeScreen ang YouTube</string>
+    <string name="notification_open_app">Buksan ang App</string>
+
+    <!-- Toasts -->
+    <string name="vpn_permission_required">Kinakailangan ang pahintulot sa VPN para ma-block ang YouTube</string>
+    <string name="vpn_no_permission_timer">Hindi maipagpatuloy ang pag-block nang walang pahintulot sa VPN</string>
+    <string name="vpn_already_granted">Naibigay na ang pahintulot sa VPN</string>
+    <string name="notification_permission_warning">Hindi ipapakita ang notification ng status ng VPN nang walang pahintulot sa notification</string>
+    <string name="device_admin_enabled_toast">Na-activate ang proteksyon sa pag-uninstall</string>
+    <string name="device_admin_required">Kinakailangan ang pahintulot ng device admin</string>
+    <string name="device_admin_deactivated">Na-deactivate ang device admin</string>
+    <string name="blocking_enabled_toast">Na-activate ang pag-block sa YouTube</string>
+    <string name="blocking_disabled_toast">Na-disable ang pag-block sa YouTube</string>
+    <string name="timer_started">Nagsimula ang timer</string>
+    <string name="timer_stopped">Huminto ang timer</string>
+    <string name="timer_expired_toast">Naubos na ang pinapayagang oras</string>
+    <string name="timer_no_remaining">Naubos na ang lahat ng pinapayagang oras para ngayon</string>
+    <string name="timer_reset_done">Na-reset na ang timer</string>
+    <string name="allowed_time_saved">Na-set na ang pinapayagang oras</string>
+    <string name="min_time_error">Kailangang mag-set ng hindi bababa sa 1 minuto</string>
+    <string name="accessibility_cannot_open">Hindi mabuksan ang mga setting ng accessibility</string>
+    <string name="reset_done">Na-reset na ang mga setting</string>
+    <string name="pin_set_admin_toast">Na-set na ang PIN.</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">I-deactivate ang Device Admin</string>
+    <string name="device_admin_deactivate_message">Ang pag-deactivate ng device admin ay magpapahintulot sa pag-uninstall ng app. Ituloy?</string>
+    <string name="btn_deactivate">I-deactivate</string>
+    <string name="btn_cancel">Kanselahin</string>
+    <string name="device_admin_explanation">Ang pagrehistro ng SafeScreen bilang device admin ay pumipigil sa hindi awtorisadong pag-uninstall ng app.</string>
+    <string name="disable_protection_title">I-disable ang Proteksyon</string>
+    <string name="disable_protection_message">I-disable ang pag-block sa YouTube?</string>
+    <string name="btn_disable">I-disable</string>
+    <string name="allowed_time_setting_title">Setting ng Pinapayagang Oras</string>
+    <string name="btn_save">I-save</string>
+    <string name="btn_timer_reset">I-reset ang Timer</string>
+    <string name="exact_alarm_title">Unang Setup (5/5) - Kinakailangan ang Pahintulot para sa Exact Alarm</string>
+    <string name="exact_alarm_message">Kinakailangan ang pahintulot para sa exact alarm para sa tamang paggana ng timer.\nMangyaring payagan sa Settings.</string>
+    <string name="btn_go_settings">Pumunta sa Settings</string>
+    <string name="admin_pin_setup_title">Setup ng Password ng Admin (1/5)</string>
+    <string name="admin_pin_setup_message">Kailangan mong mag-set ng password ng admin (PIN) para magamit ang app na ito.</string>
+    <string name="btn_setup">I-set up</string>
+    <string name="setup_vpn_title">Unang Setup (2/5)</string>
+    <string name="setup_vpn_message">Mangyaring payagan ang pahintulot sa VPN para ma-block ang YouTube.</string>
+    <string name="setup_accessibility_title">Unang Setup (3/5)</string>
+    <string name="setup_accessibility_message">Mangyaring i-enable ang accessibility service para sa pag-block ng YouTube app.\n\nSettings → SafeScreen → I-enable</string>
+    <string name="setup_device_admin_title">Unang Setup (4/5)</string>
+    <string name="setup_device_admin_message">Mangyaring i-enable ang device admin para sa proteksyon sa pag-uninstall.</string>
+    <string name="setup_complete">Kumpleto na ang unang setup! Na-activate ang pag-block sa YouTube.</string>
+    <string name="reset_title">I-reset ang Lahat ng Setting</string>
+    <string name="reset_message">Made-disable ang pag-block at mabubura ang PIN. Ituloy?</string>
+    <string name="btn_reset">I-reset</string>
+
+    <!-- Menu -->
+    <string name="menu_about">Tungkol sa</string>
+    <string name="menu_reset">I-reset ang mga Setting</string>
+    <string name="menu_block_log">Log ng mga Block</string>
+    <string name="menu_timer_log">Log ng Timer</string>
+
+    <!-- About -->
+    <string name="about_title">Tungkol sa SafeScreen</string>
+    <string name="about_message">SafeScreen v1.0\n\nMga paraan ng pag-block sa YouTube:\n• DNS-level na pag-block sa pamamagitan ng VPN\n• Pagtukoy ng app sa pamamagitan ng Accessibility Service\n• Mga setting na protektado ng PIN\n\nMga naka-block na domain: youtube.com, youtu.be, googlevideo.com, atbp.</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">Timer Debug Log</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">oras</string>
+    <string name="time_label_minutes">min</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">Log ng mga Block</string>
+    <string name="log_delete_title">Burahin ang mga Log</string>
+    <string name="log_delete_message">Burahin lahat ng log ng mga block?</string>
+    <string name="log_delete_confirm">Burahin</string>
+    <string name="log_deleted">Nabura na ang mga log</string>
+    <string name="log_type_app">Pagbukas ng app</string>
+    <string name="log_type_browser">Browser</string>
+    <string name="log_type_kakao_game">KakaoTalk Game</string>
+    <string name="log_type_kakao_news">KakaoTalk News</string>
+    <string name="log_empty">Walang mga log</string>
+    <string name="log_read_error">Hindi mabasa ang mga log</string>
+</resources>

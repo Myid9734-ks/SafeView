@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - Блокировщик YouTube</string>
+    <string name="accessibility_service_description">SafeScreen использует службы специальных возможностей для обнаружения запуска приложения YouTube и немедленного его закрытия, обеспечивая надёжный родительский контроль.</string>
+
+    <!-- Main Screen -->
+    <string name="status_blocking">YouTube заблокирован</string>
+    <string name="status_not_blocking">Защита отключена</string>
+    <string name="block_count_format">Всего блокировок: %d</string>
+    <string name="timer_title">Таймер разрешённого времени</string>
+    <string name="allowed_time_format">Разрешённое время: %1$dч %2$02dм</string>
+    <string name="timer_status_waiting">Ожидание</string>
+    <string name="timer_status_running">Работает — YouTube разрешён</string>
+    <string name="timer_status_expired">Время израсходовано</string>
+    <string name="timer_start">▶  Старт</string>
+    <string name="timer_pause">⏸  Пауза</string>
+    <string name="admin_settings">Настройки администратора</string>
+    <string name="youtube_blocking">Блокировка YouTube</string>
+    <string name="dns_app_blocking">Блокировка на уровне DNS + приложения</string>
+
+    <!-- VPN Status -->
+    <string name="vpn_active">VPN: Активен — DNS-блокировка включена</string>
+    <string name="vpn_permission_granted">VPN: Разрешение получено (нажмите для запуска)</string>
+    <string name="vpn_permission_needed">VPN: Нажмите для предоставления разрешения</string>
+
+    <!-- Accessibility Status -->
+    <string name="accessibility_active">Спец. возможности: Активны — блокировка приложения включена</string>
+    <string name="accessibility_needed">Спец. возможности: Нажмите для включения (обязательно)</string>
+
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">Администратор устройства: Активен — защита от удаления включена</string>
+    <string name="device_admin_inactive">Администратор устройства: Неактивен — нажмите для включения</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">Настройка разрешённого времени: %1$dч %2$02dм</string>
+
+    <!-- PIN Status -->
+    <string name="pin_set">Защита PIN-кодом: Включена — нажмите для изменения</string>
+    <string name="pin_not_set">Защита PIN-кодом: Не установлена — нажмите для настройки</string>
+
+    <!-- Info Card -->
+    <string name="info_title">Включите всё для полной защиты:</string>
+    <string name="info_steps">1. Разрешение VPN (DNS-блокировка)\n2. Служба спец. возможностей (блокировка приложения YouTube)\n3. Администратор устройства (защита от удаления)\n4. Настройка PIN-кода (предотвращение отключения защиты)</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">Доступ заблокирован</string>
+    <string name="blocked_message_app">Приложение YouTube заблокировано.</string>
+    <string name="blocked_message_browser">Доступ к YouTube через браузер заблокирован.</string>
+    <string name="blocked_message_kakao_game">Игра KakaoTalk заблокирована.</string>
+    <string name="blocked_explanation">SafeScreen защищает доступ к YouTube.\nЧтобы отключить защиту, введите PIN-код в приложении SafeScreen.</string>
+    <string name="btn_ok">ОК</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">Защита PIN-кодом</string>
+    <string name="pin_setup_description">Установите PIN-код, чтобы дети не могли отключить защиту</string>
+    <string name="hint_current_pin">Текущий PIN-код</string>
+    <string name="hint_new_pin">Новый PIN-код (4–8 цифр)</string>
+    <string name="hint_confirm_pin">Подтвердите PIN-код</string>
+    <string name="btn_set_pin">Установить PIN-код</string>
+    <string name="pin_remember_note">Запомните этот PIN-код — он потребуется для отключения SafeScreen</string>
+    <string name="pin_setup_action_title">Установить PIN-код</string>
+    <string name="pin_change_action_title">Изменить PIN-код</string>
+    <string name="pin_required_error">Необходимо ввести PIN-код</string>
+    <string name="pin_format_error">PIN-код должен содержать 4–8 цифр</string>
+    <string name="pin_mismatch_error">PIN-коды не совпадают</string>
+    <string name="pin_current_required_error">Необходимо ввести текущий PIN-код</string>
+    <string name="pin_incorrect">Неверный PIN-код</string>
+    <string name="pin_set_success">PIN-код успешно установлен</string>
+
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">Введите PIN-код</string>
+    <string name="enter_pin_description">Введите PIN-код для изменения настроек SafeScreen</string>
+    <string name="hint_pin">PIN-код</string>
+    <string name="btn_verify_pin">Подтвердить PIN-код</string>
+    <string name="pin_empty_error">Пожалуйста, введите PIN-код</string>
+    <string name="attempts_remaining">Осталось попыток: %d</string>
+    <string name="lockout_message">Слишком много попыток. Повторите через %dс</string>
+    <string name="lockout_ended">Вы можете попробовать снова</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">SafeScreen активен</string>
+    <string name="notification_text">YouTube заблокирован</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">SafeScreen активно блокирует YouTube</string>
+    <string name="notification_open_app">Открыть приложение</string>
+
+    <!-- Toasts -->
+    <string name="vpn_permission_required">Для блокировки YouTube требуется разрешение VPN</string>
+    <string name="vpn_no_permission_timer">Невозможно возобновить блокировку без разрешения VPN</string>
+    <string name="vpn_already_granted">Разрешение VPN уже предоставлено</string>
+    <string name="notification_permission_warning">Уведомление о статусе VPN не будет отображаться без разрешения на уведомления</string>
+    <string name="device_admin_enabled_toast">Защита от удаления активирована</string>
+    <string name="device_admin_required">Требуется разрешение администратора устройства</string>
+    <string name="device_admin_deactivated">Администратор устройства деактивирован</string>
+    <string name="blocking_enabled_toast">Блокировка YouTube активирована</string>
+    <string name="blocking_disabled_toast">Блокировка YouTube отключена</string>
+    <string name="timer_started">Таймер запущен</string>
+    <string name="timer_stopped">Таймер остановлен</string>
+    <string name="timer_expired_toast">Разрешённое время израсходовано</string>
+    <string name="timer_no_remaining">Всё разрешённое время на сегодня использовано</string>
+    <string name="timer_reset_done">Таймер сброшен</string>
+    <string name="allowed_time_saved">Разрешённое время установлено</string>
+    <string name="min_time_error">Необходимо установить не менее 1 минуты</string>
+    <string name="accessibility_cannot_open">Не удаётся открыть настройки специальных возможностей</string>
+    <string name="reset_done">Настройки сброшены</string>
+    <string name="pin_set_admin_toast">PIN-код установлен.</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">Деактивировать администратора устройства</string>
+    <string name="device_admin_deactivate_message">Деактивация администратора устройства позволит удалить приложение. Продолжить?</string>
+    <string name="btn_deactivate">Деактивировать</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="device_admin_explanation">Регистрация SafeScreen в качестве администратора устройства предотвращает несанкционированное удаление приложения.</string>
+    <string name="disable_protection_title">Отключить защиту</string>
+    <string name="disable_protection_message">Отключить блокировку YouTube?</string>
+    <string name="btn_disable">Отключить</string>
+    <string name="allowed_time_setting_title">Настройка разрешённого времени</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="btn_timer_reset">Сбросить таймер</string>
+    <string name="exact_alarm_title">Начальная настройка (5/5) - Требуется разрешение на точные будильники</string>
+    <string name="exact_alarm_message">Для точной работы таймера необходимо разрешение на точные будильники.\nПожалуйста, разрешите в Настройках.</string>
+    <string name="btn_go_settings">Перейти в Настройки</string>
+    <string name="admin_pin_setup_title">Настройка пароля администратора (1/5)</string>
+    <string name="admin_pin_setup_message">Для использования приложения необходимо установить пароль администратора (PIN-код).</string>
+    <string name="btn_setup">Настроить</string>
+    <string name="setup_vpn_title">Начальная настройка (2/5)</string>
+    <string name="setup_vpn_message">Пожалуйста, разрешите VPN для блокировки YouTube.</string>
+    <string name="setup_accessibility_title">Начальная настройка (3/5)</string>
+    <string name="setup_accessibility_message">Пожалуйста, включите службу специальных возможностей для блокировки приложения YouTube.\n\nНастройки → SafeScreen → Включить</string>
+    <string name="setup_device_admin_title">Начальная настройка (4/5)</string>
+    <string name="setup_device_admin_message">Пожалуйста, включите администратора устройства для защиты от удаления.</string>
+    <string name="setup_complete">Начальная настройка завершена! Блокировка YouTube активирована.</string>
+    <string name="reset_title">Сбросить все настройки</string>
+    <string name="reset_message">Блокировка будет отключена, а PIN-код удалён. Продолжить?</string>
+    <string name="btn_reset">Сбросить</string>
+
+    <!-- Menu -->
+    <string name="menu_about">О приложении</string>
+    <string name="menu_reset">Сбросить настройки</string>
+    <string name="menu_block_log">Журнал блокировок</string>
+    <string name="menu_timer_log">Журнал таймера</string>
+
+    <!-- About -->
+    <string name="about_title">О SafeScreen</string>
+    <string name="about_message">SafeScreen v1.0\n\nМетоды блокировки YouTube:\n• Блокировка на уровне DNS через VPN\n• Обнаружение приложения через службу специальных возможностей\n• Настройки, защищённые PIN-кодом\n\nЗаблокированные домены: youtube.com, youtu.be, googlevideo.com и др.</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">Журнал отладки таймера</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">часов</string>
+    <string name="time_label_minutes">мин</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">Журнал блокировок</string>
+    <string name="log_delete_title">Удалить журнал</string>
+    <string name="log_delete_message">Удалить все записи журнала блокировок?</string>
+    <string name="log_delete_confirm">Удалить</string>
+    <string name="log_deleted">Журнал удалён</string>
+    <string name="log_type_app">Запуск приложения</string>
+    <string name="log_type_browser">Браузер</string>
+    <string name="log_type_kakao_game">Игра KakaoTalk</string>
+    <string name="log_type_kakao_news">Новости KakaoTalk</string>
+    <string name="log_empty">Нет записей</string>
+    <string name="log_read_error">Не удалось прочитать журнал</string>
+</resources>

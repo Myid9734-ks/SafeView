@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Enter PIN"
+        android:text="@string/enter_pin_title"
         android:textColor="@color/text_primary"
         android:textSize="26sp"
         android:textStyle="bold" />
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:gravity="center"
-        android:text="Enter your PIN to change TubeGuard settings"
+        android:text="@string/enter_pin_description"
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="PIN"
+        android:hint="@string/hint_pin"
         app:boxBackgroundColor="@color/card_background"
         app:endIconMode="password_toggle"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -69,7 +69,7 @@
         android:id="@+id/btnVerify"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:text="Verify PIN"
+        android:text="@string/btn_verify_pin"
         android:textSize="16sp"
         app:backgroundTint="@color/primary_blue"
         app:cornerRadius="12dp" />

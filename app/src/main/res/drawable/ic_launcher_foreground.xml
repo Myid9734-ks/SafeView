@@ -1,12 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Shield icon centered in launcher safe zone (72x72 centered in 108x108) -->
+
+    <!--
+        SafeScreen icon design:
+          Layer 1 (white)  — Shield shape (outer protection)
+          Layer 2 (blue)   — Monitor/screen inside shield (SafeScreen concept)
+          Layer 3 (white)  — Checkmark inside monitor (safe/protected)
+
+        Viewport: 108×108  |  Safe zone: 18–90 (72×72 centered)
+    -->
+
+    <!-- Layer 1: Shield (white, fills most of safe zone) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M54,14L22.5,29v27c0,24.975 17.28,48.33 40.5,54 23.22,-5.67 40.5,-29.025 40.5,-54V29L54,14zM54,53.955h31.5c-2.385,18.54 -14.76,35.055 -31.5,40.23V54H22.5V28.35L54,14.445v39.51z" />
+        android:pathData="
+            M54,22
+            Q34,28 24,34
+            L24,56
+            C24,75 37,86 54,91
+            C71,86 84,75 84,56
+            L84,34
+            Q74,28 54,22 Z"/>
+
+    <!-- Layer 2: Monitor body (blue) -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="
+            M41,43
+            L67,43
+            Q70,43 70,46
+            L70,64
+            Q70,67 67,67
+            L41,67
+            Q38,67 38,64
+            L38,46
+            Q38,43 41,43 Z"/>
+
+    <!-- Layer 2: Monitor stand (blue) -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M51,67 L57,67 L57,73 L51,73 Z"/>
+
+    <!-- Layer 2: Monitor base (blue, rounded) -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="
+            M45,73
+            Q44,73 44,74.5
+            Q44,76 45,76
+            L63,76
+            Q64,76 64,74.5
+            Q64,73 63,73 Z"/>
+
+    <!-- Layer 3: Checkmark inside monitor (white) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M43,57
+            L49,65
+            L66,47
+            L70,51
+            L49,67
+            L39,60 Z"/>
+
 </vector>

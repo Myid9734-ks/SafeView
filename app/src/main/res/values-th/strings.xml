@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - ตัวบล็อก YouTube</string>
+    <string name="accessibility_service_description">SafeScreen ใช้บริการการเข้าถึงเพื่อตรวจจับเมื่อแอป YouTube ถูกเปิดและปิดทันที ให้การปกป้องการควบคุมโดยผู้ปกครองอย่างครอบคลุม</string>
+
+    <!-- Main Screen -->
+    <string name="status_blocking">YouTube ถูกบล็อก</string>
+    <string name="status_not_blocking">ปิดการป้องกัน</string>
+    <string name="block_count_format">บล็อกทั้งหมด: %d</string>
+    <string name="timer_title">ตั้งเวลาอนุญาต</string>
+    <string name="allowed_time_format">เวลาที่อนุญาต: %1$dชม. %2$02dน.</string>
+    <string name="timer_status_waiting">รอดำเนินการ</string>
+    <string name="timer_status_running">กำลังทำงาน - อนุญาตให้ใช้ YouTube</string>
+    <string name="timer_status_expired">ใช้เวลาหมดแล้ว</string>
+    <string name="timer_start">▶  เริ่ม</string>
+    <string name="timer_pause">⏸  หยุดชั่วคราว</string>
+    <string name="admin_settings">การตั้งค่าผู้ดูแล</string>
+    <string name="youtube_blocking">การบล็อก YouTube</string>
+    <string name="dns_app_blocking">การบล็อกระดับ DNS + แอป</string>
+
+    <!-- VPN Status -->
+    <string name="vpn_active">VPN: ใช้งานอยู่ - เปิดการบล็อก DNS แล้ว</string>
+    <string name="vpn_permission_granted">VPN: ได้รับสิทธิ์แล้ว (แตะเพื่อเริ่ม)</string>
+    <string name="vpn_permission_needed">VPN: แตะเพื่อให้สิทธิ์</string>
+
+    <!-- Accessibility Status -->
+    <string name="accessibility_active">การเข้าถึง: ใช้งานอยู่ - เปิดการบล็อกแอปแล้ว</string>
+    <string name="accessibility_needed">การเข้าถึง: แตะเพื่อเปิดใช้งาน (จำเป็น)</string>
+
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">ผู้ดูแลอุปกรณ์: ใช้งานอยู่ - เปิดการป้องกันการถอนการติดตั้ง</string>
+    <string name="device_admin_inactive">ผู้ดูแลอุปกรณ์: ไม่ได้ใช้งาน - แตะเพื่อเปิดใช้งาน</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">ตั้งค่าเวลาที่อนุญาต: %1$dชม. %2$02dน.</string>
+
+    <!-- PIN Status -->
+    <string name="pin_set">การป้องกัน PIN: เปิดใช้งานแล้ว - แตะเพื่อเปลี่ยน</string>
+    <string name="pin_not_set">การป้องกัน PIN: ยังไม่ได้ตั้ง - แตะเพื่อตั้งค่า</string>
+
+    <!-- Info Card -->
+    <string name="info_title">เปิดใช้งานทั้งหมดเพื่อการป้องกันเต็มรูปแบบ:</string>
+    <string name="info_steps">1. สิทธิ์ VPN (การบล็อก DNS)\n2. บริการการเข้าถึง (การบล็อกแอป YouTube)\n3. ผู้ดูแลอุปกรณ์ (การป้องกันการถอนการติดตั้ง)\n4. ตั้ง PIN (ป้องกันการปิดการป้องกัน)</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">การเข้าถึงถูกบล็อก</string>
+    <string name="blocked_message_app">แอป YouTube ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_browser">การเข้าถึง YouTube จากเบราว์เซอร์ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_kakao_game">เกม KakaoTalk ถูกบล็อกแล้ว</string>
+    <string name="blocked_explanation">SafeScreen กำลังปกป้องการเข้าถึง YouTube\nหากต้องการปิดการป้องกัน ให้ใส่ PIN ในแอป SafeScreen</string>
+    <string name="btn_ok">ตกลง</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">การป้องกัน PIN</string>
+    <string name="pin_setup_description">ตั้ง PIN เพื่อป้องกันไม่ให้เด็กปิดการป้องกัน</string>
+    <string name="hint_current_pin">PIN ปัจจุบัน</string>
+    <string name="hint_new_pin">PIN ใหม่ (4–8 หลัก)</string>
+    <string name="hint_confirm_pin">ยืนยัน PIN</string>
+    <string name="btn_set_pin">ตั้ง PIN</string>
+    <string name="pin_remember_note">จำ PIN นี้ไว้ – จะต้องใช้เพื่อปิดการใช้งาน SafeScreen</string>
+    <string name="pin_setup_action_title">ตั้ง PIN</string>
+    <string name="pin_change_action_title">เปลี่ยน PIN</string>
+    <string name="pin_required_error">ต้องใส่ PIN</string>
+    <string name="pin_format_error">PIN ต้องมี 4–8 หลัก</string>
+    <string name="pin_mismatch_error">PIN ไม่ตรงกัน</string>
+    <string name="pin_current_required_error">ต้องใส่ PIN ปัจจุบัน</string>
+    <string name="pin_incorrect">PIN ไม่ถูกต้อง</string>
+    <string name="pin_set_success">ตั้ง PIN สำเร็จ</string>
+
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">ใส่ PIN</string>
+    <string name="enter_pin_description">ใส่ PIN ของคุณเพื่อเปลี่ยนการตั้งค่า SafeScreen</string>
+    <string name="hint_pin">PIN</string>
+    <string name="btn_verify_pin">ยืนยัน PIN</string>
+    <string name="pin_empty_error">กรุณาใส่ PIN ของคุณ</string>
+    <string name="attempts_remaining">จำนวนครั้งที่เหลือ: %d</string>
+    <string name="lockout_message">ลองมากเกินไป ลองใหม่ใน %d วินาที</string>
+    <string name="lockout_ended">คุณสามารถลองอีกครั้ง</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">SafeScreen ทำงานอยู่</string>
+    <string name="notification_text">YouTube ถูกบล็อก</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">SafeScreen กำลังบล็อก YouTube อยู่</string>
+    <string name="notification_open_app">เปิดแอป</string>
+
+    <!-- Toasts -->
+    <string name="vpn_permission_required">ต้องมีสิทธิ์ VPN เพื่อบล็อก YouTube</string>
+    <string name="vpn_no_permission_timer">ไม่สามารถบล็อกต่อได้หากไม่มีสิทธิ์ VPN</string>
+    <string name="vpn_already_granted">ได้รับสิทธิ์ VPN แล้ว</string>
+    <string name="notification_permission_warning">การแจ้งเตือนสถานะ VPN จะไม่แสดงหากไม่มีสิทธิ์การแจ้งเตือน</string>
+    <string name="device_admin_enabled_toast">เปิดการป้องกันการถอนการติดตั้งแล้ว</string>
+    <string name="device_admin_required">ต้องมีสิทธิ์ผู้ดูแลอุปกรณ์</string>
+    <string name="device_admin_deactivated">ปิดผู้ดูแลอุปกรณ์แล้ว</string>
+    <string name="blocking_enabled_toast">เปิดการบล็อก YouTube แล้ว</string>
+    <string name="blocking_disabled_toast">ปิดการบล็อก YouTube แล้ว</string>
+    <string name="timer_started">เริ่มตั้งเวลาแล้ว</string>
+    <string name="timer_stopped">หยุดตั้งเวลาแล้ว</string>
+    <string name="timer_expired_toast">ใช้เวลาที่อนุญาตหมดแล้ว</string>
+    <string name="timer_no_remaining">ใช้เวลาที่อนุญาตวันนี้หมดแล้ว</string>
+    <string name="timer_reset_done">รีเซ็ตตั้งเวลาแล้ว</string>
+    <string name="allowed_time_saved">ตั้งเวลาที่อนุญาตแล้ว</string>
+    <string name="min_time_error">ต้องตั้งอย่างน้อย 1 นาที</string>
+    <string name="accessibility_cannot_open">ไม่สามารถเปิดการตั้งค่าการเข้าถึงได้</string>
+    <string name="reset_done">รีเซ็ตการตั้งค่าแล้ว</string>
+    <string name="pin_set_admin_toast">ตั้ง PIN แล้ว</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">ปิดผู้ดูแลอุปกรณ์</string>
+    <string name="device_admin_deactivate_message">การปิดผู้ดูแลอุปกรณ์จะอนุญาตให้ถอนการติดตั้งแอปได้ ดำเนินการต่อหรือไม่?</string>
+    <string name="btn_deactivate">ปิดใช้งาน</string>
+    <string name="btn_cancel">ยกเลิก</string>
+    <string name="device_admin_explanation">การลงทะเบียน SafeScreen เป็นผู้ดูแลอุปกรณ์จะป้องกันการถอนการติดตั้งแอปโดยไม่ได้รับอนุญาต</string>
+    <string name="disable_protection_title">ปิดการป้องกัน</string>
+    <string name="disable_protection_message">ปิดการบล็อก YouTube หรือไม่?</string>
+    <string name="btn_disable">ปิด</string>
+    <string name="allowed_time_setting_title">ตั้งค่าเวลาที่อนุญาต</string>
+    <string name="btn_save">บันทึก</string>
+    <string name="btn_timer_reset">รีเซ็ตตั้งเวลา</string>
+    <string name="exact_alarm_title">การตั้งค่าเริ่มต้น (5/5) - ต้องมีสิทธิ์ตั้งปลุกแบบแม่นยำ</string>
+    <string name="exact_alarm_message">ต้องมีสิทธิ์ตั้งปลุกแบบแม่นยำเพื่อให้ตั้งเวลาทำงานอย่างถูกต้อง\nกรุณาอนุญาตในการตั้งค่า</string>
+    <string name="btn_go_settings">ไปที่การตั้งค่า</string>
+    <string name="admin_pin_setup_title">ตั้งรหัสผ่านผู้ดูแล (1/5)</string>
+    <string name="admin_pin_setup_message">คุณต้องตั้งรหัสผ่านผู้ดูแล (PIN) เพื่อใช้แอปนี้</string>
+    <string name="btn_setup">ตั้งค่า</string>
+    <string name="setup_vpn_title">การตั้งค่าเริ่มต้น (2/5)</string>
+    <string name="setup_vpn_message">กรุณาอนุญาตสิทธิ์ VPN เพื่อบล็อก YouTube</string>
+    <string name="setup_accessibility_title">การตั้งค่าเริ่มต้น (3/5)</string>
+    <string name="setup_accessibility_message">กรุณาเปิดบริการการเข้าถึงเพื่อบล็อกแอป YouTube\n\nการตั้งค่า → SafeScreen → เปิดใช้งาน</string>
+    <string name="setup_device_admin_title">การตั้งค่าเริ่มต้น (4/5)</string>
+    <string name="setup_device_admin_message">กรุณาเปิดผู้ดูแลอุปกรณ์เพื่อป้องกันการถอนการติดตั้ง</string>
+    <string name="setup_complete">การตั้งค่าเริ่มต้นเสร็จสมบูรณ์! เปิดการบล็อก YouTube แล้ว</string>
+    <string name="reset_title">รีเซ็ตการตั้งค่าทั้งหมด</string>
+    <string name="reset_message">การบล็อกจะถูกปิดและ PIN จะถูกลบ ดำเนินการต่อหรือไม่?</string>
+    <string name="btn_reset">รีเซ็ต</string>
+
+    <!-- Menu -->
+    <string name="menu_about">เกี่ยวกับ</string>
+    <string name="menu_reset">รีเซ็ตการตั้งค่า</string>
+    <string name="menu_block_log">บันทึกการบล็อก</string>
+    <string name="menu_timer_log">บันทึกตั้งเวลา</string>
+
+    <!-- About -->
+    <string name="about_title">เกี่ยวกับ SafeScreen</string>
+    <string name="about_message">SafeScreen v1.0\n\nวิธีการบล็อก YouTube:\n• การบล็อกระดับ DNS ผ่าน VPN\n• การตรวจจับแอปผ่านบริการการเข้าถึง\n• การตั้งค่าที่ป้องกันด้วย PIN\n\nโดเมนที่ถูกบล็อก: youtube.com, youtu.be, googlevideo.com เป็นต้น</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">บันทึกดีบักตั้งเวลา</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">ชั่วโมง</string>
+    <string name="time_label_minutes">นาที</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">บันทึกการบล็อก</string>
+    <string name="log_delete_title">ลบบันทึก</string>
+    <string name="log_delete_message">ลบบันทึกการบล็อกทั้งหมดหรือไม่?</string>
+    <string name="log_delete_confirm">ลบ</string>
+    <string name="log_deleted">ลบบันทึกแล้ว</string>
+    <string name="log_type_app">เปิดแอป</string>
+    <string name="log_type_browser">เบราว์เซอร์</string>
+    <string name="log_type_kakao_game">เกม KakaoTalk</string>
+    <string name="log_type_kakao_news">ข่าว KakaoTalk</string>
+    <string name="log_empty">ไม่มีบันทึก</string>
+    <string name="log_read_error">ไม่สามารถอ่านบันทึกได้</string>
+</resources>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 108 108">
+  <defs>
+    <linearGradient id="bg" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1976D2"/>
+      <stop offset="100%" stop-color="#0D3F8F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="108" height="108" fill="url(#bg)"/>
+
+  <!-- Shield (white) -->
+  <path fill="#FFFFFF"
+    d="M54,22 Q34,28 24,34 L24,56 C24,75 37,86 54,91 C71,86 84,75 84,56 L84,34 Q74,28 54,22 Z"/>
+
+  <!-- Monitor body (blue) -->
+  <path fill="#1565C0"
+    d="M41,43 L67,43 Q70,43 70,46 L70,64 Q70,67 67,67 L41,67 Q38,67 38,64 L38,46 Q38,43 41,43 Z"/>
+
+  <!-- Monitor stand (blue) -->
+  <rect fill="#1565C0" x="51" y="67" width="6" height="6"/>
+
+  <!-- Monitor base (blue) -->
+  <path fill="#1565C0"
+    d="M45,73 Q44,73 44,74.5 Q44,76 45,76 L63,76 Q64,76 64,74.5 Q64,73 63,73 Z"/>
+
+  <!-- Checkmark (white) -->
+  <path fill="#FFFFFF"
+    d="M43,57 L49,65 L66,47 L70,51 L49,67 L39,60 Z"/>
+</svg>

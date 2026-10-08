@@ -40,7 +40,7 @@ class PinVerifyActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "Enter PIN"
+            title = getString(R.string.enter_pin_title)
         }
 
         pinManager = PinManager(this)
@@ -83,7 +83,7 @@ class PinVerifyActivity : AppCompatActivity() {
         val pin = etPin.text?.toString()?.trim() ?: ""
 
         if (pin.isEmpty()) {
-            tilPin.error = "Please enter your PIN"
+            tilPin.error = getString(R.string.pin_empty_error)
             return
         }
 
@@ -99,7 +99,7 @@ class PinVerifyActivity : AppCompatActivity() {
                 startLockout()
             } else {
                 val remaining = MAX_ATTEMPTS - attemptCount
-                tilPin.error = "Incorrect PIN"
+                tilPin.error = getString(R.string.pin_incorrect)
                 updateAttemptsDisplay()
 
                 // Shake animation on error
@@ -127,12 +127,12 @@ class PinVerifyActivity : AppCompatActivity() {
             attemptCount = 0
             btnVerify.isEnabled = true
             etPin.isEnabled = true
-            tvAttemptsRemaining.text = "You may try again"
+            tvAttemptsRemaining.text = getString(R.string.lockout_ended)
             return
         }
 
         val seconds = (remaining / 1000) + 1
-        tvAttemptsRemaining.text = "Too many attempts. Try again in ${seconds}s"
+        tvAttemptsRemaining.text = getString(R.string.lockout_message, seconds)
 
         handler.postDelayed({
             updateLockoutDisplay(lockoutEnd)
@@ -144,7 +144,7 @@ class PinVerifyActivity : AppCompatActivity() {
             tvAttemptsRemaining.text = ""
         } else {
             val remaining = MAX_ATTEMPTS - attemptCount
-            tvAttemptsRemaining.text = "Attempts remaining: $remaining"
+            tvAttemptsRemaining.text = getString(R.string.attempts_remaining, remaining)
         }
     }
 

@@ -28,9 +28,9 @@ class BlockedActivity : Activity() {
         val tvMessage = findViewById<TextView>(R.id.tvBlockedMessage)
 
         tvMessage.text = when (source) {
-            SOURCE_BROWSER -> "브라우저에서 YouTube 접속이 차단되었습니다."
-            SOURCE_KAKAO_GAME -> "카카오톡 게임이 차단되었습니다."
-            else -> "YouTube 앱 실행이 차단되었습니다."
+            SOURCE_BROWSER -> getString(R.string.blocked_message_browser)
+            SOURCE_KAKAO_GAME -> getString(R.string.blocked_message_kakao_game)
+            else -> getString(R.string.blocked_message_app)
         }
 
         findViewById<Button>(R.id.btnGoHome).setOnClickListener {

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeScreen</string>
+    <string name="accessibility_service_label">SafeScreen - កម្មវិធីបិទ YouTube</string>
+    <string name="accessibility_service_description">SafeScreen ប្រើសេវាកម្មភាពងាយស្រួលដើម្បីរកឃើញពេលដែលកម្មវិធី YouTube ត្រូវបានបើក ហើយបិទវាភ្លាមៗ ដោយផ្តល់ការការពារគ្រប់ជ្រុងជ្រោយសម្រាប់ឪពុកម្តាយ។</string>
+
+    <!-- Main Screen -->
+    <string name="status_blocking">YouTube ត្រូវបានបិទ</string>
+    <string name="status_not_blocking">ការការពារបិទ</string>
+    <string name="block_count_format">ចំនួនបិទសរុប៖ %d</string>
+    <string name="timer_title">កម្មវិធីកំណត់ពេលវេលាអនុញ្ញាត</string>
+    <string name="allowed_time_format">ពេលវេលាអនុញ្ញាត៖ %1$dម៉ %2$02dន</string>
+    <string name="timer_status_waiting">កំពុងរង់ចាំ</string>
+    <string name="timer_status_running">កំពុងដំណើរការ - YouTube អនុញ្ញាត</string>
+    <string name="timer_status_expired">ពេលវេលាត្រូវបានប្រើអស់</string>
+    <string name="timer_start">▶  ចាប់ផ្តើម</string>
+    <string name="timer_pause">⏸  ផ្អាក</string>
+    <string name="admin_settings">ការកំណត់អ្នកគ្រប់គ្រង</string>
+    <string name="youtube_blocking">ការបិទ YouTube</string>
+    <string name="dns_app_blocking">ការបិទកម្រិត DNS + កម្មវិធី</string>
+
+    <!-- VPN Status -->
+    <string name="vpn_active">VPN៖ សកម្ម - ការបិទ DNS បើក</string>
+    <string name="vpn_permission_granted">VPN៖ ការអនុញ្ញាតផ្តល់ហើយ (ចុចដើម្បីចាប់ផ្តើម)</string>
+    <string name="vpn_permission_needed">VPN៖ ចុចដើម្បីផ្តល់ការអនុញ្ញាត</string>
+
+    <!-- Accessibility Status -->
+    <string name="accessibility_active">ភាពងាយស្រួល៖ សកម្ម - ការបិទកម្មវិធីបើក</string>
+    <string name="accessibility_needed">ភាពងាយស្រួល៖ ចុចដើម្បីបើក (ចាំបាច់)</string>
+
+    <!-- Device Admin Status -->
+    <string name="device_admin_active">អ្នកគ្រប់គ្រងឧបករណ៍៖ សកម្ម - ការការពារការលុបបើក</string>
+    <string name="device_admin_inactive">អ្នកគ្រប់គ្រងឧបករណ៍៖ មិនសកម្ម - ចុចដើម្បីបើក</string>
+
+    <!-- Timer Settings -->
+    <string name="timer_settings_format">ការកំណត់ពេលវេលាអនុញ្ញាត៖ %1$dម៉ %2$02dន</string>
+
+    <!-- PIN Status -->
+    <string name="pin_set">ការការពារ PIN៖ បើក - ចុចដើម្បីផ្លាស់ប្តូរ</string>
+    <string name="pin_not_set">ការការពារ PIN៖ មិនទាន់កំណត់ - ចុចដើម្បីកំណត់</string>
+
+    <!-- Info Card -->
+    <string name="info_title">បើកទាំងអស់សម្រាប់ការការពារពេញលេញ៖</string>
+    <string name="info_steps">1. ការអនុញ្ញាត VPN (ការបិទ DNS)\n2. សេវាភាពងាយស្រួល (ការបិទកម្មវិធី YouTube)\n3. អ្នកគ្រប់គ្រងឧបករណ៍ (ការការពារការលុប)\n4. កំណត់ PIN (ការពារការបិទការការពារ)</string>
+
+    <!-- Blocked Screen -->
+    <string name="blocked_title">ការចូលប្រើត្រូវបានបិទ</string>
+    <string name="blocked_message_app">កម្មវិធី YouTube ត្រូវបានបិទ។</string>
+    <string name="blocked_message_browser">ការចូលប្រើ YouTube ពីកម្មវិធីរុករកត្រូវបានបិទ។</string>
+    <string name="blocked_message_kakao_game">ហ្គេម KakaoTalk ត្រូវបានបិទ។</string>
+    <string name="blocked_explanation">SafeScreen កំពុងការពារការចូលប្រើ YouTube។\nដើម្បីបិទការការពារ សូមបញ្ចូល PIN ក្នុងកម្មវិធី SafeScreen។</string>
+    <string name="btn_ok">យល់ព្រម</string>
+
+    <!-- PIN Setup Screen -->
+    <string name="pin_protection_title">ការការពារ PIN</string>
+    <string name="pin_setup_description">កំណត់ PIN ដើម្បីការពារកុំឱ្យកុមារបិទការការពារ</string>
+    <string name="hint_current_pin">PIN បច្ចុប្បន្ន</string>
+    <string name="hint_new_pin">PIN ថ្មី (4–8 ខ្ទង់)</string>
+    <string name="hint_confirm_pin">បញ្ជាក់ PIN</string>
+    <string name="btn_set_pin">កំណត់ PIN</string>
+    <string name="pin_remember_note">ចងចាំ PIN នេះ – វាចាំបាច់ដើម្បីបិទ SafeScreen</string>
+    <string name="pin_setup_action_title">កំណត់ PIN</string>
+    <string name="pin_change_action_title">ផ្លាស់ប្តូរ PIN</string>
+    <string name="pin_required_error">ត្រូវការ PIN</string>
+    <string name="pin_format_error">PIN ត្រូវតែមាន 4–8 ខ្ទង់</string>
+    <string name="pin_mismatch_error">PIN មិនត្រូវគ្នា</string>
+    <string name="pin_current_required_error">ត្រូវការ PIN បច្ចុប្បន្ន</string>
+    <string name="pin_incorrect">PIN មិនត្រឹមត្រូវ</string>
+    <string name="pin_set_success">PIN ត្រូវបានកំណត់ដោយជោគជ័យ</string>
+
+    <!-- PIN Verify Screen -->
+    <string name="enter_pin_title">បញ្ចូល PIN</string>
+    <string name="enter_pin_description">បញ្ចូល PIN របស់អ្នកដើម្បីផ្លាស់ប្តូរការកំណត់ SafeScreen</string>
+    <string name="hint_pin">PIN</string>
+    <string name="btn_verify_pin">ផ្ទៀងផ្ទាត់ PIN</string>
+    <string name="pin_empty_error">សូមបញ្ចូល PIN របស់អ្នក</string>
+    <string name="attempts_remaining">ការព្យាយាមនៅសល់៖ %d</string>
+    <string name="lockout_message">ការព្យាយាមច្រើនពេក។ សាកល្បងម្តងទៀតក្នុង %dវ</string>
+    <string name="lockout_ended">អ្នកអាចសាកល្បងម្តងទៀត</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">SafeScreen សកម្ម</string>
+    <string name="notification_text">YouTube ត្រូវបានបិទ</string>
+    <string name="notification_channel_name">SafeScreen VPN</string>
+    <string name="notification_channel_desc">SafeScreen កំពុងបិទ YouTube យ៉ាងសកម្ម</string>
+    <string name="notification_open_app">បើកកម្មវិធី</string>
+
+    <!-- Toasts -->
+    <string name="vpn_permission_required">ត្រូវការការអនុញ្ញាត VPN ដើម្បីបិទ YouTube</string>
+    <string name="vpn_no_permission_timer">មិនអាចបន្តការបិទដោយគ្មានការអនុញ្ញាត VPN</string>
+    <string name="vpn_already_granted">ការអនុញ្ញាត VPN ត្រូវបានផ្តល់រួចហើយ</string>
+    <string name="notification_permission_warning">ការជូនដំណឹងស្ថានភាព VPN នឹងមិនត្រូវបានបង្ហាញដោយគ្មានការអនុញ្ញាតជូនដំណឹង</string>
+    <string name="device_admin_enabled_toast">ការការពារការលុបត្រូវបានបើក</string>
+    <string name="device_admin_required">ត្រូវការការអនុញ្ញាតអ្នកគ្រប់គ្រងឧបករណ៍</string>
+    <string name="device_admin_deactivated">អ្នកគ្រប់គ្រងឧបករណ៍ត្រូវបានបិទ</string>
+    <string name="blocking_enabled_toast">ការបិទ YouTube ត្រូវបានបើក</string>
+    <string name="blocking_disabled_toast">ការបិទ YouTube ត្រូវបានបិទ</string>
+    <string name="timer_started">កម្មវិធីកំណត់ពេលចាប់ផ្តើមហើយ</string>
+    <string name="timer_stopped">កម្មវិធីកំណត់ពេលឈប់ហើយ</string>
+    <string name="timer_expired_toast">ពេលវេលាអនុញ្ញាតត្រូវបានប្រើអស់</string>
+    <string name="timer_no_remaining">ពេលវេលាអនុញ្ញាតទាំងអស់សម្រាប់ថ្ងៃនេះត្រូវបានប្រើអស់</string>
+    <string name="timer_reset_done">កម្មវិធីកំណត់ពេលត្រូវបានកំណត់ឡើងវិញ</string>
+    <string name="allowed_time_saved">ពេលវេលាអនុញ្ញាតត្រូវបានកំណត់</string>
+    <string name="min_time_error">ត្រូវកំណត់យ៉ាងតិច 1 នាទី</string>
+    <string name="accessibility_cannot_open">មិនអាចបើកការកំណត់ភាពងាយស្រួល</string>
+    <string name="reset_done">ការកំណត់ត្រូវបានកំណត់ឡើងវិញ</string>
+    <string name="pin_set_admin_toast">PIN ត្រូវបានកំណត់។</string>
+
+    <!-- Dialogs -->
+    <string name="device_admin_deactivate_title">បិទអ្នកគ្រប់គ្រងឧបករណ៍</string>
+    <string name="device_admin_deactivate_message">ការបិទអ្នកគ្រប់គ្រងឧបករណ៍នឹងអនុញ្ញាតឱ្យលុបកម្មវិធីបាន។ បន្ត?</string>
+    <string name="btn_deactivate">បិទ</string>
+    <string name="btn_cancel">បោះបង់</string>
+    <string name="device_admin_explanation">ការចុះឈ្មោះ SafeScreen ជាអ្នកគ្រប់គ្រងឧបករណ៍ការពារការលុបកម្មវិធីដោយគ្មានការអនុញ្ញាត។</string>
+    <string name="disable_protection_title">បិទការការពារ</string>
+    <string name="disable_protection_message">បិទការបិទ YouTube?</string>
+    <string name="btn_disable">បិទ</string>
+    <string name="allowed_time_setting_title">ការកំណត់ពេលវេលាអនុញ្ញាត</string>
+    <string name="btn_save">រក្សាទុក</string>
+    <string name="btn_timer_reset">កំណត់កម្មវិធីកំណត់ពេលឡើងវិញ</string>
+    <string name="exact_alarm_title">ការកំណត់ដំបូង (5/5) - ត្រូវការការអនុញ្ញាតម៉ោងរោទ៍ច្បាស់លាស់</string>
+    <string name="exact_alarm_message">ត្រូវការការអនុញ្ញាតម៉ោងរោទ៍ច្បាស់លាស់សម្រាប់ប្រតិបត្តិការកម្មវិធីកំណត់ពេលត្រឹមត្រូវ។\nសូមអនុញ្ញាតក្នុងការកំណត់។</string>
+    <string name="btn_go_settings">ទៅការកំណត់</string>
+    <string name="admin_pin_setup_title">ការកំណត់ពាក្យសម្ងាត់អ្នកគ្រប់គ្រង (1/5)</string>
+    <string name="admin_pin_setup_message">អ្នកត្រូវតែកំណត់ពាក្យសម្ងាត់អ្នកគ្រប់គ្រង (PIN) ដើម្បីប្រើកម្មវិធីនេះ។</string>
+    <string name="btn_setup">កំណត់</string>
+    <string name="setup_vpn_title">ការកំណត់ដំបូង (2/5)</string>
+    <string name="setup_vpn_message">សូមអនុញ្ញាត VPN ដើម្បីបិទ YouTube។</string>
+    <string name="setup_accessibility_title">ការកំណត់ដំបូង (3/5)</string>
+    <string name="setup_accessibility_message">សូមបើកសេវាភាពងាយស្រួលសម្រាប់ការបិទកម្មវិធី YouTube។\n\nការកំណត់ → SafeScreen → បើក</string>
+    <string name="setup_device_admin_title">ការកំណត់ដំបូង (4/5)</string>
+    <string name="setup_device_admin_message">សូមបើកអ្នកគ្រប់គ្រងឧបករណ៍សម្រាប់ការការពារការលុប។</string>
+    <string name="setup_complete">ការកំណត់ដំបូងបានបញ្ចប់! ការបិទ YouTube ត្រូវបានបើក។</string>
+    <string name="reset_title">កំណត់ការកំណត់ទាំងអស់ឡើងវិញ</string>
+    <string name="reset_message">ការបិទនឹងត្រូវបានបិទ ហើយ PIN នឹងត្រូវបានលុប។ បន្ត?</string>
+    <string name="btn_reset">កំណត់ឡើងវិញ</string>
+
+    <!-- Menu -->
+    <string name="menu_about">អំពី</string>
+    <string name="menu_reset">កំណត់ការកំណត់ឡើងវិញ</string>
+    <string name="menu_block_log">កំណត់ត្រាការបិទ</string>
+    <string name="menu_timer_log">កំណត់ត្រាកម្មវិធីកំណត់ពេល</string>
+
+    <!-- About -->
+    <string name="about_title">អំពី SafeScreen</string>
+    <string name="about_message">SafeScreen v1.0\n\nវិធីសាស្ត្របិទ YouTube៖\n• ការបិទកម្រិត DNS តាមរយៈ VPN\n• ការរកឃើញកម្មវិធីតាមរយៈសេវាភាពងាយស្រួល\n• ការកំណត់ដែលការពារដោយ PIN\n\nដែនដែលបិទ៖ youtube.com, youtu.be, googlevideo.com, ល។</string>
+
+    <!-- Timer Debug -->
+    <string name="timer_debug_log_title">កំណត់ត្រាបំបាត់កំហុសកម្មវិធីកំណត់ពេល</string>
+
+    <!-- Time picker labels -->
+    <string name="time_label_hours">ម៉ោង</string>
+    <string name="time_label_minutes">នាទី</string>
+
+    <!-- Log Screen -->
+    <string name="log_title">កំណត់ត្រាការបិទ</string>
+    <string name="log_delete_title">លុបកំណត់ត្រា</string>
+    <string name="log_delete_message">លុបកំណត់ត្រាការបិទទាំងអស់?</string>
+    <string name="log_delete_confirm">លុប</string>
+    <string name="log_deleted">កំណត់ត្រាត្រូវបានលុប</string>
+    <string name="log_type_app">បើកកម្មវិធី</string>
+    <string name="log_type_browser">កម្មវិធីរុករក</string>
+    <string name="log_type_kakao_game">ហ្គេម KakaoTalk</string>
+    <string name="log_type_kakao_news">ព័ត៌មាន KakaoTalk</string>
+    <string name="log_empty">គ្មានកំណត់ត្រា</string>
+    <string name="log_read_error">មិនអាចអានកំណត់ត្រាបាន</string>
+</resources>

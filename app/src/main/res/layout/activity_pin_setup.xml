@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="PIN Protection"
+            android:text="@string/pin_protection_title"
             android:textColor="@color/text_primary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:text="Set a PIN to prevent children from disabling protection"
+            android:text="@string/pin_setup_description"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Current PIN"
+            android:hint="@string/hint_current_pin"
             android:visibility="gone"
             app:boxBackgroundColor="@color/card_background"
             app:endIconMode="password_toggle"
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="New PIN (4-8 digits)"
+            android:hint="@string/hint_new_pin"
             app:boxBackgroundColor="@color/card_background"
             app:endIconMode="password_toggle"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:hint="Confirm PIN"
+            android:hint="@string/hint_confirm_pin"
             app:boxBackgroundColor="@color/card_background"
             app:endIconMode="password_toggle"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -106,7 +106,7 @@
             android:id="@+id/btnSetPin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Set PIN"
+            android:text="@string/btn_set_pin"
             android:textSize="16sp"
             app:backgroundTint="@color/primary_blue"
             app:cornerRadius="12dp" />
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="Remember this PIN - it will be required to disable TubeGuard"
+            android:text="@string/pin_remember_note"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 

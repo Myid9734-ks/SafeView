@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:text="접속 차단됨"
+        android:text="@string/blocked_title"
         android:textColor="@color/red_inactive"
         android:textSize="28sp"
         android:textStyle="bold" />
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:gravity="center"
-        android:text="YouTube 접속이 차단되었습니다."
+        android:text="@string/blocked_message_app"
         android:textColor="@color/text_secondary"
         android:textSize="15sp" />
 
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:gravity="center"
-        android:text="TubeGuard가 YouTube 접속을 보호하고 있습니다.\n보호를 해제하려면 TubeGuard 앱에서\nPIN을 입력하세요."
+        android:text="@string/blocked_explanation"
         android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
@@ -58,7 +58,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="@color/primary_blue"
-        android:text="확인"
+        android:text="@string/btn_ok"
         android:textColor="@color/white"
         android:textSize="16sp" />
 

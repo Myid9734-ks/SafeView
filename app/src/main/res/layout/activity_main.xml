@@ -40,7 +40,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TubeGuard"
+                    android:text="SafeScreen"
                     android:textColor="@color/text_primary"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -50,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="보호 비활성화"
+                    android:text="@string/status_not_blocking"
                     android:textColor="@color/red_inactive"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="총 차단 횟수: 0"
+                    android:text="@string/status_not_blocking"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -86,7 +86,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="허용 시간 타이머"
+                    android:text="@string/timer_title"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="허용 시간: 1시간 00분"
+                    android:text="@string/timer_title"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
@@ -107,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="남은 시간: 01:00:00"
+                    android:text="00:00:00"
                     android:textColor="@color/green_active"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -118,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="대기 중"
+                    android:text="@string/timer_status_waiting"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -128,7 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="▶  시작"
+                    android:text="@string/timer_start"
                     android:textSize="16sp"
                     app:backgroundTint="@color/green_active" />
 
@@ -166,7 +166,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="관리자 설정"
+                    android:text="@string/admin_settings"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -213,7 +213,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="YouTube 차단"
+                        android:text="@string/youtube_blocking"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -222,7 +222,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="DNS + 앱 수준 차단"
+                        android:text="@string/dns_app_blocking"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -268,7 +268,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="VPN: 탭하여 권한 허용"
+                    android:text="@string/vpn_permission_needed"
                     android:textColor="@color/red_inactive"
                     android:textSize="14sp" />
 
@@ -313,7 +313,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="접근성: 탭하여 활성화 (필수)"
+                    android:text="@string/accessibility_needed"
                     android:textColor="@color/red_inactive"
                     android:textSize="14sp" />
 
@@ -358,7 +358,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="기기 관리자: 비활성화 - 탭하여 삭제 방지 설정"
+                    android:text="@string/device_admin_inactive"
                     android:textColor="@color/red_inactive"
                     android:textSize="14sp" />
 
@@ -403,7 +403,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="허용 시간 설정"
+                    android:text="@string/allowed_time_setting_title"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
 
@@ -448,7 +448,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="PIN 보호: 미설정 - 탭하여 설정"
+                    android:text="@string/pin_not_set"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
 
@@ -479,7 +479,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="완전한 보호를 위해 모두 활성화하세요:"
+                    android:text="@string/info_title"
                     android:textColor="@color/text_info"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -488,7 +488,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="1. VPN 권한 (DNS 차단)\n2. 접근성 서비스 (YouTube 앱 차단)\n3. 기기 관리자 활성화 (앱 삭제 방지)\n4. PIN 설정 (보호 해제 방지)"
+                    android:text="@string/info_steps"
                     android:textColor="@color/text_info"
                     android:textSize="12sp" />
 
