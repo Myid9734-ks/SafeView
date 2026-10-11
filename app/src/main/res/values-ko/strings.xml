@@ -41,7 +41,18 @@
     <string name="blocked_message_browser_app">브라우저 실행이 차단되었습니다.</string>
     <string name="blocked_message_tiktok">TikTok 앱 실행이 차단되었습니다.</string>
     <string name="blocked_message_kakao_game">카카오톡 게임이 차단되었습니다.</string>
-    <string name="blocked_explanation">SafeScreen가 YouTube 접속을 보호하고 있습니다.\n보호를 해제하려면 SafeScreen 앱에서\nPIN을 입력하세요.</string>
+    <string name="blocked_message_instagram">Instagram 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_facebook">Facebook 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_x">X(Twitter) 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_snapchat">Snapchat 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_twitch">Twitch 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_afreeca">AfreecaTV 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_chzzk">치지직 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_discord">Discord 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_reddit">Reddit 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_pinterest">Pinterest 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_message_bereal">BeReal 앱 실행이 차단되었습니다.</string>
+    <string name="blocked_explanation">SafeScreen이 앱 접속을 차단하고 있습니다.\n보호를 해제하려면 SafeScreen 앱에서\nPIN을 입력하세요.</string>
     <string name="btn_ok">확인</string>
 
     <string name="pin_protection_title">PIN 보호</string>
