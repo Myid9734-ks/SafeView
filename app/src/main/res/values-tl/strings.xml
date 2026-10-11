@@ -48,7 +48,18 @@
     <string name="blocked_message_app">Na-block ang YouTube app.</string>
     <string name="blocked_message_browser">Na-block ang pag-access sa YouTube mula sa browser.</string>
     <string name="blocked_message_kakao_game">Na-block ang KakaoTalk Game.</string>
-    <string name="blocked_explanation">Pinoprotektahan ng SafeScreen ang access sa YouTube.\nPara i-disable ang proteksyon, ilagay ang PIN sa SafeScreen app.</string>
+    <string name="blocked_message_instagram">Na-block ang Instagram app.</string>
+    <string name="blocked_message_facebook">Na-block ang Facebook app.</string>
+    <string name="blocked_message_x">Na-block ang X(Twitter) app.</string>
+    <string name="blocked_message_snapchat">Na-block ang Snapchat app.</string>
+    <string name="blocked_message_twitch">Na-block ang Twitch app.</string>
+    <string name="blocked_message_afreeca">Na-block ang AfreecaTV app.</string>
+    <string name="blocked_message_chzzk">Na-block ang Chzzk app.</string>
+    <string name="blocked_message_discord">Na-block ang Discord app.</string>
+    <string name="blocked_message_reddit">Na-block ang Reddit app.</string>
+    <string name="blocked_message_pinterest">Na-block ang Pinterest app.</string>
+    <string name="blocked_message_bereal">Na-block ang BeReal app.</string>
+    <string name="blocked_explanation">Bino-block ng SafeScreen ang access sa app.\nPara i-disable ang proteksyon, ilagay ang PIN sa SafeScreen app.</string>
     <string name="btn_ok">OK</string>
 
     <!-- PIN Setup Screen -->

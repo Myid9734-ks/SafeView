@@ -48,7 +48,18 @@
     <string name="blocked_message_app">YouTube应用已被屏蔽。</string>
     <string name="blocked_message_browser">浏览器中的YouTube访问已被屏蔽。</string>
     <string name="blocked_message_kakao_game">KakaoTalk游戏已被屏蔽。</string>
-    <string name="blocked_explanation">SafeScreen正在保护YouTube访问。\n要关闭保护，请在SafeScreen应用中输入PIN。</string>
+    <string name="blocked_message_instagram">Instagram应用已被屏蔽。</string>
+    <string name="blocked_message_facebook">Facebook应用已被屏蔽。</string>
+    <string name="blocked_message_x">X(Twitter)应用已被屏蔽。</string>
+    <string name="blocked_message_snapchat">Snapchat应用已被屏蔽。</string>
+    <string name="blocked_message_twitch">Twitch应用已被屏蔽。</string>
+    <string name="blocked_message_afreeca">AfreecaTV应用已被屏蔽。</string>
+    <string name="blocked_message_chzzk">Chzzk应用已被屏蔽。</string>
+    <string name="blocked_message_discord">Discord应用已被屏蔽。</string>
+    <string name="blocked_message_reddit">Reddit应用已被屏蔽。</string>
+    <string name="blocked_message_pinterest">Pinterest应用已被屏蔽。</string>
+    <string name="blocked_message_bereal">BeReal应用已被屏蔽。</string>
+    <string name="blocked_explanation">SafeScreen正在屏蔽应用访问。\n要关闭保护，请在SafeScreen应用中输入PIN。</string>
     <string name="btn_ok">确定</string>
 
     <!-- PIN Setup Screen -->

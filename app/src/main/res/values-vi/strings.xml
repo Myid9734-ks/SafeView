@@ -48,7 +48,18 @@
     <string name="blocked_message_app">Ứng dụng YouTube đã bị chặn.</string>
     <string name="blocked_message_browser">Truy cập YouTube từ trình duyệt đã bị chặn.</string>
     <string name="blocked_message_kakao_game">Trò chơi KakaoTalk đã bị chặn.</string>
-    <string name="blocked_explanation">SafeScreen đang bảo vệ quyền truy cập YouTube.\nĐể tắt bảo vệ, nhập PIN trong ứng dụng SafeScreen.</string>
+    <string name="blocked_message_instagram">Ứng dụng Instagram đã bị chặn.</string>
+    <string name="blocked_message_facebook">Ứng dụng Facebook đã bị chặn.</string>
+    <string name="blocked_message_x">Ứng dụng X(Twitter) đã bị chặn.</string>
+    <string name="blocked_message_snapchat">Ứng dụng Snapchat đã bị chặn.</string>
+    <string name="blocked_message_twitch">Ứng dụng Twitch đã bị chặn.</string>
+    <string name="blocked_message_afreeca">Ứng dụng AfreecaTV đã bị chặn.</string>
+    <string name="blocked_message_chzzk">Ứng dụng Chzzk đã bị chặn.</string>
+    <string name="blocked_message_discord">Ứng dụng Discord đã bị chặn.</string>
+    <string name="blocked_message_reddit">Ứng dụng Reddit đã bị chặn.</string>
+    <string name="blocked_message_pinterest">Ứng dụng Pinterest đã bị chặn.</string>
+    <string name="blocked_message_bereal">Ứng dụng BeReal đã bị chặn.</string>
+    <string name="blocked_explanation">SafeScreen đang chặn quyền truy cập ứng dụng.\nĐể tắt bảo vệ, nhập PIN trong ứng dụng SafeScreen.</string>
     <string name="btn_ok">OK</string>
 
     <!-- PIN Setup Screen -->

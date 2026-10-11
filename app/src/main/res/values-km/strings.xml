@@ -48,7 +48,18 @@
     <string name="blocked_message_app">កម្មវិធី YouTube ត្រូវបានបិទ។</string>
     <string name="blocked_message_browser">ការចូលប្រើ YouTube ពីកម្មវិធីរុករកត្រូវបានបិទ។</string>
     <string name="blocked_message_kakao_game">ហ្គេម KakaoTalk ត្រូវបានបិទ។</string>
-    <string name="blocked_explanation">SafeScreen កំពុងការពារការចូលប្រើ YouTube។\nដើម្បីបិទការការពារ សូមបញ្ចូល PIN ក្នុងកម្មវិធី SafeScreen។</string>
+    <string name="blocked_message_instagram">កម្មវិធី Instagram ត្រូវបានបិទ។</string>
+    <string name="blocked_message_facebook">កម្មវិធី Facebook ត្រូវបានបិទ។</string>
+    <string name="blocked_message_x">កម្មវិធី X(Twitter) ត្រូវបានបិទ។</string>
+    <string name="blocked_message_snapchat">កម្មវិធី Snapchat ត្រូវបានបិទ។</string>
+    <string name="blocked_message_twitch">កម្មវិធី Twitch ត្រូវបានបិទ។</string>
+    <string name="blocked_message_afreeca">កម្មវិធី AfreecaTV ត្រូវបានបិទ។</string>
+    <string name="blocked_message_chzzk">កម្មវិធី Chzzk ត្រូវបានបិទ។</string>
+    <string name="blocked_message_discord">កម្មវិធី Discord ត្រូវបានបិទ។</string>
+    <string name="blocked_message_reddit">កម្មវិធី Reddit ត្រូវបានបិទ។</string>
+    <string name="blocked_message_pinterest">កម្មវិធី Pinterest ត្រូវបានបិទ។</string>
+    <string name="blocked_message_bereal">កម្មវិធី BeReal ត្រូវបានបិទ។</string>
+    <string name="blocked_explanation">SafeScreen កំពុងបិទការចូលប្រើកម្មវិធី។\nដើម្បីបិទការការពារ សូមបញ្ចូល PIN ក្នុងកម្មវិធី SafeScreen។</string>
     <string name="btn_ok">យល់ព្រម</string>
 
     <!-- PIN Setup Screen -->

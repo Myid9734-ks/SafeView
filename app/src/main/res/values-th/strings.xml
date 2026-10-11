@@ -48,7 +48,18 @@
     <string name="blocked_message_app">แอป YouTube ถูกบล็อกแล้ว</string>
     <string name="blocked_message_browser">การเข้าถึง YouTube จากเบราว์เซอร์ถูกบล็อกแล้ว</string>
     <string name="blocked_message_kakao_game">เกม KakaoTalk ถูกบล็อกแล้ว</string>
-    <string name="blocked_explanation">SafeScreen กำลังปกป้องการเข้าถึง YouTube\nหากต้องการปิดการป้องกัน ให้ใส่ PIN ในแอป SafeScreen</string>
+    <string name="blocked_message_instagram">แอป Instagram ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_facebook">แอป Facebook ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_x">แอป X(Twitter) ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_snapchat">แอป Snapchat ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_twitch">แอป Twitch ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_afreeca">แอป AfreecaTV ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_chzzk">แอป Chzzk ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_discord">แอป Discord ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_reddit">แอป Reddit ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_pinterest">แอป Pinterest ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_bereal">แอป BeReal ถูกบล็อกแล้ว</string>
+    <string name="blocked_explanation">SafeScreen กำลังบล็อกการเข้าถึงแอป\nหากต้องการปิดการป้องกัน ให้ใส่ PIN ในแอป SafeScreen</string>
     <string name="btn_ok">ตกลง</string>
 
     <!-- PIN Setup Screen -->

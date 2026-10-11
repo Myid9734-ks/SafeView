@@ -48,7 +48,18 @@
     <string name="blocked_message_app">YouTubeアプリがブロックされました。</string>
     <string name="blocked_message_browser">ブラウザからのYouTubeアクセスがブロックされました。</string>
     <string name="blocked_message_kakao_game">カカオトークのゲームがブロックされました。</string>
-    <string name="blocked_explanation">SafeScreenがYouTubeアクセスを保護しています。\n保護を解除するには、SafeScreenアプリでPINを入力してください。</string>
+    <string name="blocked_message_instagram">Instagramアプリがブロックされました。</string>
+    <string name="blocked_message_facebook">Facebookアプリがブロックされました。</string>
+    <string name="blocked_message_x">X(Twitter)アプリがブロックされました。</string>
+    <string name="blocked_message_snapchat">Snapchatアプリがブロックされました。</string>
+    <string name="blocked_message_twitch">Twitchアプリがブロックされました。</string>
+    <string name="blocked_message_afreeca">AfreecaTVアプリがブロックされました。</string>
+    <string name="blocked_message_chzzk">치지직アプリがブロックされました。</string>
+    <string name="blocked_message_discord">Discordアプリがブロックされました。</string>
+    <string name="blocked_message_reddit">Redditアプリがブロックされました。</string>
+    <string name="blocked_message_pinterest">Pinterestアプリがブロックされました。</string>
+    <string name="blocked_message_bereal">BeRealアプリがブロックされました。</string>
+    <string name="blocked_explanation">SafeScreenがアプリのアクセスをブロックしています。\n保護を解除するには、SafeScreenアプリでPINを入力してください。</string>
     <string name="btn_ok">OK</string>
 
     <!-- PIN Setup Screen -->

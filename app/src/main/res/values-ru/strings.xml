@@ -48,7 +48,18 @@
     <string name="blocked_message_app">Приложение YouTube заблокировано.</string>
     <string name="blocked_message_browser">Доступ к YouTube через браузер заблокирован.</string>
     <string name="blocked_message_kakao_game">Игра KakaoTalk заблокирована.</string>
-    <string name="blocked_explanation">SafeScreen защищает доступ к YouTube.\nЧтобы отключить защиту, введите PIN-код в приложении SafeScreen.</string>
+    <string name="blocked_message_instagram">Приложение Instagram заблокировано.</string>
+    <string name="blocked_message_facebook">Приложение Facebook заблокировано.</string>
+    <string name="blocked_message_x">Приложение X(Twitter) заблокировано.</string>
+    <string name="blocked_message_snapchat">Приложение Snapchat заблокировано.</string>
+    <string name="blocked_message_twitch">Приложение Twitch заблокировано.</string>
+    <string name="blocked_message_afreeca">Приложение AfreecaTV заблокировано.</string>
+    <string name="blocked_message_chzzk">Приложение Chzzk заблокировано.</string>
+    <string name="blocked_message_discord">Приложение Discord заблокировано.</string>
+    <string name="blocked_message_reddit">Приложение Reddit заблокировано.</string>
+    <string name="blocked_message_pinterest">Приложение Pinterest заблокировано.</string>
+    <string name="blocked_message_bereal">Приложение BeReal заблокировано.</string>
+    <string name="blocked_explanation">SafeScreen блокирует доступ к приложению.\nЧтобы отключить защиту, введите PIN-код в приложении SafeScreen.</string>
     <string name="btn_ok">ОК</string>
 
     <!-- PIN Setup Screen -->
