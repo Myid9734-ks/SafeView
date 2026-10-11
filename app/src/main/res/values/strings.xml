@@ -50,6 +50,17 @@
     <string name="blocked_message_browser_app">Browser has been blocked.</string>
     <string name="blocked_message_tiktok">TikTok app has been blocked.</string>
     <string name="blocked_message_kakao_game">KakaoTalk Game has been blocked.</string>
+    <string name="blocked_message_instagram">Instagram app has been blocked.</string>
+    <string name="blocked_message_facebook">Facebook app has been blocked.</string>
+    <string name="blocked_message_x">X (Twitter) app has been blocked.</string>
+    <string name="blocked_message_snapchat">Snapchat app has been blocked.</string>
+    <string name="blocked_message_twitch">Twitch app has been blocked.</string>
+    <string name="blocked_message_afreeca">AfreecaTV app has been blocked.</string>
+    <string name="blocked_message_chzzk">치지직 app has been blocked.</string>
+    <string name="blocked_message_discord">Discord app has been blocked.</string>
+    <string name="blocked_message_reddit">Reddit app has been blocked.</string>
+    <string name="blocked_message_pinterest">Pinterest app has been blocked.</string>
+    <string name="blocked_message_bereal">BeReal app has been blocked.</string>
     <string name="blocked_explanation">SafeScreen is protecting YouTube access.\nTo disable protection, enter PIN in SafeScreen app.</string>
     <string name="btn_ok">OK</string>
 

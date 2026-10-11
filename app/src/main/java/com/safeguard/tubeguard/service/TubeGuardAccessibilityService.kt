@@ -40,6 +40,64 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "com.ss.android.ugc.tiktok.lite"    // TikTok Lite (일부 지역)
         )
 
+        // Instagram 앱 패키지 — 타이머 연동 차단
+        private val INSTAGRAM_PACKAGES = setOf(
+            "com.instagram.android",
+            "com.instagram.lite"
+        )
+
+        // Facebook 앱 패키지 — 타이머 연동 차단
+        private val FACEBOOK_PACKAGES = setOf(
+            "com.facebook.katana",
+            "com.facebook.lite"
+        )
+
+        // X (Twitter) 앱 패키지 — 타이머 연동 차단
+        private val X_PACKAGES = setOf(
+            "com.twitter.android",
+            "com.twitter.android.lite"
+        )
+
+        // Snapchat — 타이머 연동 차단
+        private val SNAPCHAT_PACKAGES = setOf(
+            "com.snapchat.android"
+        )
+
+        // Twitch — 타이머 연동 차단
+        private val TWITCH_PACKAGES = setOf(
+            "tv.twitch.android.app"
+        )
+
+        // AfreecaTV — 타이머 연동 차단
+        private val AFREECA_PACKAGES = setOf(
+            "kr.co.iphone.afreecatv"
+        )
+
+        // 치지직 (Chzzk) — 타이머 연동 차단
+        private val CHZZK_PACKAGES = setOf(
+            "com.naver.chzzk"
+        )
+
+        // Discord — 타이머 연동 차단
+        private val DISCORD_PACKAGES = setOf(
+            "com.discord"
+        )
+
+        // Reddit — 타이머 연동 차단
+        private val REDDIT_PACKAGES = setOf(
+            "com.reddit.frontpage"
+        )
+
+        // Pinterest — 타이머 연동 차단
+        private val PINTEREST_PACKAGES = setOf(
+            "com.pinterest"
+        )
+
+        // BeReal — 타이머 연동 차단
+        private val BEREAL_PACKAGES = setOf(
+            "com.bereal.ft"
+        )
+
         // Browser packages where we also check for YouTube URLs
         private val BROWSER_PACKAGES = setOf(
             "com.android.chrome",
@@ -377,6 +435,39 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         } else if (packageName in TIKTOK_PACKAGES) {
             Log.i(TAG, "TikTok detected in foreground: $packageName")
             blockTikTokApp(packageName)
+        } else if (packageName in INSTAGRAM_PACKAGES) {
+            Log.i(TAG, "Instagram detected in foreground: $packageName")
+            blockInstagramApp(packageName)
+        } else if (packageName in FACEBOOK_PACKAGES) {
+            Log.i(TAG, "Facebook detected in foreground: $packageName")
+            blockFacebookApp(packageName)
+        } else if (packageName in X_PACKAGES) {
+            Log.i(TAG, "X (Twitter) detected in foreground: $packageName")
+            blockXApp(packageName)
+        } else if (packageName in SNAPCHAT_PACKAGES) {
+            Log.i(TAG, "Snapchat detected in foreground: $packageName")
+            blockSnapchatApp(packageName)
+        } else if (packageName in TWITCH_PACKAGES) {
+            Log.i(TAG, "Twitch detected in foreground: $packageName")
+            blockTwitchApp(packageName)
+        } else if (packageName in AFREECA_PACKAGES) {
+            Log.i(TAG, "AfreecaTV detected in foreground: $packageName")
+            blockAfreecaApp(packageName)
+        } else if (packageName in CHZZK_PACKAGES) {
+            Log.i(TAG, "Chzzk detected in foreground: $packageName")
+            blockChzzkApp(packageName)
+        } else if (packageName in DISCORD_PACKAGES) {
+            Log.i(TAG, "Discord detected in foreground: $packageName")
+            blockDiscordApp(packageName)
+        } else if (packageName in REDDIT_PACKAGES) {
+            Log.i(TAG, "Reddit detected in foreground: $packageName")
+            blockRedditApp(packageName)
+        } else if (packageName in PINTEREST_PACKAGES) {
+            Log.i(TAG, "Pinterest detected in foreground: $packageName")
+            blockPinterestApp(packageName)
+        } else if (packageName in BEREAL_PACKAGES) {
+            Log.i(TAG, "BeReal detected in foreground: $packageName")
+            blockBeRealApp(packageName)
         } else if (isBrowser(packageName)) {
             Log.i(TAG, "Browser detected in foreground: $packageName")
             blockBrowserApp(packageName)
@@ -659,6 +750,246 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 Log.i(TAG, "Force stopping TikTok app: $packageName")
                 forceStopViaSettings(packageName)
             }, 1500)
+        }
+    }
+
+    /**
+     * Instagram 앱 차단: 차단 화면 표시 + 강제종료.
+     */
+    private fun blockInstagramApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+
+        lastBlockedPackage = packageName
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Instagram 앱이 실행됨: $packageName")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_INSTAGRAM)
+                }
+                startActivity(intent)
+                Log.i(TAG, "Launched BlockedActivity for Instagram app")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for Instagram: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({
+                Log.i(TAG, "Force stopping Instagram app: $packageName")
+                forceStopViaSettings(packageName)
+            }, 1500)
+        }
+    }
+
+    /**
+     * Facebook 앱 차단: 차단 화면 표시 + 강제종료.
+     */
+    private fun blockFacebookApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+
+        lastBlockedPackage = packageName
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Facebook 앱이 실행됨: $packageName")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_FACEBOOK)
+                }
+                startActivity(intent)
+                Log.i(TAG, "Launched BlockedActivity for Facebook app")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for Facebook: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({
+                Log.i(TAG, "Force stopping Facebook app: $packageName")
+                forceStopViaSettings(packageName)
+            }, 1500)
+        }
+    }
+
+    /**
+     * X (Twitter) 앱 차단: 차단 화면 표시 + 강제종료.
+     */
+    private fun blockXApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+
+        lastBlockedPackage = packageName
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "X(Twitter) 앱이 실행됨: $packageName")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_X)
+                }
+                startActivity(intent)
+                Log.i(TAG, "Launched BlockedActivity for X app")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for X: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({
+                Log.i(TAG, "Force stopping X app: $packageName")
+                forceStopViaSettings(packageName)
+            }, 1500)
+        }
+    }
+
+    private fun blockSnapchatApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Snapchat 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_SNAPCHAT)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockTwitchApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Twitch 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_TWITCH)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockAfreecaApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "AfreecaTV 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_AFREECA)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockChzzkApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "치지직 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_CHZZK)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockDiscordApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Discord 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_DISCORD)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockRedditApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Reddit 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_REDDIT)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockPinterestApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "Pinterest 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_PINTEREST)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
+    private fun blockBeRealApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+        lastBlockedPackage = packageName; lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "BeReal 앱이 실행됨: $packageName")
+        handler.post {
+            try {
+                startActivity(Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_BEREAL)
+                })
+            } catch (e: Exception) { performGlobalAction(GLOBAL_ACTION_HOME) }
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
         }
     }
 

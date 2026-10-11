@@ -61,7 +61,65 @@ class TubeGuardVpnService : VpnService() {
             "tiktokcdn.com",
             "tiktokcdn-us.com",
             "tiktokw.us",
-            "musical.ly"
+            "musical.ly",
+            // Instagram
+            "instagram.com",
+            "www.instagram.com",
+            "cdninstagram.com",
+            "i.instagram.com",
+            "graph.instagram.com",
+            // Facebook
+            "facebook.com",
+            "www.facebook.com",
+            "m.facebook.com",
+            "graph.facebook.com",
+            "connect.facebook.net",
+            // X (Twitter)
+            "x.com",
+            "www.x.com",
+            "twitter.com",
+            "www.twitter.com",
+            "t.co",
+            "api.twitter.com",
+            "upload.twitter.com",
+            // Snapchat
+            "snapchat.com",
+            "www.snapchat.com",
+            "snap.com",
+            "snapkit.com",
+            "sc-cdn.net",
+            // Twitch
+            "twitch.tv",
+            "www.twitch.tv",
+            "twitchapps.com",
+            "jtvnw.net",
+            "twitchsvc.net",
+            // AfreecaTV
+            "afreecatv.com",
+            "www.afreecatv.com",
+            "afreecatv.kr",
+            // 치지직 (Chzzk)
+            "chzzk.naver.com",
+            // Discord
+            "discord.com",
+            "discord.gg",
+            "discordapp.com",
+            "discordapp.net",
+            "cdn.discordapp.com",
+            // Reddit
+            "reddit.com",
+            "www.reddit.com",
+            "redd.it",
+            "redditmedia.com",
+            "reddituploads.com",
+            // Pinterest
+            "pinterest.com",
+            "www.pinterest.com",
+            "pinimg.com",
+            // BeReal
+            "bere.al",
+            "bereal.com",
+            "bereal.network"
         )
 
         // YouTube IP ranges in CIDR notation (stored as prefix/mask pairs for matching)
