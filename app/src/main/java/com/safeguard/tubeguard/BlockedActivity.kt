@@ -38,6 +38,27 @@ class BlockedActivity : Activity() {
         setContentView(R.layout.activity_blocked)
 
         source = intent.getStringExtra(EXTRA_BLOCKED_SOURCE) ?: SOURCE_APP
+
+        findViewById<TextView>(R.id.tvBlockedAppName).text = when (source) {
+            SOURCE_APP -> "YouTube"
+            SOURCE_BROWSER -> "브라우저"
+            SOURCE_BROWSER_APP -> "브라우저"
+            SOURCE_KAKAO_GAME -> "카카오톡 게임"
+            SOURCE_TIKTOK -> "TikTok"
+            SOURCE_INSTAGRAM -> "Instagram"
+            SOURCE_FACEBOOK -> "Facebook"
+            SOURCE_X -> "X (Twitter)"
+            SOURCE_SNAPCHAT -> "Snapchat"
+            SOURCE_TWITCH -> "Twitch"
+            SOURCE_AFREECA -> "AfreecaTV"
+            SOURCE_CHZZK -> "치지직"
+            SOURCE_DISCORD -> "Discord"
+            SOURCE_REDDIT -> "Reddit"
+            SOURCE_PINTEREST -> "Pinterest"
+            SOURCE_BEREAL -> "BeReal"
+            else -> "앱"
+        }
+
         val tvMessage = findViewById<TextView>(R.id.tvBlockedMessage)
 
         tvMessage.text = when (source) {

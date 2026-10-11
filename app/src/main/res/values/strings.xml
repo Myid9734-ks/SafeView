@@ -61,7 +61,7 @@
     <string name="blocked_message_reddit">Reddit app has been blocked.</string>
     <string name="blocked_message_pinterest">Pinterest app has been blocked.</string>
     <string name="blocked_message_bereal">BeReal app has been blocked.</string>
-    <string name="blocked_explanation">SafeScreen is protecting YouTube access.\nTo disable protection, enter PIN in SafeScreen app.</string>
+    <string name="blocked_explanation">SafeScreen이 앱 접속을 차단하고 있습니다.\n보호를 해제하려면 SafeScreen 앱에서\nPIN을 입력하세요.</string>
     <string name="btn_ok">OK</string>
 
     <!-- PIN Setup Screen -->
