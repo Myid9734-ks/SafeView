@@ -53,8 +53,17 @@ object FileLogger {
     private fun appendViaMediaStore(context: Context, text: String) {
         val resolver = context.contentResolver
         val uri = findOrCreateMediaStoreEntry(context) ?: return
-        // "wa" = write-append (Android 10+에서 지원)
-        resolver.openOutputStream(uri, "wa")?.use { it.write(text.toByteArray()) }
+        val size = getMediaStoreSize(context, uri)
+        // 크기 초과 시 "wt"(truncate)로 열어 내용 비운 후 새 로그 기록 (파일 재생성 없이)
+        val mode = if (size > MAX_BYTES) "wt" else "wa"
+        resolver.openOutputStream(uri, mode)?.use { it.write(text.toByteArray()) }
+    }
+
+    private fun getMediaStoreSize(context: Context, uri: android.net.Uri): Long {
+        val projection = arrayOf(MediaStore.Downloads.SIZE)
+        return context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) cursor.getLong(0) else 0L
+        } ?: 0L
     }
 
     private fun readViaMediaStore(context: Context): String? {
@@ -95,15 +104,8 @@ object FileLogger {
         )?.use { cursor ->
             if (cursor.moveToFirst()) {
                 val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID))
-                val size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Downloads.SIZE))
-                if (size > MAX_BYTES) {
-                    resolver.delete(
-                        ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id),
-                        null, null
-                    )
-                } else {
-                    return ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id)
-                }
+                // 크기와 무관하게 기존 항목 재사용 (truncate는 appendViaMediaStore에서 처리)
+                return ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id)
             }
         }
         // 새로 생성

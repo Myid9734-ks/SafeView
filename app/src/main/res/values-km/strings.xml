@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">ការកំណត់ដំបូង (2/5)</string>
     <string name="setup_vpn_message">សូមអនុញ្ញាត VPN ដើម្បីបិទ YouTube។</string>
     <string name="setup_accessibility_title">ការកំណត់ដំបូង (3/5)</string>
-    <string name="setup_accessibility_message">សូមបើកសេវាភាពងាយស្រួលសម្រាប់ការបិទកម្មវិធី YouTube។\n\nការកំណត់ → SafeScreen → បើក</string>
+    <string name="setup_accessibility_message">សូមបើកសេវាភាពងាយស្រួលសម្រាប់ការបិទកម្មវិធី YouTube។\n\nកម្មវិធីដែលបានដំឡើង → SafeScreen-YouTube 차단기 → បើក</string>
     <string name="setup_device_admin_title">ការកំណត់ដំបូង (4/5)</string>
     <string name="setup_device_admin_message">សូមបើកអ្នកគ្រប់គ្រងឧបករណ៍សម្រាប់ការការពារការលុប។</string>
     <string name="setup_complete">ការកំណត់ដំបូងបានបញ្ចប់! ការបិទ YouTube ត្រូវបានបើក។</string>

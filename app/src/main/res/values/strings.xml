@@ -47,6 +47,8 @@
     <string name="blocked_title">Access Blocked</string>
     <string name="blocked_message_app">YouTube app has been blocked.</string>
     <string name="blocked_message_browser">YouTube access from browser has been blocked.</string>
+    <string name="blocked_message_browser_app">Browser has been blocked.</string>
+    <string name="blocked_message_tiktok">TikTok app has been blocked.</string>
     <string name="blocked_message_kakao_game">KakaoTalk Game has been blocked.</string>
     <string name="blocked_explanation">SafeScreen is protecting YouTube access.\nTo disable protection, enter PIN in SafeScreen app.</string>
     <string name="btn_ok">OK</string>
@@ -127,7 +129,7 @@
     <string name="setup_vpn_title">Initial Setup (2/5)</string>
     <string name="setup_vpn_message">Please allow VPN permission to block YouTube.</string>
     <string name="setup_accessibility_title">Initial Setup (3/5)</string>
-    <string name="setup_accessibility_message">Please enable accessibility service for YouTube app blocking.\n\nSettings → SafeScreen → Enable</string>
+    <string name="setup_accessibility_message">Please enable accessibility service for YouTube app blocking.\n\nInstalled apps → SafeScreen-YouTube Blocker → Enable</string>
     <string name="setup_device_admin_title">Initial Setup (4/5)</string>
     <string name="setup_device_admin_message">Please enable device admin for uninstall protection.</string>
     <string name="setup_complete">Initial setup is complete! YouTube blocking is activated.</string>

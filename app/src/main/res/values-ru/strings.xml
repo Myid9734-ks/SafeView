@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">Начальная настройка (2/5)</string>
     <string name="setup_vpn_message">Пожалуйста, разрешите VPN для блокировки YouTube.</string>
     <string name="setup_accessibility_title">Начальная настройка (3/5)</string>
-    <string name="setup_accessibility_message">Пожалуйста, включите службу специальных возможностей для блокировки приложения YouTube.\n\nНастройки → SafeScreen → Включить</string>
+    <string name="setup_accessibility_message">Пожалуйста, включите службу специальных возможностей для блокировки приложения YouTube.\n\nУстановленные приложения → SafeScreen-YouTube Blocker → Включить</string>
     <string name="setup_device_admin_title">Начальная настройка (4/5)</string>
     <string name="setup_device_admin_message">Пожалуйста, включите администратора устройства для защиты от удаления.</string>
     <string name="setup_complete">Начальная настройка завершена! Блокировка YouTube активирована.</string>

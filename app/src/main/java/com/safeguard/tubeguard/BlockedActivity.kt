@@ -14,7 +14,9 @@ class BlockedActivity : Activity() {
         const val EXTRA_BLOCKED_SOURCE = "blocked_source"
         const val SOURCE_APP = "app"
         const val SOURCE_BROWSER = "browser"
+        const val SOURCE_BROWSER_APP = "browser_app"
         const val SOURCE_KAKAO_GAME = "kakao_game"
+        const val SOURCE_TIKTOK = "tiktok"
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -29,7 +31,9 @@ class BlockedActivity : Activity() {
 
         tvMessage.text = when (source) {
             SOURCE_BROWSER -> getString(R.string.blocked_message_browser)
+            SOURCE_BROWSER_APP -> getString(R.string.blocked_message_browser_app)
             SOURCE_KAKAO_GAME -> getString(R.string.blocked_message_kakao_game)
+            SOURCE_TIKTOK -> getString(R.string.blocked_message_tiktok)
             else -> getString(R.string.blocked_message_app)
         }
 

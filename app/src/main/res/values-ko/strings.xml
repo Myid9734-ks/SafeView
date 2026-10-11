@@ -38,6 +38,8 @@
     <string name="blocked_title">접속 차단됨</string>
     <string name="blocked_message_app">YouTube 앱 실행이 차단되었습니다.</string>
     <string name="blocked_message_browser">브라우저에서 YouTube 접속이 차단되었습니다.</string>
+    <string name="blocked_message_browser_app">브라우저 실행이 차단되었습니다.</string>
+    <string name="blocked_message_tiktok">TikTok 앱 실행이 차단되었습니다.</string>
     <string name="blocked_message_kakao_game">카카오톡 게임이 차단되었습니다.</string>
     <string name="blocked_explanation">SafeScreen가 YouTube 접속을 보호하고 있습니다.\n보호를 해제하려면 SafeScreen 앱에서\nPIN을 입력하세요.</string>
     <string name="btn_ok">확인</string>
@@ -113,7 +115,7 @@
     <string name="setup_vpn_title">초기 설정 (2/5)</string>
     <string name="setup_vpn_message">YouTube 차단을 위해 VPN 권한을 허용해 주세요.</string>
     <string name="setup_accessibility_title">초기 설정 (3/5)</string>
-    <string name="setup_accessibility_message">YouTube 앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설정 → SafeScreen → 활성화</string>
+    <string name="setup_accessibility_message">YouTube 앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설치된 앱 → SafeScreen-YouTube 차단기 → 활성화</string>
     <string name="setup_device_admin_title">초기 설정 (4/5)</string>
     <string name="setup_device_admin_message">앱 삭제 방지를 위해 기기 관리자를 활성화해 주세요.</string>
     <string name="setup_complete">초기 설정이 완료되었습니다! YouTube 차단이 활성화됩니다.</string>

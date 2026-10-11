@@ -12,9 +12,12 @@ import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.safeguard.tubeguard.BlockedActivity
 import com.safeguard.tubeguard.PinVerifyActivity
+import com.safeguard.tubeguard.util.FileLogger
+import com.safeguard.tubeguard.util.PinManager
 import com.safeguard.tubeguard.util.PrefsManager
 
 class TubeGuardAccessibilityService : AccessibilityService() {
@@ -29,6 +32,14 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "com.google.android.apps.youtube.music"
         )
 
+        // TikTok 앱 패키지 (지역별 빌드 + Lite) — 타이머 연동 차단
+        private val TIKTOK_PACKAGES = setOf(
+            "com.zhiliaoapp.musically",         // TikTok (글로벌)
+            "com.ss.android.ugc.trill",         // TikTok (아시아 지역)
+            "com.zhiliaoapp.musically.go",      // TikTok Lite
+            "com.ss.android.ugc.tiktok.lite"    // TikTok Lite (일부 지역)
+        )
+
         // Browser packages where we also check for YouTube URLs
         private val BROWSER_PACKAGES = setOf(
             "com.android.chrome",
@@ -37,7 +48,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "com.opera.browser",
             "com.brave.browser",
             "com.sec.android.app.sbrowser",
-            "com.UCMobile.intl"
+            "com.UCMobile.intl",
+            // 검색 앱도 웹 페이지를 열 수 있으므로 브라우저로 취급
+            "com.google.android.googlequicksearchbox",  // Google 앱
+            "com.google.android.apps.searchlite",       // Google Go
+            "com.nhn.android.search",                   // 네이버
+            "com.naver.whale",                          // 웨일
+            "net.daum.android.daum"                     // 다음
         )
 
         // URL bar resource IDs in browsers
@@ -55,6 +72,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "youtube.com",
             "youtu.be",
             "youtube-nocookie.com"
+        )
+
+        // 카카오톡 인앱 브라우저에서 차단할 TikTok URL 키워드
+        // (브랜드 텍스트는 뉴스 기사 등에도 등장해 오탐이 생기므로 URL로만 판별)
+        private val TIKTOK_URL_KEYWORDS = listOf(
+            "tiktok.com",
+            "tiktokv.com"
         )
 
         // KakaoTalk game tab blocking
@@ -87,6 +111,19 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "피드"
         )
 
+        // 소식 피드 게시물에만 있는 버튼 뷰 ID (uiautomator dump로 확인)
+        private val KAKAO_NEWS_FEED_VIEW_IDS = listOf(
+            "like_container", "comment_container", "bookmark_container"
+        )
+
+        // 친구 프로필을 눌러 들어가는 피드 화면 (소식과 같은 게시물 피드)
+        private const val KAKAO_PROFILE_FEED_CLASS = "ProfileFeedActivity"
+
+        // 숏폼탭 차단 (탭 선택 상태로만 판별 — 칩 텍스트는 다른 탭과 겹쳐 오탐 발생)
+
+        // 채팅탭 상단 "ChatGPT" 버튼 → 별도 Activity(com.kakao.talk.chatgpt.komi.ChatGptWebActivity)로 열림
+        private const val KAKAO_CHATGPT_CLASS_KEYWORD = ".chatgpt."
+
         const val ACTION_FORCE_BLOCK_NOW = "com.safeguard.tubeguard.FORCE_BLOCK_NOW"
 
         // Settings screens that can deactivate device admin or force-stop the app
@@ -96,12 +133,42 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "com.android.settings.applications.InstalledAppDetailsTop"
         )
         private const val SETTINGS_PACKAGE = "com.android.settings"
+
+        // 앱 스토어: 타이머(isBlocking)와 무관하게 항상 PIN 입력 후에만 접속 허용
+        private val STORE_PACKAGES = setOf(
+            "com.android.vending",               // Google Play 스토어
+            "com.sec.android.app.samsungapps"    // Galaxy Store
+        )
+        // 스토어 사용 중 잠깐 앞에 뜨는 패키지 — 이 패키지로 전환돼도 "스토어를 떠난 것"으로 보지 않음
+        private val STORE_TRANSIENT_PACKAGES = setOf(
+            "android",                            // 시스템 대화상자
+            "com.android.systemui",
+            "com.google.android.gms",             // Google 로그인/결제
+            "com.osp.app.signin",                 // 삼성 계정 로그인
+            "com.samsung.android.mobileservice"
+        )
+
+        // PIN 인증으로 잠금 해제된 스토어 패키지. 다른 앱으로 이동하면 다시 잠김.
+        @Volatile
+        var unlockedStorePackage: String? = null
     }
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var prefsManager: PrefsManager
     private var kakaoNewsTabLastCheckedAt: Long = 0L
     private var kakaoNewsTabClickBlockedAt: Long = 0L  // 클릭 차단 전용 cooldown
+    // 소식 차단(강제종료) 후 카카오톡 재실행 시 마지막 화면(소식 피드)이 복원됨
+    // → 재실행 직후 1회는 차단 대신 친구탭으로 이동시키기 위한 상태
+    // 재부팅/서비스 재시작 후에도 카카오톡은 소식 피드를 복원하므로 디스크에 저장
+    private var kakaoNewsRestorePending: Boolean
+        get() = getSharedPreferences("kakao_state", MODE_PRIVATE).getBoolean("news_restore_pending", false)
+        set(value) {
+            getSharedPreferences("kakao_state", MODE_PRIVATE).edit().putBoolean("news_restore_pending", value).apply()
+        }
+    private var kakaoRelaunchedAt: Long = 0L
+    private var kakaoShortformTabLastCheckedAt: Long = 0L
+    private var kakaoShortformTabClickBlockedAt: Long = 0L
+    private var kakaoProfileFeedBlockedAt: Long = 0L
 
     private val forceBlockReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -129,6 +196,11 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     // InAppBrowserActivity가 마지막으로 감지된 시각.
     // currentKakaoClass가 stale해져도 최근에 열렸으면 YouTube 체크를 수행하기 위함.
     private var kakaoInAppBrowserLastSeenAt: Long = 0L
+    // 기기에 설치된 브라우저 (http 링크를 여는 앱) — 차단 모드에서 실행 자체를 차단
+    private var installedBrowsers: Set<String> = emptySet()
+    private var installedBrowsersRefreshedAt: Long = 0L
+    private var browserCheckPending: Boolean = false
+    private var storePinPromptedAt: Long = 0L
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -137,6 +209,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(forceBlockReceiver, IntentFilter(ACTION_FORCE_BLOCK_NOW))
         startKakaoGameWatcher()
+        refreshInstalledBrowsers()
 
         // Configure service info programmatically as a fallback
         val info = serviceInfo
@@ -162,12 +235,19 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             currentKakaoClass = event.className?.toString() ?: ""
         }
 
+        // 스토어 잠금은 타이머와 무관하게 항상 적용
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            handleStoreGate(packageName)
+        }
+
         if (!prefsManager.isBlocking) {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 when {
                     packageName in YOUTUBE_PACKAGES ->
                         Log.w(TAG, "YouTube foreground but isBlocking=FALSE — skipping ($packageName)")
-                    packageName in BROWSER_PACKAGES ->
+                    packageName in TIKTOK_PACKAGES ->
+                        Log.w(TAG, "TikTok foreground but isBlocking=FALSE — skipping ($packageName)")
+                    isBrowser(packageName) ->
                         Log.w(TAG, "Browser foreground but isBlocking=FALSE — skipping ($packageName)")
                     packageName == KAKAO_PACKAGE ->
                         Log.w(TAG, "KakaoTalk foreground but isBlocking=FALSE — skipping class=${event.className}")
@@ -180,17 +260,33 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
                 if (packageName == KAKAO_PACKAGE) {
                     Log.d(TAG, "Kakao STATE_CHANGED class=${event.className}")
+                    if (event.className?.toString()?.contains(KAKAO_PROFILE_FEED_CLASS) == true) {
+                        blockKakaoProfileFeed()
+                    }
+                    if (event.className?.toString()?.contains(KAKAO_CHATGPT_CLASS_KEYWORD) == true) {
+                        blockKakaoChatGpt()
+                    }
+                    // 클릭 이벤트 없이(알림 등으로) ChatGPT for Kakao 채팅방이 열린 경우
+                    if (event.className?.toString()?.contains("ChatRoom") == true) {
+                        handler.postDelayed({ checkKakaoChatGptRoom() }, 400)
+                    }
                 }
                 handleWindowStateChanged(packageName, event)
             }
             AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
-                if (packageName in BROWSER_PACKAGES) {
-                    handleBrowserContentChanged(packageName, event)
+                if (isBrowser(packageName)) {
+                    // 차단 시작 시점에 이미 브라우저가 열려 있던 경우 대비
+                    blockBrowserApp(packageName)
                 } else if (packageName == KAKAO_PACKAGE) {
                     val now = System.currentTimeMillis()
                     if (now - kakaoNewsTabLastCheckedAt > 600L) {
                         kakaoNewsTabLastCheckedAt = now
                         handler.postDelayed({ checkKakaoNewsTabActive() }, 200)
+                    }
+                    if (now - kakaoShortformTabLastCheckedAt > 600L) {
+                        kakaoShortformTabLastCheckedAt = now
+                        handler.postDelayed({ checkKakaoShortformTabActive() }, 200)
+                        handler.postDelayed({ checkKakaoChatGptContent() }, 200)
                     }
                 }
             }
@@ -200,6 +296,11 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                     val contentDesc = event.contentDescription?.toString()?.trim() ?: ""
                     Log.d(TAG, "Kakao CLICK text='$clickedText' desc='$contentDesc' class=${event.className} | " +
                         "currentClass=$currentKakaoClass | prev=$previousKakaoClass")
+                    FileLogger.log(this, TAG, "Kakao CLICK text='$clickedText' desc='$contentDesc' " +
+                        "class=${event.className} src='${sourceText(event).take(80)}'")
+                    // 클릭 이벤트 정보만으로 판별이 안 되는 경우 대비: 화면 전환 후 소식탭 상태 재확인
+                    handler.postDelayed({ checkKakaoNewsTabActive() }, 500)
+                    handler.postDelayed({ checkKakaoNewsTabActive() }, 1200)
                     // 탭 버튼은 라벨 텍스트가 정확히 "게임" — 채팅 메시지 클릭과 구별
                     if (clickedText == "소식" || contentDesc.contains("소식")) {
                         val now = System.currentTimeMillis()
@@ -208,6 +309,34 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                             Log.w(TAG, "KakaoTalk news tab CLICKED — force stopping")
                             blockKakaoNewsTab()
                         }
+                    }
+                    // 업데이트한 친구 섹션의 "더보기" → 소식탭으로 연결됨
+                    if ((clickedText == "더보기" || contentDesc == "더보기") &&
+                        (currentKakaoClass.contains("MainActivity") || currentKakaoClass.contains("TaskRootActivity"))) {
+                        val now = System.currentTimeMillis()
+                        if (now - kakaoNewsTabClickBlockedAt > 300L) {
+                            kakaoNewsTabClickBlockedAt = now
+                            Log.w(TAG, "KakaoTalk 업데이트한 친구 더보기 CLICKED (→소식탭) — blocking")
+                            blockKakaoNewsTab()
+                        }
+                    }
+                    // 업데이트 프로필 섹션의 "소식보기" (→ 소식탭으로 연결됨)
+                    // 화살표 아이콘만 눌린 경우 event.text가 비어 있으므로 클릭된 노드 하위도 확인
+                    if (clickedText.contains("소식보기") || contentDesc.contains("소식보기") ||
+                        sourceContainsText(event, "소식보기")) {
+                        val now = System.currentTimeMillis()
+                        if (now - kakaoNewsTabClickBlockedAt > 300L) {
+                            kakaoNewsTabClickBlockedAt = now
+                            Log.w(TAG, "KakaoTalk 소식보기 CLICKED (→소식탭) — blocking")
+                            blockKakaoNewsTab()
+                        }
+                    }
+                    // 채팅탭 상단 "ChatGPT" 버튼 클릭 (채팅방 이름 "ChatGPT for Kakao"와는 정확히 일치하지 않음)
+                    // 채팅 목록의 "ChatGPT for Kakao" 채팅방 클릭도 동일하게 차단
+                    if (clickedText == "ChatGPT" || contentDesc == "ChatGPT" ||
+                        clickedText.startsWith("ChatGPT for Kakao") || contentDesc.startsWith("ChatGPT for Kakao")) {
+                        Log.w(TAG, "KakaoTalk ChatGPT tab CLICKED — blocking")
+                        blockKakaoChatGpt()
                     }
                     // 하단 "친구 탭" 클릭 시 → 소식 서브탭이 열려있을 수 있으므로
                     // 600ms 후 강제로 친구 서브탭 선택
@@ -227,6 +356,15 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                         Log.w(TAG, "KakaoTalk chat game link CLICKED ('$clickedText') — blocking")
                         blockKakaoGameTab()
                     }
+                    // 하단 "지금 탭" (숏폼+오픈채팅) 클릭 감지
+                    if (clickedText == "숏폼" || contentDesc.contains("지금 탭")) {
+                        val now = System.currentTimeMillis()
+                        if (now - kakaoShortformTabClickBlockedAt > 300L) {
+                            kakaoShortformTabClickBlockedAt = now
+                            Log.w(TAG, "KakaoTalk shortform tab CLICKED — blocking")
+                            blockKakaoShortformTab()
+                        }
+                    }
                 }
             }
         }
@@ -236,10 +374,12 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         if (packageName in YOUTUBE_PACKAGES) {
             Log.i(TAG, "YouTube detected in foreground: $packageName")
             blockYouTubeApp(packageName)
-        } else if (packageName in BROWSER_PACKAGES) {
-            handler.postDelayed({
-                checkBrowserForYouTube(packageName)
-            }, 300)
+        } else if (packageName in TIKTOK_PACKAGES) {
+            Log.i(TAG, "TikTok detected in foreground: $packageName")
+            blockTikTokApp(packageName)
+        } else if (isBrowser(packageName)) {
+            Log.i(TAG, "Browser detected in foreground: $packageName")
+            blockBrowserApp(packageName)
         } else if (packageName == KAKAO_PACKAGE) {
             val className = event.className?.toString() ?: ""
             currentKakaoClass = className
@@ -286,8 +426,15 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                     }
                 }
             }
-            // 소식탭 자동전환 감지: 강제종료 후 재시작 포함 모든 화면 전환 시 체크
+            // 소식 차단 후 강제종료가 끝난 뒤 처음 들어온 카카오톡 화면 = 재실행 시점
+            if (kakaoNewsRestorePending && kakaoRelaunchedAt == 0L && !isForceStopSettingsOpen &&
+                System.currentTimeMillis() - kakaoLastKilledAt > 2500L) {
+                kakaoRelaunchedAt = System.currentTimeMillis()
+                Log.i(TAG, "KakaoTalk relaunched after news block — restored 소식 feed will be redirected")
+            }
+            // 소식탭/숏폼탭 자동전환 감지: 강제종료 후 재시작 포함 모든 화면 전환 시 체크
             handler.postDelayed({ checkKakaoNewsTabActive() }, 400)
+            handler.postDelayed({ checkKakaoShortformTabActive() }, 450)
             // MainActivity/TaskRootActivity 진입 시 친구 서브탭 강제 선택
             if (className.contains("MainActivity") || className.contains("TaskRootActivity")) {
                 handler.postDelayed({ forceSelectFriendSubTab() }, 700)
@@ -296,6 +443,57 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         } else if (packageName == SETTINGS_PACKAGE) {
             val className = event.className?.toString() ?: ""
             handleSettingsScreen(className)
+        }
+    }
+
+    /**
+     * 스토어 진입 시 PIN 요구. PIN 인증 후에는 다른 앱으로 이동할 때까지 허용.
+     */
+    private fun handleStoreGate(packageName: String) {
+        if (packageName in STORE_PACKAGES) {
+            if (unlockedStorePackage == packageName) return
+            unlockedStorePackage = null
+            promptStorePin(packageName)
+        } else if (unlockedStorePackage != null && !isStoreTransientPackage(packageName)) {
+            Log.i(TAG, "Left store ($unlockedStorePackage → $packageName) — relocking")
+            unlockedStorePackage = null
+        }
+    }
+
+    private fun isStoreTransientPackage(packageName: String): Boolean {
+        if (packageName == this.packageName || packageName in STORE_TRANSIENT_PACKAGES) return true
+        // 키보드(IME) 윈도우도 스토어 사용 중 뜨므로 제외
+        return try {
+            val imm = getSystemService(InputMethodManager::class.java)
+            imm?.enabledInputMethodList?.any { it.packageName == packageName } == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun promptStorePin(packageName: String) {
+        if (!PinManager(this).hasPin()) {
+            Log.w(TAG, "Store opened ($packageName) but no PIN set — allowing")
+            return
+        }
+        val now = System.currentTimeMillis()
+        if (now - storePinPromptedAt < 1500L) return
+        storePinPromptedAt = now
+
+        Log.i(TAG, "Store opened ($packageName) — requiring PIN")
+        prefsManager.addBlockLog("스토어", "스토어 실행 → 비밀번호 요청: $packageName")
+        handler.post {
+            try {
+                val intent = Intent(this, PinVerifyActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(PinVerifyActivity.EXTRA_PURPOSE, PinVerifyActivity.PURPOSE_STORE_UNLOCK)
+                    putExtra(PinVerifyActivity.EXTRA_TARGET_PACKAGE, packageName)
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch PIN screen for store: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
         }
     }
 
@@ -338,7 +536,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     }
 
     private fun extractAllText(node: AccessibilityNodeInfo?, depth: Int = 0): String {
-        if (node == null || depth > 5) return ""
+        if (node == null || depth > 8) return ""
         val sb = StringBuilder()
         node.text?.let { sb.append(it) }
         node.contentDescription?.let { sb.append(it) }
@@ -432,6 +630,38 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         handler.postDelayed({ dismissYouTubeFromRecents() }, 800)
     }
 
+    /**
+     * TikTok 앱 차단: 차단 화면 표시 + 강제종료 (영상 재생 중단).
+     */
+    private fun blockTikTokApp(packageName: String) {
+        val now = System.currentTimeMillis()
+        if (packageName == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        if (isForceStopSettingsOpen) return
+
+        lastBlockedPackage = packageName
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("앱 실행", "TikTok 앱이 실행됨: $packageName")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_TIKTOK)
+                }
+                startActivity(intent)
+                Log.i(TAG, "Launched BlockedActivity for TikTok app")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for TikTok: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({
+                Log.i(TAG, "Force stopping TikTok app: $packageName")
+                forceStopViaSettings(packageName)
+            }, 1500)
+        }
+    }
+
     private fun dismissYouTubeFromRecents() {
         try {
             performGlobalAction(GLOBAL_ACTION_RECENTS)
@@ -508,6 +738,86 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         handler.postDelayed({ performGlobalAction(GLOBAL_ACTION_BACK) }, 500)
     }
 
+    private fun isBrowser(packageName: String): Boolean {
+        if (packageName in BROWSER_PACKAGES) return true
+        // 새 브라우저 설치 대비: 10분마다 목록 갱신
+        if (System.currentTimeMillis() - installedBrowsersRefreshedAt > 10 * 60 * 1000L) {
+            refreshInstalledBrowsers()
+        }
+        return packageName in installedBrowsers
+    }
+
+    /** 임의의 http/https 링크를 열 수 있는 앱 = 브라우저로 간주 (특정 도메인 전용 앱은 매칭되지 않음) */
+    private fun refreshInstalledBrowsers() {
+        installedBrowsersRefreshedAt = System.currentTimeMillis()
+        try {
+            val result = mutableSetOf<String>()
+            for (scheme in listOf("http", "https")) {
+                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("$scheme://www.example.com"))
+                    .addCategory(Intent.CATEGORY_BROWSABLE)
+                packageManager.queryIntentActivities(intent, android.content.pm.PackageManager.MATCH_ALL)
+                    .mapTo(result) { it.activityInfo.packageName }
+            }
+            result.remove(packageName) // 자기 자신
+            result.remove(KAKAO_PACKAGE)
+            result.removeAll(YOUTUBE_PACKAGES)
+            result.removeAll(TIKTOK_PACKAGES)
+            installedBrowsers = result
+            Log.i(TAG, "Installed browsers: $result")
+            FileLogger.log(this, TAG, "브라우저 목록: $result")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to query installed browsers: ${e.message}")
+        }
+    }
+
+    /** 차단 모드에서 브라우저 실행 차단: 차단 화면 표시 + 강제종료 */
+    private fun blockBrowserApp(packageName: String, verified: Boolean = false) {
+        val now = System.currentTimeMillis()
+        // 강제종료(설정 화면 조작)가 끝날 때까지 중복 실행 방지
+        if (packageName == lastBlockedPackage && now - lastBlockTime < 5000L) return
+        if (isForceStopSettingsOpen) return
+
+        // Google 앱 등은 강제종료 직후 백그라운드 서비스/위젯이 재시작되며 이벤트를 보냄
+        // → 실제 포그라운드(활성 윈도우)일 때만 차단해야 무한 차단 루프가 생기지 않음
+        if (!verified) {
+            if (browserCheckPending) return
+            browserCheckPending = true
+            handler.postDelayed({
+                browserCheckPending = false
+                blockBrowserApp(packageName, verified = true)
+            }, 300)
+            return
+        }
+        val activeRoot = rootInActiveWindow
+        val activePackage = activeRoot?.packageName?.toString()
+        try { activeRoot?.recycle() } catch (ignored: Exception) {}
+        if (activePackage != packageName) {
+            Log.d(TAG, "blockBrowserApp skipped — $packageName not in foreground (active=$activePackage)")
+            return
+        }
+
+        Log.w(TAG, "blockBrowserApp TRIGGERED — $packageName")
+        lastBlockedPackage = packageName
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("브라우저", "브라우저 실행 차단: $packageName")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_BROWSER_APP)
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for browser: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            // 브라우저 프로세스 강제종료 (백그라운드 영상/음악 재생 중단)
+            handler.postDelayed({ forceStopViaSettings(packageName) }, 1500)
+        }
+    }
+
     /**
      * 카카오톡 게임탭이 활성화되어 있는지 콘텐츠 노드 트리로 확인.
      * 1순위: "다양한 인기 게임" 텍스트 존재 → 즉시 차단
@@ -573,17 +883,56 @@ class TubeGuardAccessibilityService : AccessibilityService() {
      */
     private fun checkKakaoNewsTabActive() {
         if (!prefsManager.isBlocking) return
-        val root = rootInActiveWindow ?: return
-        try {
-            if (root.packageName?.toString() != KAKAO_PACKAGE) return
-            // 1순위: 탭 선택 상태로 판별
-            if (isNewsTabSelected(root)) {
-                Log.i(TAG, "KakaoTalk 소식 tab: isSelected=true — auto-switch detected")
+        // 프로필 피드 화면이 (복원 등으로) 떠 있는 경우도 차단
+        if (currentKakaoClass.contains(KAKAO_PROFILE_FEED_CLASS)) {
+            blockKakaoProfileFeed()
+            return
+        }
+        // 1순위: 탭 선택 상태로 판별 — 서브탭이 활성 윈도우가 아닐 수 있으므로 카카오 윈도우 전체 탐색
+        val kakaoRoots = try {
+            windows?.mapNotNull { it.root }?.filter { it.packageName?.toString() == KAKAO_PACKAGE }
+        } catch (e: Exception) { null }
+        if (!kakaoRoots.isNullOrEmpty()) {
+            val newsSelected = kakaoRoots.any { isNewsTabSelected(it) }
+            // "소식보기" 등으로 전환되면 클릭 이벤트도, 칩 선택 상태(checked/selected)도 오지 않음
+            // → 소식 피드에만 있는 뷰 ID(좋아요/댓글/북마크 버튼)가 보이는지로 판별
+            val feedVisible = !newsSelected && kakaoRoots.any { isNewsFeedVisible(it) }
+            kakaoRoots.forEach { try { it.recycle() } catch (ignored: Exception) {} }
+            if (feedVisible) {
+                val now = System.currentTimeMillis()
+                // 차단 후 재실행 직후(5초 이내)에 보이는 소식 피드 = 카카오톡이 복원한 화면 → 친구탭으로 이동
+                if (kakaoNewsRestorePending && kakaoRelaunchedAt != 0L && now - kakaoRelaunchedAt < 5000L) {
+                    kakaoNewsRestorePending = false
+                    kakaoRelaunchedAt = 0L
+                    // 친구탭으로 넘어가기 전 직후 재감지로 차단되지 않도록 3초 차단 가드 적용
+                    kakaoNewsTabClickBlockedAt = now
+                    Log.i(TAG, "Restored 소식 feed after relaunch — redirecting to 친구 tab")
+                    FileLogger.log(this, TAG, "재실행 시 복원된 소식 피드 → 친구탭으로 이동")
+                    redirectKakaoNewsTab()
+                    return
+                }
+                // "소식보기"로 들어온 소식 피드 → 소식탭 클릭과 동일하게 차단 + 강제종료
+                // 강제종료가 끝나기 전(~3초) 반복 감지로 차단이 여러 번 실행되지 않게 함
+                if (now - kakaoNewsTabClickBlockedAt < 3000L) return
+                kakaoNewsTabClickBlockedAt = now
+                Log.i(TAG, "KakaoTalk 소식 feed detected (소식보기) — blocking")
+                FileLogger.log(this, TAG, "소식 피드 감지 (소식보기) → 차단")
+                blockKakaoNewsTab()
+                return
+            }
+            if (newsSelected) {
+                Log.i(TAG, "KakaoTalk 소식 tab detected (selected=true)")
+                FileLogger.log(this, TAG, "소식 화면 감지 (selected=true) → 친구탭으로 이동")
                 redirectKakaoNewsTab()
                 return
             }
+        }
+        val root = rootInActiveWindow ?: return
+        try {
+            if (root.packageName?.toString() != KAKAO_PACKAGE) return
             // 2순위: 소식탭 고유 텍스트로 판별
             val allText = extractAllText(root)
+            Log.d(TAG, "checkKakaoNews allText(500)=${allText.take(500)}")
             val matched = KAKAO_NEWS_TAB_UNIQUE_TEXTS.firstOrNull { allText.contains(it) }
             if (matched != null) {
                 Log.i(TAG, "KakaoTalk 소식 tab detected via text: '$matched'")
@@ -597,15 +946,203 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     }
 
     /**
+     * 숏폼탭이 현재 활성화되어 있는지 확인.
+     * 1순위: "숏폼" 탭 노드가 isChecked/isSelected=true
+     * 2순위: 숏폼탭 고유 텍스트 또는 필터 칩 2개 이상 감지
+     */
+    private fun checkKakaoShortformTabActive() {
+        if (!prefsManager.isBlocking) return
+        // 채팅방 안에서는 하단 탭 상태가 stale하게 남아 오탐 발생 → 스킵
+        if (currentKakaoClass.contains("ChatRoom") || currentKakaoClass.contains("Chat")) return
+        val root = rootInActiveWindow ?: return
+        try {
+            if (root.packageName?.toString() != KAKAO_PACKAGE) return
+            // 탭 선택 상태로만 판별 (칩 텍스트 감지는 오탐 발생으로 제거)
+            if (isShortformTabSelected(root)) {
+                Log.i(TAG, "KakaoTalk 지금 tab: isSelected=true — redirecting to 채팅 tab")
+                redirectKakaoShortformTab()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking KakaoTalk shortform tab: ${e.message}")
+        } finally {
+            try { root.recycle() } catch (ignored: Exception) {}
+        }
+    }
+
+    /**
+     * 노드 트리를 순회하며 "숏폼" 탭이 활성화됐는지 확인.
+     */
+    private fun isShortformTabSelected(node: AccessibilityNodeInfo?, depth: Int = 0): Boolean {
+        if (node == null || depth > 8) return false
+        val text = node.text?.toString() ?: ""
+        val desc = node.contentDescription?.toString() ?: ""
+        // 실제 탭 이름은 "지금 탭" (description: "지금 탭, 숏폼과 오픈채팅을 포함합니다.")
+        val isShortformTab = text == "지금" || desc.contains("지금 탭")
+        if (isShortformTab && (node.isChecked || node.isSelected)) return true
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val found = isShortformTabSelected(child, depth + 1)
+            try { child.recycle() } catch (ignored: Exception) {}
+            if (found) return true
+        }
+        return false
+    }
+
+    /** 자동 감지 시(앱 재실행 등): 강제종료 없이 채팅탭으로 이동 */
+    private fun redirectKakaoShortformTab() {
+        val now = System.currentTimeMillis()
+        if (KAKAO_PACKAGE == lastBlockedPackage && now - lastBlockTime < 800L) return
+        Log.w(TAG, "redirectKakaoShortformTab: auto-detected — navigating to 채팅 tab")
+        lastBlockedPackage = KAKAO_PACKAGE
+        lastBlockTime = now
+        prefsManager.addBlockLog("카카오톡 지금", "지금탭 자동전환 감지 → 채팅탭으로 이동")
+        handler.post {
+            val root = rootInActiveWindow ?: return@post
+            try {
+                if (root.packageName?.toString() != KAKAO_PACKAGE) { performGlobalAction(GLOBAL_ACTION_HOME); return@post }
+                // 하단 네비게이션의 채팅 탭은 contentDescription으로 식별 ("채팅 탭" 포함)
+                // findAccessibilityNodeInfosByText는 text만 검색하므로 트리 직접 순회
+                val chatNavTab = findBottomNavTab(root, "채팅 탭")
+                if (chatNavTab != null) {
+                    chatNavTab.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    Log.i(TAG, "Redirected to 채팅 tab (bottom nav)")
+                } else {
+                    performGlobalAction(GLOBAL_ACTION_HOME)
+                }
+            } catch (e: Exception) {
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            } finally {
+                try { root.recycle() } catch (ignored: Exception) {}
+            }
+        }
+    }
+
+    /** 하단 네비게이션에서 contentDescription이 keyword를 포함하는 탭 버튼을 찾는다. */
+    private fun findBottomNavTab(node: AccessibilityNodeInfo?, keyword: String, depth: Int = 0): AccessibilityNodeInfo? {
+        if (node == null || depth > 8) return null
+        val desc = node.contentDescription?.toString() ?: ""
+        if (desc.contains(keyword) && node.isClickable && node.isEnabled) return node
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val found = findBottomNavTab(child, keyword, depth + 1)
+            if (found != null) return found
+            try { child.recycle() } catch (ignored: Exception) {}
+        }
+        return null
+    }
+
+    /**
+     * 숏폼탭 차단: BlockedActivity 표시 + 강제종료.
+     */
+    private fun blockKakaoShortformTab() {
+        val now = System.currentTimeMillis()
+        if (KAKAO_PACKAGE == lastBlockedPackage && now - lastBlockTime < 300L) {
+            Log.d(TAG, "blockKakaoShortformTab: skipped (cooldown, ${now - lastBlockTime}ms)")
+            return
+        }
+        Log.w(TAG, "blockKakaoShortformTab TRIGGERED — currentClass=$currentKakaoClass")
+        lastBlockedPackage = KAKAO_PACKAGE
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("카카오톡 숏폼", "숏폼탭 접근 차단")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_GAME)
+                }
+                startActivity(intent)
+                Log.i(TAG, "Launched BlockedActivity for KakaoTalk shortform tab")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for shortform tab: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({ dismissKakaoFromRecents() }, 500)
+            handler.postDelayed({
+                kakaoLastKilledAt = System.currentTimeMillis()
+                lastBlockedPackage = ""
+                lastBlockTime = 0L
+                currentKakaoClass = ""
+                previousKakaoClass = ""
+                kakaoRestorationHandled = false
+                Log.i(TAG, "Kakao state reset after shortform tab block. Force stopping.")
+                forceStopViaSettings(KAKAO_PACKAGE)
+            }, 1500)
+        }
+    }
+
+    /**
+     * 친구탭(하단) 안의 소식 피드가 화면에 보이는지 확인.
+     * 친구/소식 칩(chip_feed)이 있는 메인 화면에서 피드 전용 버튼 ID가 보이면 소식 화면.
+     * (ProfileFeedActivity 등 칩이 없는 화면은 제외)
+     */
+    private fun isNewsFeedVisible(root: AccessibilityNodeInfo): Boolean {
+        val chips = root.findAccessibilityNodeInfosByViewId("$KAKAO_PACKAGE:id/chip_feed")
+        val hasChip = chips?.any { it.isVisibleToUser } == true
+        recycleNodes(chips)
+        if (!hasChip) return false
+        for (id in KAKAO_NEWS_FEED_VIEW_IDS) {
+            val nodes = root.findAccessibilityNodeInfosByViewId("$KAKAO_PACKAGE:id/$id")
+            val visible = nodes?.any { it.isVisibleToUser } == true
+            recycleNodes(nodes)
+            if (visible) return true
+        }
+        return false
+    }
+
+    /** 디버그 로그용: 클릭된 source 노드 하위의 text/description을 이어붙인 문자열. */
+    private fun sourceText(event: AccessibilityEvent): String {
+        val source = event.source ?: return ""
+        return try {
+            extractAllText(source)
+        } catch (e: Exception) {
+            ""
+        } finally {
+            try { source.recycle() } catch (ignored: Exception) {}
+        }
+    }
+
+    /** 클릭 이벤트의 source 노드(및 하위 노드)의 text/description에 keyword가 있는지 확인. */
+    private fun sourceContainsText(event: AccessibilityEvent, keyword: String): Boolean {
+        val source = event.source ?: return false
+        return try {
+            nodeContainsText(source, keyword)
+        } catch (e: Exception) {
+            false
+        } finally {
+            try { source.recycle() } catch (ignored: Exception) {}
+        }
+    }
+
+    private fun nodeContainsText(node: AccessibilityNodeInfo, keyword: String, depth: Int = 0): Boolean {
+        if (depth > 4) return false
+        if (node.text?.toString()?.contains(keyword) == true) return true
+        if (node.contentDescription?.toString()?.contains(keyword) == true) return true
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val found = nodeContainsText(child, keyword, depth + 1)
+            try { child.recycle() } catch (ignored: Exception) {}
+            if (found) return true
+        }
+        return false
+    }
+
+    /**
      * 노드 트리를 순회하며 "소식" 탭이 활성화됐는지 확인.
      * 탭이 CheckBox 위젯이므로 isChecked로 확인 (isSelected 아님).
      * contentDescription이 "소식, 탭" 형태이므로 contains로 매칭.
      */
     private fun isNewsTabSelected(node: AccessibilityNodeInfo?, depth: Int = 0): Boolean {
-        if (node == null || depth > 8) return false
+        // 친구/소식 서브탭은 트리 깊숙이 있을 수 있으므로 깊이 제한을 넉넉히 둔다
+        if (node == null || depth > 30) return false
         val text = node.text?.toString() ?: ""
         val desc = node.contentDescription?.toString() ?: ""
-        val isNewsTab = text == "소식" || desc.contains("소식")
+        // 서브탭만 매칭 (text="소식", desc="소식, 탭") — 채팅 메시지 속 "소식" 문구와 "소식보기" 버튼 제외
+        val isNewsTab = text == "소식" || desc == "소식, 탭" || desc == "소식 탭"
+        if (isNewsTab) {
+            Log.d(TAG, "isNewsTabSelected: found 소식 node text='$text' desc='$desc' isChecked=${node.isChecked} isSelected=${node.isSelected} depth=$depth cls=${node.className}")
+        }
         if (isNewsTab && (node.isChecked || node.isSelected)) return true
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
@@ -652,10 +1189,120 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 currentKakaoClass = ""
                 previousKakaoClass = ""
                 kakaoRestorationHandled = false
+                kakaoNewsRestorePending = true
+                kakaoRelaunchedAt = 0L
                 Log.i(TAG, "Kakao state reset after news tab block. Force stopping.")
                 forceStopViaSettings(KAKAO_PACKAGE)
             }, 1500)
         }
+    }
+
+    /** 프로필 피드(소식보기, 별도 Activity) 감지 시: 소식탭과 동일하게 차단 화면 + 강제종료 */
+    private fun blockKakaoProfileFeed() {
+        val now = System.currentTimeMillis()
+        if (now - kakaoProfileFeedBlockedAt < 800L) return
+        kakaoProfileFeedBlockedAt = now
+        Log.w(TAG, "KakaoTalk ProfileFeedActivity detected — blocking")
+        FileLogger.log(this, TAG, "프로필 피드 감지 → 차단")
+        // 강제종료 전까지 stale 클래스로 차단이 반복 실행되지 않도록 초기화
+        currentKakaoClass = ""
+        blockKakaoNewsTab()
+    }
+
+    /**
+     * ChatGPT탭 차단: 소식탭과 동일하게 BlockedActivity 표시 + 강제종료.
+     */
+    private fun blockKakaoChatGpt() {
+        if (!prefsManager.isBlocking) return
+        val now = System.currentTimeMillis()
+        if (KAKAO_PACKAGE == lastBlockedPackage && now - lastBlockTime < 300L) {
+            Log.d(TAG, "blockKakaoChatGpt: skipped (cooldown, ${now - lastBlockTime}ms)")
+            return
+        }
+        Log.w(TAG, "blockKakaoChatGpt TRIGGERED — currentClass=$currentKakaoClass")
+        FileLogger.log(this, TAG, "ChatGPT 화면 감지 → 차단")
+        lastBlockedPackage = KAKAO_PACKAGE
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("카카오톡 ChatGPT", "ChatGPT탭 접근 차단")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_GAME)
+                }
+                startActivity(intent)
+                Log.i(TAG, "Launched BlockedActivity for KakaoTalk ChatGPT tab")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for ChatGPT tab: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({ dismissKakaoFromRecents() }, 500)
+            handler.postDelayed({
+                kakaoLastKilledAt = System.currentTimeMillis()
+                lastBlockedPackage = ""
+                lastBlockTime = 0L
+                currentKakaoClass = ""
+                previousKakaoClass = ""
+                kakaoRestorationHandled = false
+                Log.i(TAG, "Kakao state reset after ChatGPT tab block. Force stopping.")
+                forceStopViaSettings(KAKAO_PACKAGE)
+            }, 1500)
+        }
+    }
+
+    /**
+     * STATE_CHANGED 없이 ChatGPT 화면이 다시 보이는 경우 대비: 활성 윈도우 내용으로 판별.
+     * 상단 제목 "ChatGPT for Kakao" + "접어두기" 버튼이 함께 있으면 ChatGPT 화면
+     * (채팅 목록의 "ChatGPT for Kakao" 채팅방 이름만으로는 매칭되지 않음).
+     */
+    private fun isKakaoChatGptContentVisible(): Boolean {
+        val root = rootInActiveWindow ?: return false
+        return try {
+            if (root.packageName?.toString() != KAKAO_PACKAGE) return false
+            val titles = root.findAccessibilityNodeInfosByText("ChatGPT for Kakao")
+            val hasTitle = titles?.any { it.text?.toString() == "ChatGPT for Kakao" } == true
+            recycleNodes(titles)
+            if (!hasTitle) return false
+            val foldButtons = root.findAccessibilityNodeInfosByText("접어두기")
+            val hasFold = !foldButtons.isNullOrEmpty()
+            recycleNodes(foldButtons)
+            hasFold
+        } catch (e: Exception) {
+            false
+        } finally {
+            try { root.recycle() } catch (ignored: Exception) {}
+        }
+    }
+
+    /** 채팅방 화면에 제목이 정확히 "ChatGPT for Kakao"인 노드가 있으면 ChatGPT 채팅방 → 차단 */
+    private fun checkKakaoChatGptRoom() {
+        if (!prefsManager.isBlocking) return
+        val root = rootInActiveWindow ?: return
+        try {
+            if (root.packageName?.toString() != KAKAO_PACKAGE) return
+            val nodes = root.findAccessibilityNodeInfosByText("ChatGPT for Kakao")
+            // 채팅 목록의 채팅방 이름(id/name)은 제외 — 다른 방을 여는 중 목록이 아직 활성일 때 오탐 방지
+            val isChatGptRoom = nodes?.any {
+                it.text?.toString() == "ChatGPT for Kakao" &&
+                    it.viewIdResourceName != "$KAKAO_PACKAGE:id/name"
+            } == true
+            recycleNodes(nodes)
+            if (isChatGptRoom) {
+                Log.w(TAG, "KakaoTalk ChatGPT for Kakao chat room detected — blocking")
+                blockKakaoChatGpt()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking ChatGPT chat room: ${e.message}")
+        } finally {
+            try { root.recycle() } catch (ignored: Exception) {}
+        }
+    }
+
+    private fun checkKakaoChatGptContent() {
+        if (!prefsManager.isBlocking) return
+        if (isKakaoChatGptContentVisible()) blockKakaoChatGpt()
     }
 
     /** 자동전환 감지 시: 강제종료 없이 친구탭으로 이동 */
@@ -670,8 +1317,12 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             val root = rootInActiveWindow ?: return@post
             try {
                 if (root.packageName?.toString() != KAKAO_PACKAGE) { performGlobalAction(GLOBAL_ACTION_HOME); return@post }
-                val nodes = root.findAccessibilityNodeInfosByText("친구")
-                val friendTab = nodes?.firstOrNull { it.isClickable && it.isEnabled }
+                // 친구 서브탭 칩(chip_friend)을 우선 클릭, 없으면 "친구" 텍스트 노드
+                val nodes = root.findAccessibilityNodeInfosByViewId("$KAKAO_PACKAGE:id/chip_friend")
+                    ?.takeIf { it.isNotEmpty() }
+                    ?: root.findAccessibilityNodeInfosByText("친구")
+                val friendTab = nodes?.firstOrNull { it.isClickable && it.isEnabled && it.text?.toString() == "친구" }
+                    ?: nodes?.firstOrNull { it.isClickable && it.isEnabled }
                 if (friendTab != null) {
                     friendTab.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                     Log.i(TAG, "Redirected to 친구 tab")
@@ -1032,6 +1683,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                             kakaoNewsTabLastCheckedAt = nowNews
                             checkKakaoNewsTabActive()
                         }
+                        // 숏폼탭 자동전환 감지 (watcher 보조 체크)
+                        val nowShortform = System.currentTimeMillis()
+                        if (nowShortform - kakaoShortformTabLastCheckedAt > 1000L) {
+                            kakaoShortformTabLastCheckedAt = nowShortform
+                            checkKakaoShortformTabActive()
+                            checkKakaoChatGptContent()
+                        }
                     }
                 }
                 handler.postDelayed(this, 500)
@@ -1052,9 +1710,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 Log.i(TAG, "Force block: YouTube app in foreground → blocking")
                 blockYouTubeApp(pkg)
             }
-            pkg in BROWSER_PACKAGES -> {
-                Log.i(TAG, "Force block: browser in foreground → checking URL")
-                handler.postDelayed({ checkBrowserForYouTube(pkg) }, 200)
+            pkg in TIKTOK_PACKAGES -> {
+                Log.i(TAG, "Force block: TikTok app in foreground → blocking")
+                blockTikTokApp(pkg)
+            }
+            isBrowser(pkg) -> {
+                Log.i(TAG, "Force block: browser in foreground → blocking")
+                blockBrowserApp(pkg)
             }
             pkg == KAKAO_PACKAGE -> {
                 Log.i(TAG, "Force block: KakaoTalk in foreground → checking game/browser (currentClass=$currentKakaoClass)")
@@ -1092,11 +1754,15 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             val isYouTubeUrl = YOUTUBE_URL_KEYWORDS.any { allText.contains(it, ignoreCase = true) }
             // 2순위: 동영상 재생 중 URL이 숨겨질 때 → YouTube 브랜드 텍스트 감지
             val isYouTubeBrand = !isYouTubeUrl && listOf("YouTube", "유튜브").any { allText.contains(it) }
+            val isTikTokUrl = TIKTOK_URL_KEYWORDS.any { allText.contains(it, ignoreCase = true) }
 
-            Log.d(TAG, "KakaoTalk InAppBrowser YouTube check: hasWebView=true urlMatch=$isYouTubeUrl brandMatch=$isYouTubeBrand class=$currentKakaoClass")
+            Log.d(TAG, "KakaoTalk InAppBrowser check: hasWebView=true urlMatch=$isYouTubeUrl brandMatch=$isYouTubeBrand tiktok=$isTikTokUrl class=$currentKakaoClass")
 
             if (isYouTubeUrl || isYouTubeBrand) {
                 Log.i(TAG, "YouTube detected in KakaoTalk InAppBrowserActivity (url=$isYouTubeUrl brand=$isYouTubeBrand) — blocking + force stopping")
+                blockKakaoGameTab()
+            } else if (isTikTokUrl) {
+                Log.i(TAG, "TikTok detected in KakaoTalk InAppBrowserActivity — blocking + force stopping")
                 blockKakaoGameTab()
             }
         } catch (e: Exception) {

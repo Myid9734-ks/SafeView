@@ -53,7 +53,15 @@ class TubeGuardVpnService : VpnService() {
             "www.googleapis.com",
             "accounts.youtube.com",
             "studio.youtube.com",
-            "music.youtube.com"
+            "music.youtube.com",
+            // TikTok (웹 + 앱 API/CDN) — 하위 도메인 포함 차단
+            "tiktok.com",
+            "tiktokv.com",
+            "tiktokv.us",
+            "tiktokcdn.com",
+            "tiktokcdn-us.com",
+            "tiktokw.us",
+            "musical.ly"
         )
 
         // YouTube IP ranges in CIDR notation (stored as prefix/mask pairs for matching)

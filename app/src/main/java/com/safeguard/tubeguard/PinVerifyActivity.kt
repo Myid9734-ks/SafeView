@@ -1,5 +1,6 @@
 package com.safeguard.tubeguard
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.safeguard.tubeguard.service.TubeGuardAccessibilityService
 import com.safeguard.tubeguard.util.PinManager
 
 class PinVerifyActivity : AppCompatActivity() {
@@ -20,6 +22,8 @@ class PinVerifyActivity : AppCompatActivity() {
     companion object {
         const val RESULT_PIN_VERIFIED = 200
         const val EXTRA_PURPOSE = "extra_purpose"
+        const val EXTRA_TARGET_PACKAGE = "extra_target_package"
+        const val PURPOSE_STORE_UNLOCK = "store_unlock"
         private const val MAX_ATTEMPTS = 5
         private const val LOCKOUT_DURATION_MS = 30_000L // 30 seconds
     }
@@ -89,6 +93,7 @@ class PinVerifyActivity : AppCompatActivity() {
 
         if (pinManager.verifyPin(pin)) {
             // Success
+            if (isStoreUnlock()) openUnlockedStore()
             setResult(RESULT_PIN_VERIFIED)
             finish()
         } else {
@@ -148,13 +153,41 @@ class PinVerifyActivity : AppCompatActivity() {
         }
     }
 
+    private fun isStoreUnlock(): Boolean =
+        intent.getStringExtra(EXTRA_PURPOSE) == PURPOSE_STORE_UNLOCK
+
+    /** 스토어 잠금 해제 후 스토어를 다시 앞으로 가져옴 */
+    private fun openUnlockedStore() {
+        val target = intent.getStringExtra(EXTRA_TARGET_PACKAGE) ?: return
+        TubeGuardAccessibilityService.unlockedStorePackage = target
+        packageManager.getLaunchIntentForPackage(target)?.let {
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(it)
+        }
+    }
+
+    /** 스토어 잠금 화면에서 취소 시 스토어로 돌아가지 않도록 홈으로 이동 */
+    private fun cancel() {
+        setResult(RESULT_CANCELED)
+        if (isStoreUnlock()) {
+            startActivity(Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            })
+        }
+        finish()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            setResult(RESULT_CANCELED)
-            finish()
+            cancel()
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        cancel()
     }
 
     override fun onDestroy() {

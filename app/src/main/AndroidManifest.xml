@@ -29,6 +29,23 @@
     <!-- Kill background processes (used to force-stop KakaoTalk after game block) -->
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
+    <!-- Android 11+ 패키지 가시성: 설치된 브라우저 목록 조회용 -->
+    <queries>
+        <!-- PIN 인증 후 스토어 재실행용 -->
+        <package android:name="com.android.vending" />
+        <package android:name="com.sec.android.app.samsungapps" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

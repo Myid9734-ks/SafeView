@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">Unang Setup (2/5)</string>
     <string name="setup_vpn_message">Mangyaring payagan ang pahintulot sa VPN para ma-block ang YouTube.</string>
     <string name="setup_accessibility_title">Unang Setup (3/5)</string>
-    <string name="setup_accessibility_message">Mangyaring i-enable ang accessibility service para sa pag-block ng YouTube app.\n\nSettings → SafeScreen → I-enable</string>
+    <string name="setup_accessibility_message">Mangyaring i-enable ang accessibility service para sa pag-block ng YouTube app.\n\nInstalled apps → SafeScreen-YouTube Blocker → I-enable</string>
     <string name="setup_device_admin_title">Unang Setup (4/5)</string>
     <string name="setup_device_admin_message">Mangyaring i-enable ang device admin para sa proteksyon sa pag-uninstall.</string>
     <string name="setup_complete">Kumpleto na ang unang setup! Na-activate ang pag-block sa YouTube.</string>

@@ -32,6 +32,7 @@ class TimerExpiredReceiver : BroadcastReceiver() {
                 FileLogger.log(context, TAG, msg)
                 if (isRunning) {
                     prefs.pauseTimer()
+                    prefs.timerSavedRemaining = 0L
                     Log.i(TAG, "Timer paused — enabling blocking")
                     FileLogger.log(context, TAG, "→ 조건 통과: 차단 활성화 시도")
                     enableBlocking(context, prefs)

@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">初始设置（2/5）</string>
     <string name="setup_vpn_message">请允许VPN权限以屏蔽YouTube。</string>
     <string name="setup_accessibility_title">初始设置（3/5）</string>
-    <string name="setup_accessibility_message">请启用无障碍服务以屏蔽YouTube应用。\n\n设置 → SafeScreen → 启用</string>
+    <string name="setup_accessibility_message">请启用无障碍服务以屏蔽YouTube应用。\n\n已安装的应用 → SafeScreen-YouTube 차단기 → 启用</string>
     <string name="setup_device_admin_title">初始设置（4/5）</string>
     <string name="setup_device_admin_message">请启用设备管理员以保护应用不被卸载。</string>
     <string name="setup_complete">初始设置已完成！YouTube屏蔽已激活。</string>

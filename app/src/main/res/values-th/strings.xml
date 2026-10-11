@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">การตั้งค่าเริ่มต้น (2/5)</string>
     <string name="setup_vpn_message">กรุณาอนุญาตสิทธิ์ VPN เพื่อบล็อก YouTube</string>
     <string name="setup_accessibility_title">การตั้งค่าเริ่มต้น (3/5)</string>
-    <string name="setup_accessibility_message">กรุณาเปิดบริการการเข้าถึงเพื่อบล็อกแอป YouTube\n\nการตั้งค่า → SafeScreen → เปิดใช้งาน</string>
+    <string name="setup_accessibility_message">กรุณาเปิดบริการการเข้าถึงเพื่อบล็อกแอป YouTube\n\nแอปที่ติดตั้งแล้ว → SafeScreen-YouTube Blocker → เปิดใช้งาน</string>
     <string name="setup_device_admin_title">การตั้งค่าเริ่มต้น (4/5)</string>
     <string name="setup_device_admin_message">กรุณาเปิดผู้ดูแลอุปกรณ์เพื่อป้องกันการถอนการติดตั้ง</string>
     <string name="setup_complete">การตั้งค่าเริ่มต้นเสร็จสมบูรณ์! เปิดการบล็อก YouTube แล้ว</string>

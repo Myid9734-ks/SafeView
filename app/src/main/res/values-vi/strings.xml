@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">Thiết lập ban đầu (2/5)</string>
     <string name="setup_vpn_message">Vui lòng cho phép quyền VPN để chặn YouTube.</string>
     <string name="setup_accessibility_title">Thiết lập ban đầu (3/5)</string>
-    <string name="setup_accessibility_message">Vui lòng bật dịch vụ trợ năng để chặn ứng dụng YouTube.\n\nCài đặt → SafeScreen → Bật</string>
+    <string name="setup_accessibility_message">Vui lòng bật dịch vụ trợ năng để chặn ứng dụng YouTube.\n\nỨng dụng đã cài đặt → SafeScreen-YouTube Blocker → Bật</string>
     <string name="setup_device_admin_title">Thiết lập ban đầu (4/5)</string>
     <string name="setup_device_admin_message">Vui lòng bật quản trị thiết bị để bảo vệ gỡ cài đặt.</string>
     <string name="setup_complete">Thiết lập ban đầu hoàn tất! Chặn YouTube đã được kích hoạt.</string>

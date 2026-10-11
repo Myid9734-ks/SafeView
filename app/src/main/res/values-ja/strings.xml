@@ -127,7 +127,7 @@
     <string name="setup_vpn_title">初期設定（2/5）</string>
     <string name="setup_vpn_message">YouTubeをブロックするためにVPN権限を許可してください。</string>
     <string name="setup_accessibility_title">初期設定（3/5）</string>
-    <string name="setup_accessibility_message">YouTubeアプリブロックのためにアクセシビリティサービスを有効にしてください。\n\n設定 → SafeScreen → 有効にする</string>
+    <string name="setup_accessibility_message">YouTubeアプリブロックのためにアクセシビリティサービスを有効にしてください。\n\nインストール済みアプリ → SafeScreen-YouTube 차단기 → 有効にする</string>
     <string name="setup_device_admin_title">初期設定（4/5）</string>
     <string name="setup_device_admin_message">アンインストール保護のためにデバイス管理者を有効にしてください。</string>
     <string name="setup_complete">初期設定が完了しました！YouTubeブロックが有効になりました。</string>
