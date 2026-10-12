@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SafeScreen</string>
-    <string name="accessibility_service_label">SafeScreen - YouTubeブロッカー</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">SafeScreenはアクセシビリティサービスを使用して、YouTubeアプリが開かれたことを検知し、即座に閉じることで、包括的な保護者管理機能を提供します。</string>
 
     <!-- Main Screen -->
@@ -141,7 +141,7 @@
     <string name="setup_vpn_title">初期設定（2/5）</string>
     <string name="setup_vpn_message">YouTubeをブロックするためにVPN権限を許可してください。</string>
     <string name="setup_accessibility_title">初期設定（3/5）</string>
-    <string name="setup_accessibility_message">YouTubeアプリブロックのためにアクセシビリティサービスを有効にしてください。\n\nインストール済みアプリ → SafeScreen-YouTube 차단기 → 有効にする</string>
+    <string name="setup_accessibility_message">アプリブロックのためにアクセシビリティサービスを有効にしてください。\n\nインストール済みアプリ → SafeScreen → 有効にする</string>
     <string name="setup_device_admin_title">初期設定（4/5）</string>
     <string name="setup_device_admin_message">アンインストール保護のためにデバイス管理者を有効にしてください。</string>
     <string name="setup_complete">初期設定が完了しました！YouTubeブロックが有効になりました。</string>
@@ -157,7 +157,7 @@
 
     <!-- About -->
     <string name="about_title">SafeScreenについて</string>
-    <string name="about_message">SafeScreen v1.0\n\nYouTubeブロック方法:\n• VPNによるDNSレベルブロック\n• アクセシビリティサービスによるアプリ検知\n• PIN保護された設定\n\nブロック対象ドメイン: youtube.com, youtu.be, googlevideo.com など</string>
+    <string name="about_message">SafeScreen v1.0\n\nブロック方法:\n• VPNによるDNSレベルブロック\n• アクセシビリティサービスによるアプリ検知\n• PIN保護された設定\n\nブロック対象アプリ:\nYouTube, TikTok, Instagram, Facebook, X(Twitter),\nSnapchat, Twitch, AfreecaTV, Chzzk, Discord,\nReddit, Pinterest, BeReal, KakaoTalk(一部), ブラウザ</string>
 
     <!-- Timer Debug -->
     <string name="timer_debug_log_title">タイマーデバッグログ</string>

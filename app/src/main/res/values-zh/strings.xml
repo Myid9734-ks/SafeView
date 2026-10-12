@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SafeScreen</string>
-    <string name="accessibility_service_label">SafeScreen - YouTube拦截器</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">SafeScreen使用无障碍服务检测YouTube应用的启动并立即关闭，提供全面的家长控制保护。</string>
 
     <!-- Main Screen -->
@@ -141,7 +141,7 @@
     <string name="setup_vpn_title">初始设置（2/5）</string>
     <string name="setup_vpn_message">请允许VPN权限以屏蔽YouTube。</string>
     <string name="setup_accessibility_title">初始设置（3/5）</string>
-    <string name="setup_accessibility_message">请启用无障碍服务以屏蔽YouTube应用。\n\n已安装的应用 → SafeScreen-YouTube 차단기 → 启用</string>
+    <string name="setup_accessibility_message">请启用无障碍服务以屏蔽应用。\n\n已安装的应用 → SafeScreen → 启用</string>
     <string name="setup_device_admin_title">初始设置（4/5）</string>
     <string name="setup_device_admin_message">请启用设备管理员以保护应用不被卸载。</string>
     <string name="setup_complete">初始设置已完成！YouTube屏蔽已激活。</string>
@@ -157,7 +157,7 @@
 
     <!-- About -->
     <string name="about_title">关于SafeScreen</string>
-    <string name="about_message">SafeScreen v1.0\n\nYouTube屏蔽方式：\n• 通过VPN进行DNS级屏蔽\n• 通过无障碍服务检测应用\n• PIN保护设置\n\n屏蔽域名：youtube.com、youtu.be、googlevideo.com等</string>
+    <string name="about_message">SafeScreen v1.0\n\n屏蔽方式：\n• 通过VPN进行DNS级屏蔽\n• 通过无障碍服务检测应用\n• PIN保护设置\n\n屏蔽应用：\nYouTube, TikTok, Instagram, Facebook, X(Twitter),\nSnapchat, Twitch, AfreecaTV, Chzzk, Discord,\nReddit, Pinterest, BeReal, KakaoTalk(部分), 浏览器</string>
 
     <!-- Timer Debug -->
     <string name="timer_debug_log_title">计时器调试日志</string>

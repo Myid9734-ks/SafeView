@@ -4,6 +4,7 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.os.Build
+import com.safeguard.tubeguard.BuildConfig
 import android.os.Environment
 import android.provider.MediaStore
 import java.io.File
@@ -17,6 +18,7 @@ object FileLogger {
     private const val MAX_BYTES = 200 * 1024L
 
     fun log(context: Context, tag: String, msg: String) {
+        if (!BuildConfig.DEBUG) return
         try {
             val time = SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(Date())
             val line = "$time  $tag: $msg\n"

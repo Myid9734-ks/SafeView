@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SafeScreen</string>
-    <string name="accessibility_service_label">SafeScreen - ตัวบล็อก YouTube</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">SafeScreen ใช้บริการการเข้าถึงเพื่อตรวจจับเมื่อแอป YouTube ถูกเปิดและปิดทันที ให้การปกป้องการควบคุมโดยผู้ปกครองอย่างครอบคลุม</string>
 
     <!-- Main Screen -->
@@ -141,7 +141,7 @@
     <string name="setup_vpn_title">การตั้งค่าเริ่มต้น (2/5)</string>
     <string name="setup_vpn_message">กรุณาอนุญาตสิทธิ์ VPN เพื่อบล็อก YouTube</string>
     <string name="setup_accessibility_title">การตั้งค่าเริ่มต้น (3/5)</string>
-    <string name="setup_accessibility_message">กรุณาเปิดบริการการเข้าถึงเพื่อบล็อกแอป YouTube\n\nแอปที่ติดตั้งแล้ว → SafeScreen-YouTube Blocker → เปิดใช้งาน</string>
+    <string name="setup_accessibility_message">กรุณาเปิดบริการการเข้าถึงเพื่อบล็อกแอป\n\nแอปที่ติดตั้งแล้ว → SafeScreen → เปิดใช้งาน</string>
     <string name="setup_device_admin_title">การตั้งค่าเริ่มต้น (4/5)</string>
     <string name="setup_device_admin_message">กรุณาเปิดผู้ดูแลอุปกรณ์เพื่อป้องกันการถอนการติดตั้ง</string>
     <string name="setup_complete">การตั้งค่าเริ่มต้นเสร็จสมบูรณ์! เปิดการบล็อก YouTube แล้ว</string>
@@ -157,7 +157,7 @@
 
     <!-- About -->
     <string name="about_title">เกี่ยวกับ SafeScreen</string>
-    <string name="about_message">SafeScreen v1.0\n\nวิธีการบล็อก YouTube:\n• การบล็อกระดับ DNS ผ่าน VPN\n• การตรวจจับแอปผ่านบริการการเข้าถึง\n• การตั้งค่าที่ป้องกันด้วย PIN\n\nโดเมนที่ถูกบล็อก: youtube.com, youtu.be, googlevideo.com เป็นต้น</string>
+    <string name="about_message">SafeScreen v1.0\n\nวิธีการบล็อก:\n• การบล็อกระดับ DNS ผ่าน VPN\n• การตรวจจับแอปผ่านบริการการเข้าถึง\n• การตั้งค่าที่ป้องกันด้วย PIN\n\nแอปที่ถูกบล็อก:\nYouTube, TikTok, Instagram, Facebook, X (Twitter),\nSnapchat, Twitch, AfreecaTV, Chzzk, Discord,\nReddit, Pinterest, BeReal, KakaoTalk (บางส่วน), เบราว์เซอร์</string>
 
     <!-- Timer Debug -->
     <string name="timer_debug_log_title">บันทึกดีบักตั้งเวลา</string>

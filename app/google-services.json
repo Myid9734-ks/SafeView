@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "588229583697",
+    "project_id": "safescreen-e1052",
+    "storage_bucket": "safescreen-e1052.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588229583697:android:c326f075c57f510a99e970",
+        "android_client_info": {
+          "package_name": "com.safeguard.tubeguard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWlE5SPSNVOt1siHvnnMtSuvFVQUIM9pk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

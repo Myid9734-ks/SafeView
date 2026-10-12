@@ -929,10 +929,6 @@ class MainActivity : AppCompatActivity() {
                 showAboutDialog()
                 true
             }
-            R.id.action_reset -> {
-                showResetDialog()
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -954,26 +950,4 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showResetDialog() {
-        if (pinManager.hasPin()) {
-            pinVerifyLauncher.launch(Intent(this, PinVerifyActivity::class.java))
-        } else {
-            confirmReset()
-        }
-    }
-
-    private fun confirmReset() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.reset_title))
-            .setMessage(getString(R.string.reset_message))
-            .setPositiveButton(getString(R.string.btn_reset)) { _, _ ->
-                performDisableBlocking()
-                pinManager.clearPin()
-                prefsManager.blockCount = 0
-                updateAllStatusDisplays()
-                Toast.makeText(this, getString(R.string.reset_done), Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton(getString(R.string.btn_cancel), null)
-            .show()
-    }
 }

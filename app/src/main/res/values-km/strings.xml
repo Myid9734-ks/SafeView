@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SafeScreen</string>
-    <string name="accessibility_service_label">SafeScreen - កម្មវិធីបិទ YouTube</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">SafeScreen ប្រើសេវាកម្មភាពងាយស្រួលដើម្បីរកឃើញពេលដែលកម្មវិធី YouTube ត្រូវបានបើក ហើយបិទវាភ្លាមៗ ដោយផ្តល់ការការពារគ្រប់ជ្រុងជ្រោយសម្រាប់ឪពុកម្តាយ។</string>
 
     <!-- Main Screen -->
@@ -141,7 +141,7 @@
     <string name="setup_vpn_title">ការកំណត់ដំបូង (2/5)</string>
     <string name="setup_vpn_message">សូមអនុញ្ញាត VPN ដើម្បីបិទ YouTube។</string>
     <string name="setup_accessibility_title">ការកំណត់ដំបូង (3/5)</string>
-    <string name="setup_accessibility_message">សូមបើកសេវាភាពងាយស្រួលសម្រាប់ការបិទកម្មវិធី YouTube។\n\nកម្មវិធីដែលបានដំឡើង → SafeScreen-YouTube 차단기 → បើក</string>
+    <string name="setup_accessibility_message">សូមបើកសេវាភាពងាយស្រួលសម្រាប់ការបិទកម្មវិធី។\n\nកម្មវិធីដែលបានដំឡើង → SafeScreen → បើក</string>
     <string name="setup_device_admin_title">ការកំណត់ដំបូង (4/5)</string>
     <string name="setup_device_admin_message">សូមបើកអ្នកគ្រប់គ្រងឧបករណ៍សម្រាប់ការការពារការលុប។</string>
     <string name="setup_complete">ការកំណត់ដំបូងបានបញ្ចប់! ការបិទ YouTube ត្រូវបានបើក។</string>
@@ -157,7 +157,7 @@
 
     <!-- About -->
     <string name="about_title">អំពី SafeScreen</string>
-    <string name="about_message">SafeScreen v1.0\n\nវិធីសាស្ត្របិទ YouTube៖\n• ការបិទកម្រិត DNS តាមរយៈ VPN\n• ការរកឃើញកម្មវិធីតាមរយៈសេវាភាពងាយស្រួល\n• ការកំណត់ដែលការពារដោយ PIN\n\nដែនដែលបិទ៖ youtube.com, youtu.be, googlevideo.com, ល។</string>
+    <string name="about_message">SafeScreen v1.0\n\nវិធីសាស្ត្របិទ៖\n• ការបិទកម្រិត DNS តាមរយៈ VPN\n• ការរកឃើញកម្មវិធីតាមរយៈសេវាភាពងាយស្រួល\n• ការកំណត់ដែលការពារដោយ PIN\n\nកម្មវិធីដែលបិទ៖\nYouTube, TikTok, Instagram, Facebook, X (Twitter),\nSnapchat, Twitch, AfreecaTV, Chzzk, Discord,\nReddit, Pinterest, BeReal, KakaoTalk (មួយផ្នែក), កម្មវិធីរុករក</string>
 
     <!-- Timer Debug -->
     <string name="timer_debug_log_title">កំណត់ត្រាបំបាត់កំហុសកម្មវិធីកំណត់ពេល</string>

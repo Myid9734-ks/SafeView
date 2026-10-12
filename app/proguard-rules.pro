@@ -15,3 +15,12 @@
 
 # Keep broadcast receivers
 -keep class * extends android.content.BroadcastReceiver { *; }
+
+# Remove Log calls in release build
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+    public static int e(...);
+}

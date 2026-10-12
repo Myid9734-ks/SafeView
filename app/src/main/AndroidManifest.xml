@@ -85,9 +85,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <!-- PIN Verify Activity -->
+        <!-- taskAffinity="" : 메인 앱 태스크와 분리 → 홈 후 앱 아이콘 탭 시 PIN 화면이 복원되지 않음 -->
         <activity
             android:name=".PinVerifyActivity"
             android:exported="false"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="adjustResize" />
 
         <!-- VPN Service: foregroundServiceType="connectedDevice" is correct for VPN on Android 14 -->

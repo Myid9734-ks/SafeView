@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SafeScreen</string>
-    <string name="accessibility_service_label">SafeScreen - YouTube Blocker</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">SafeScreen uses accessibility services to detect when the YouTube app is opened and immediately close it, providing comprehensive parental control protection.</string>
 
     <!-- Main Screen -->
@@ -143,7 +143,7 @@
     <string name="setup_vpn_title">Initial Setup (2/5)</string>
     <string name="setup_vpn_message">Please allow VPN permission to block YouTube.</string>
     <string name="setup_accessibility_title">Initial Setup (3/5)</string>
-    <string name="setup_accessibility_message">Please enable accessibility service for YouTube app blocking.\n\nInstalled apps → SafeScreen-YouTube Blocker → Enable</string>
+    <string name="setup_accessibility_message">Please enable accessibility service for app blocking.\n\nInstalled apps → SafeScreen → Enable</string>
     <string name="setup_device_admin_title">Initial Setup (4/5)</string>
     <string name="setup_device_admin_message">Please enable device admin for uninstall protection.</string>
     <string name="setup_complete">Initial setup is complete! YouTube blocking is activated.</string>
@@ -159,7 +159,7 @@
 
     <!-- About -->
     <string name="about_title">About SafeScreen</string>
-    <string name="about_message">SafeScreen v1.0\n\nYouTube blocking methods:\n• DNS-level blocking via VPN\n• App detection via Accessibility Service\n• PIN-protected settings\n\nBlocked domains: youtube.com, youtu.be, googlevideo.com, etc.</string>
+    <string name="about_message">SafeScreen v1.0\n\nBlocking methods:\n• DNS-level blocking via VPN\n• App detection via Accessibility Service\n• PIN-protected settings\n\nBlocked apps:\nYouTube, TikTok, Instagram, Facebook, X (Twitter),\nSnapchat, Twitch, AfreecaTV, Chzzk, Discord,\nReddit, Pinterest, BeReal, KakaoTalk (partial), Browsers</string>
 
     <!-- Timer Debug -->
     <string name="timer_debug_log_title">Timer Debug Log</string>

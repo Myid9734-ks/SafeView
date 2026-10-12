@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="accessibility_service_label">SafeScreen - YouTube 차단기</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">SafeScreen는 접근성 서비스를 사용하여 YouTube 앱이 열릴 때 감지하고 즉시 차단하여, 포괄적인 자녀 보호 기능을 제공합니다.</string>
 
     <string name="status_blocking">YouTube 차단 중</string>
@@ -129,7 +129,7 @@
     <string name="setup_vpn_title">초기 설정 (2/5)</string>
     <string name="setup_vpn_message">YouTube 차단을 위해 VPN 권한을 허용해 주세요.</string>
     <string name="setup_accessibility_title">초기 설정 (3/5)</string>
-    <string name="setup_accessibility_message">YouTube 앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설치된 앱 → SafeScreen-YouTube 차단기 → 활성화</string>
+    <string name="setup_accessibility_message">앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설치된 앱 → SafeScreen → 활성화</string>
     <string name="setup_device_admin_title">초기 설정 (4/5)</string>
     <string name="setup_device_admin_message">앱 삭제 방지를 위해 기기 관리자를 활성화해 주세요.</string>
     <string name="setup_complete">초기 설정이 완료되었습니다! YouTube 차단이 활성화됩니다.</string>
@@ -143,7 +143,7 @@
     <string name="menu_timer_log">타이머 로그</string>
 
     <string name="about_title">SafeScreen 정보</string>
-    <string name="about_message">SafeScreen v1.0\n\nYouTube 차단 방법:\n• VPN을 통한 DNS 수준 차단\n• 접근성 서비스를 통한 앱 감지 차단\n• PIN 보호 설정\n\n차단 도메인: youtube.com, youtu.be, googlevideo.com 등</string>
+    <string name="about_message">SafeScreen v1.0\n\n차단 방법:\n• VPN을 통한 DNS 수준 차단\n• 접근성 서비스를 통한 앱 감지 차단\n• PIN 보호 설정\n\n차단 대상 앱:\nYouTube, TikTok, Instagram, Facebook, X(Twitter),\nSnapchat, Twitch, AfreecaTV, 치지직, Discord,\nReddit, Pinterest, BeReal, KakaoTalk(일부), 브라우저</string>
 
     <string name="timer_debug_log_title">타이머 디버그 로그</string>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SafeScreen</string>
-    <string name="accessibility_service_label">SafeScreen - YouTube Blocker</string>
+    <string name="accessibility_service_label">SafeScreen</string>
     <string name="accessibility_service_description">Ginagamit ng SafeScreen ang mga serbisyo ng accessibility upang matukoy kung kailan binuksan ang YouTube app at agad itong isara, na nagbibigay ng komprehensibong proteksyon para sa mga magulang.</string>
 
     <!-- Main Screen -->
@@ -141,7 +141,7 @@
     <string name="setup_vpn_title">Unang Setup (2/5)</string>
     <string name="setup_vpn_message">Mangyaring payagan ang pahintulot sa VPN para ma-block ang YouTube.</string>
     <string name="setup_accessibility_title">Unang Setup (3/5)</string>
-    <string name="setup_accessibility_message">Mangyaring i-enable ang accessibility service para sa pag-block ng YouTube app.\n\nInstalled apps → SafeScreen-YouTube Blocker → I-enable</string>
+    <string name="setup_accessibility_message">Mangyaring i-enable ang accessibility service para sa pag-block ng mga app.\n\nInstalled apps → SafeScreen → I-enable</string>
     <string name="setup_device_admin_title">Unang Setup (4/5)</string>
     <string name="setup_device_admin_message">Mangyaring i-enable ang device admin para sa proteksyon sa pag-uninstall.</string>
     <string name="setup_complete">Kumpleto na ang unang setup! Na-activate ang pag-block sa YouTube.</string>
@@ -157,7 +157,7 @@
 
     <!-- About -->
     <string name="about_title">Tungkol sa SafeScreen</string>
-    <string name="about_message">SafeScreen v1.0\n\nMga paraan ng pag-block sa YouTube:\n• DNS-level na pag-block sa pamamagitan ng VPN\n• Pagtukoy ng app sa pamamagitan ng Accessibility Service\n• Mga setting na protektado ng PIN\n\nMga naka-block na domain: youtube.com, youtu.be, googlevideo.com, atbp.</string>
+    <string name="about_message">SafeScreen v1.0\n\nMga paraan ng pag-block:\n• DNS-level na pag-block sa pamamagitan ng VPN\n• Pagtukoy ng app sa pamamagitan ng Accessibility Service\n• Mga setting na protektado ng PIN\n\nMga na-block na app:\nYouTube, TikTok, Instagram, Facebook, X (Twitter),\nSnapchat, Twitch, AfreecaTV, Chzzk, Discord,\nReddit, Pinterest, BeReal, KakaoTalk (bahagyang), Mga Browser</string>
 
     <!-- Timer Debug -->
     <string name="timer_debug_log_title">Timer Debug Log</string>
