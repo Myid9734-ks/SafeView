@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeGuard 개인정보처리방침</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 16px;
+            color: #333;
+            line-height: 1.7;
+        }
+        h1 { font-size: 1.6em; border-bottom: 2px solid #eee; padding-bottom: 12px; }
+        h2 { font-size: 1.2em; margin-top: 32px; color: #444; }
+        p, li { font-size: 0.95em; }
+        ul { padding-left: 20px; }
+        .updated { color: #888; font-size: 0.9em; }
+        .highlight { background: #f8f9fa; border-left: 4px solid #4CAF50; padding: 12px 16px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<h1>TubeGuard 개인정보처리방침</h1>
+<p class="updated">최종 업데이트: 2024년 10월</p>
+
+<div class="highlight">
+    <strong>핵심 요약:</strong> TubeGuard는 사용자 데이터를 외부 서버로 전송하지 않습니다. 모든 데이터는 사용자의 기기에만 저장됩니다.
+</div>
+
+<h2>1. 앱 소개</h2>
+<p>TubeGuard는 보호자가 자녀의 YouTube, TikTok 등 소셜 미디어 앱 사용을 관리할 수 있는 자녀 보호 앱입니다. 본 방침은 TubeGuard가 수집하는 정보와 사용 방식을 설명합니다.</p>
+
+<h2>2. 수집하는 정보</h2>
+<p>TubeGuard는 앱 기능 제공을 위해 다음 정보를 기기 내에만 저장합니다:</p>
+<ul>
+    <li><strong>PIN 정보:</strong> 보호자가 설정한 PIN의 암호화된 해시값 (암호화하여 기기에 저장, 원본 PIN은 저장하지 않음)</li>
+    <li><strong>차단 설정:</strong> 앱 차단 활성화 여부, VPN 사용 여부</li>
+    <li><strong>차단 기록:</strong> 앱 차단 이력 (최대 100건, 기기 내 저장)</li>
+    <li><strong>타이머 설정:</strong> 일일 허용 사용 시간 및 타이머 상태</li>
+</ul>
+
+<h2>3. 수집하지 않는 정보</h2>
+<ul>
+    <li>개인 식별 정보 (이름, 이메일, 전화번호 등)</li>
+    <li>위치 정보</li>
+    <li>기기 고유 식별자 (광고 ID 등)</li>
+    <li>브라우저 기록 또는 검색 내용</li>
+    <li>차단된 앱에서의 실제 콘텐츠</li>
+</ul>
+
+<h2>4. 데이터 저장 및 보안</h2>
+<p>모든 앱 데이터는 Android의 EncryptedSharedPreferences(AES256-GCM 암호화)를 사용하여 기기 내부 저장소에 암호화되어 저장됩니다. 데이터는 인터넷을 통해 전송되거나 외부 서버에 저장되지 않습니다.</p>
+
+<h2>5. 사용하는 권한 및 목적</h2>
+<ul>
+    <li><strong>VPN 권한:</strong> DNS 수준에서 특정 앱의 인터넷 접근을 차단하기 위해 사용. 실제 VPN 연결이나 트래픽 모니터링은 하지 않으며, DNS 쿼리 필터링만 수행합니다.</li>
+    <li><strong>접근성 서비스:</strong> 포어그라운드에서 실행 중인 앱을 감지하고 차단 대상 앱 실행 시 차단 화면을 표시하기 위해 사용합니다. 화면 내용을 기록하거나 전송하지 않습니다.</li>
+    <li><strong>기기 관리자(Device Admin):</strong> 자녀가 앱을 강제로 삭제하는 것을 방지합니다. PIN 없이는 기기 관리자 권한을 해제할 수 없습니다.</li>
+    <li><strong>부팅 수신:</strong> 기기 재시작 후 차단 서비스를 자동으로 복원하기 위해 사용합니다.</li>
+</ul>
+
+<h2>6. 제3자 서비스</h2>
+<p>TubeGuard는 앱 안정성 개선을 위해 Firebase Crashlytics를 사용할 수 있습니다. 크래시 발생 시 기기 정보 및 오류 로그가 Google Firebase 서버로 전송될 수 있습니다. 이 데이터에는 개인 식별 정보가 포함되지 않습니다.</p>
+<p>Firebase 개인정보처리방침: <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a></p>
+
+<h2>7. 아동 개인정보 보호</h2>
+<p>TubeGuard는 보호자가 사용하는 앱입니다. 본 앱은 아동의 개인 정보를 수집하지 않으며, 아동 관련 데이터를 외부로 전송하지 않습니다.</p>
+
+<h2>8. 데이터 삭제</h2>
+<p>앱을 삭제하면 기기에 저장된 모든 앱 데이터(설정, PIN, 차단 기록)가 완전히 삭제됩니다. 앱 내 설정에서도 모든 데이터를 초기화할 수 있습니다.</p>
+
+<h2>9. 방침 변경</h2>
+<p>본 개인정보처리방침은 변경될 수 있으며, 변경 시 이 페이지에 업데이트됩니다.</p>
+
+<h2>10. 문의</h2>
+<p>개인정보처리방침에 관한 문의사항이 있으시면 GitHub Issues를 통해 연락해 주세요.</p>
+
+</body>
+</html>
