@@ -3,8 +3,6 @@
     <uses-policies>
         <!-- Prevents the app from being uninstalled without first deactivating device admin -->
         <watch-login />
-        <reset-password />
         <force-lock />
-        <wipe-data />
     </uses-policies>
 </device-admin>
