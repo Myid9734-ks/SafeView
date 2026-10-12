@@ -48,6 +48,9 @@
     <string name="blocked_message_app">YouTube应用已被屏蔽。</string>
     <string name="blocked_message_browser">浏览器中的YouTube访问已被屏蔽。</string>
     <string name="blocked_message_kakao_game">KakaoTalk游戏已被屏蔽。</string>
+    <string name="blocked_message_kakao_news">KakaoTalk新闻已被屏蔽。</string>
+    <string name="blocked_message_kakao_shortform">KakaoTalk短视频已被屏蔽。</string>
+    <string name="blocked_message_kakao_ai">KakaoTalk AI已被屏蔽。</string>
     <string name="blocked_message_instagram">Instagram应用已被屏蔽。</string>
     <string name="blocked_message_facebook">Facebook应用已被屏蔽。</string>
     <string name="blocked_message_x">X(Twitter)应用已被屏蔽。</string>

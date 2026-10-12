@@ -41,6 +41,9 @@
     <string name="blocked_message_browser_app">브라우저 실행이 차단되었습니다.</string>
     <string name="blocked_message_tiktok">TikTok 앱 실행이 차단되었습니다.</string>
     <string name="blocked_message_kakao_game">카카오톡 게임이 차단되었습니다.</string>
+    <string name="blocked_message_kakao_news">카카오톡 소식탭이 차단되었습니다.</string>
+    <string name="blocked_message_kakao_shortform">카카오톡 숏폼탭이 차단되었습니다.</string>
+    <string name="blocked_message_kakao_ai">카카오톡 AI탭이 차단되었습니다.</string>
     <string name="blocked_message_instagram">Instagram 앱 실행이 차단되었습니다.</string>
     <string name="blocked_message_facebook">Facebook 앱 실행이 차단되었습니다.</string>
     <string name="blocked_message_x">X(Twitter) 앱 실행이 차단되었습니다.</string>

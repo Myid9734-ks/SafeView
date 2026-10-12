@@ -16,6 +16,9 @@ class BlockedActivity : Activity() {
         const val SOURCE_BROWSER = "browser"
         const val SOURCE_BROWSER_APP = "browser_app"
         const val SOURCE_KAKAO_GAME = "kakao_game"
+        const val SOURCE_KAKAO_NEWS = "kakao_news"
+        const val SOURCE_KAKAO_SHORTFORM = "kakao_shortform"
+        const val SOURCE_KAKAO_AI = "kakao_ai"
         const val SOURCE_TIKTOK = "tiktok"
         const val SOURCE_INSTAGRAM = "instagram"
         const val SOURCE_FACEBOOK = "facebook"
@@ -44,6 +47,9 @@ class BlockedActivity : Activity() {
             SOURCE_BROWSER -> "브라우저"
             SOURCE_BROWSER_APP -> "브라우저"
             SOURCE_KAKAO_GAME -> "카카오톡 게임"
+            SOURCE_KAKAO_NEWS -> "카카오톡 소식"
+            SOURCE_KAKAO_SHORTFORM -> "카카오톡 숏폼"
+            SOURCE_KAKAO_AI -> "카카오톡 AI"
             SOURCE_TIKTOK -> "TikTok"
             SOURCE_INSTAGRAM -> "Instagram"
             SOURCE_FACEBOOK -> "Facebook"
@@ -65,6 +71,9 @@ class BlockedActivity : Activity() {
             SOURCE_BROWSER -> getString(R.string.blocked_message_browser)
             SOURCE_BROWSER_APP -> getString(R.string.blocked_message_browser_app)
             SOURCE_KAKAO_GAME -> getString(R.string.blocked_message_kakao_game)
+            SOURCE_KAKAO_NEWS -> getString(R.string.blocked_message_kakao_news)
+            SOURCE_KAKAO_SHORTFORM -> getString(R.string.blocked_message_kakao_shortform)
+            SOURCE_KAKAO_AI -> getString(R.string.blocked_message_kakao_ai)
             SOURCE_TIKTOK -> getString(R.string.blocked_message_tiktok)
             SOURCE_INSTAGRAM -> getString(R.string.blocked_message_instagram)
             SOURCE_FACEBOOK -> getString(R.string.blocked_message_facebook)

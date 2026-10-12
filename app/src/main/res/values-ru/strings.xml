@@ -48,6 +48,9 @@
     <string name="blocked_message_app">Приложение YouTube заблокировано.</string>
     <string name="blocked_message_browser">Доступ к YouTube через браузер заблокирован.</string>
     <string name="blocked_message_kakao_game">Игра KakaoTalk заблокирована.</string>
+    <string name="blocked_message_kakao_news">Новости KakaoTalk заблокированы.</string>
+    <string name="blocked_message_kakao_shortform">Короткие видео KakaoTalk заблокированы.</string>
+    <string name="blocked_message_kakao_ai">AI KakaoTalk заблокирован.</string>
     <string name="blocked_message_instagram">Приложение Instagram заблокировано.</string>
     <string name="blocked_message_facebook">Приложение Facebook заблокировано.</string>
     <string name="blocked_message_x">Приложение X(Twitter) заблокировано.</string>

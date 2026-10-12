@@ -48,6 +48,9 @@
     <string name="blocked_message_app">YouTubeアプリがブロックされました。</string>
     <string name="blocked_message_browser">ブラウザからのYouTubeアクセスがブロックされました。</string>
     <string name="blocked_message_kakao_game">カカオトークのゲームがブロックされました。</string>
+    <string name="blocked_message_kakao_news">カカオトークのニュースがブロックされました。</string>
+    <string name="blocked_message_kakao_shortform">カカオトークのショートフォームがブロックされました。</string>
+    <string name="blocked_message_kakao_ai">カカオトークのAIがブロックされました。</string>
     <string name="blocked_message_instagram">Instagramアプリがブロックされました。</string>
     <string name="blocked_message_facebook">Facebookアプリがブロックされました。</string>
     <string name="blocked_message_x">X(Twitter)アプリがブロックされました。</string>

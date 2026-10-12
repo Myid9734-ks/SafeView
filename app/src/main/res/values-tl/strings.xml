@@ -48,6 +48,9 @@
     <string name="blocked_message_app">Na-block ang YouTube app.</string>
     <string name="blocked_message_browser">Na-block ang pag-access sa YouTube mula sa browser.</string>
     <string name="blocked_message_kakao_game">Na-block ang KakaoTalk Game.</string>
+    <string name="blocked_message_kakao_news">Na-block ang KakaoTalk News.</string>
+    <string name="blocked_message_kakao_shortform">Na-block ang KakaoTalk Shortform.</string>
+    <string name="blocked_message_kakao_ai">Na-block ang KakaoTalk AI.</string>
     <string name="blocked_message_instagram">Na-block ang Instagram app.</string>
     <string name="blocked_message_facebook">Na-block ang Facebook app.</string>
     <string name="blocked_message_x">Na-block ang X(Twitter) app.</string>

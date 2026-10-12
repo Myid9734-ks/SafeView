@@ -48,6 +48,9 @@
     <string name="blocked_message_app">แอป YouTube ถูกบล็อกแล้ว</string>
     <string name="blocked_message_browser">การเข้าถึง YouTube จากเบราว์เซอร์ถูกบล็อกแล้ว</string>
     <string name="blocked_message_kakao_game">เกม KakaoTalk ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_kakao_news">ข่าวสาร KakaoTalk ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_kakao_shortform">วิดีโอสั้น KakaoTalk ถูกบล็อกแล้ว</string>
+    <string name="blocked_message_kakao_ai">AI KakaoTalk ถูกบล็อกแล้ว</string>
     <string name="blocked_message_instagram">แอป Instagram ถูกบล็อกแล้ว</string>
     <string name="blocked_message_facebook">แอป Facebook ถูกบล็อกแล้ว</string>
     <string name="blocked_message_x">แอป X(Twitter) ถูกบล็อกแล้ว</string>

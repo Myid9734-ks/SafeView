@@ -1381,7 +1381,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             try {
                 val intent = Intent(this, BlockedActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_GAME)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_SHORTFORM)
                 }
                 startActivity(intent)
                 Log.i(TAG, "Launched BlockedActivity for KakaoTalk shortform tab")
@@ -1504,7 +1504,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             try {
                 val intent = Intent(this, BlockedActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_GAME)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_NEWS)
                 }
                 startActivity(intent)
                 Log.i(TAG, "Launched BlockedActivity for KakaoTalk news tab")
@@ -1561,7 +1561,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             try {
                 val intent = Intent(this, BlockedActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_GAME)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_AI)
                 }
                 startActivity(intent)
                 Log.i(TAG, "Launched BlockedActivity for KakaoTalk ChatGPT tab")

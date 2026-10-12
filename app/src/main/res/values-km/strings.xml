@@ -48,6 +48,9 @@
     <string name="blocked_message_app">កម្មវិធី YouTube ត្រូវបានបិទ។</string>
     <string name="blocked_message_browser">ការចូលប្រើ YouTube ពីកម្មវិធីរុករកត្រូវបានបិទ។</string>
     <string name="blocked_message_kakao_game">ហ្គេម KakaoTalk ត្រូវបានបិទ។</string>
+    <string name="blocked_message_kakao_news">ព័ត៌មាន KakaoTalk ត្រូវបានបិទ។</string>
+    <string name="blocked_message_kakao_shortform">វីដេអូខ្លី KakaoTalk ត្រូវបានបិទ។</string>
+    <string name="blocked_message_kakao_ai">AI KakaoTalk ត្រូវបានបិទ។</string>
     <string name="blocked_message_instagram">កម្មវិធី Instagram ត្រូវបានបិទ។</string>
     <string name="blocked_message_facebook">កម្មវិធី Facebook ត្រូវបានបិទ។</string>
     <string name="blocked_message_x">កម្មវិធី X(Twitter) ត្រូវបានបិទ។</string>

@@ -50,6 +50,9 @@
     <string name="blocked_message_browser_app">Browser has been blocked.</string>
     <string name="blocked_message_tiktok">TikTok app has been blocked.</string>
     <string name="blocked_message_kakao_game">KakaoTalk Game has been blocked.</string>
+    <string name="blocked_message_kakao_news">KakaoTalk News has been blocked.</string>
+    <string name="blocked_message_kakao_shortform">KakaoTalk Shortform has been blocked.</string>
+    <string name="blocked_message_kakao_ai">KakaoTalk AI has been blocked.</string>
     <string name="blocked_message_instagram">Instagram app has been blocked.</string>
     <string name="blocked_message_facebook">Facebook app has been blocked.</string>
     <string name="blocked_message_x">X (Twitter) app has been blocked.</string>

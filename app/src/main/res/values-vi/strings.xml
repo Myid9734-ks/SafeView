@@ -48,6 +48,9 @@
     <string name="blocked_message_app">Ứng dụng YouTube đã bị chặn.</string>
     <string name="blocked_message_browser">Truy cập YouTube từ trình duyệt đã bị chặn.</string>
     <string name="blocked_message_kakao_game">Trò chơi KakaoTalk đã bị chặn.</string>
+    <string name="blocked_message_kakao_news">Tin tức KakaoTalk đã bị chặn.</string>
+    <string name="blocked_message_kakao_shortform">Video ngắn KakaoTalk đã bị chặn.</string>
+    <string name="blocked_message_kakao_ai">AI KakaoTalk đã bị chặn.</string>
     <string name="blocked_message_instagram">Ứng dụng Instagram đã bị chặn.</string>
     <string name="blocked_message_facebook">Ứng dụng Facebook đã bị chặn.</string>
     <string name="blocked_message_x">Ứng dụng X(Twitter) đã bị chặn.</string>
