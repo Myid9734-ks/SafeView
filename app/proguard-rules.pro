@@ -1,20 +1,28 @@
 # Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
 
-# Keep TubeGuard service and receiver classes
--keep class com.safeguard.tubeguard.service.** { *; }
+# Activities
+-keep class com.safeguard.tubeguard.MainActivity { *; }
+-keep class com.safeguard.tubeguard.BlockedActivity { *; }
+-keep class com.safeguard.tubeguard.PinSetupActivity { *; }
+-keep class com.safeguard.tubeguard.PinVerifyActivity { *; }
+-keep class com.safeguard.tubeguard.LogActivity { *; }
+
+# Services (Android Framework 호출 필수)
+-keep class com.safeguard.tubeguard.service.TubeGuardVpnService { *; }
+-keep class com.safeguard.tubeguard.service.TubeGuardAccessibilityService { *; }
+
+# Receivers
 -keep class com.safeguard.tubeguard.receiver.** { *; }
--keep class com.safeguard.tubeguard.util.** { *; }
 
-# Keep accessibility service config
--keep class * extends android.accessibilityservice.AccessibilityService { *; }
+# PIN 암호화 클래스
+-keep class com.safeguard.tubeguard.util.PinManager { *; }
+-keep class com.safeguard.tubeguard.util.PrefsManager { *; }
+-keep class com.safeguard.tubeguard.util.BlockLogEntry { *; }
 
-# Keep VPN service
--keep class * extends android.net.VpnService { *; }
-
-# Keep broadcast receivers
--keep class * extends android.content.BroadcastReceiver { *; }
+# Firebase Crashlytics
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keep class com.google.firebase.crashlytics.** { *; }
 
 # Remove Log calls in release build
 -assumenosideeffects class android.util.Log {

@@ -1,17 +1,20 @@
 package com.safeguard.tubeguard.util
 
 import android.content.Context
-import java.security.MessageDigest
-import java.security.SecureRandom
 import android.util.Base64
+import java.security.SecureRandom
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
 class PinManager(private val context: Context) {
 
     private val prefsManager = PrefsManager.getInstance(context)
 
     companion object {
-        private const val HASH_ALGORITHM = "SHA-256"
-        private const val SALT_PREFIX = "TubeGuard_Salt_v1_"
+        private const val PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA256"
+        private const val ITERATIONS = 10000
+        private const val KEY_LENGTH = 256
+        private const val SALT_BYTES = 16
         private const val MIN_PIN_LENGTH = 4
         private const val MAX_PIN_LENGTH = 8
 
@@ -20,40 +23,37 @@ class PinManager(private val context: Context) {
         }
     }
 
-    /**
-     * Hash a PIN using SHA-256 with a static salt derived from the package name.
-     * This provides consistent hashing across app restarts without needing to store a salt.
-     */
-    private fun hashPin(pin: String): String {
-        val saltedPin = "$SALT_PREFIX$pin"
-        val digest = MessageDigest.getInstance(HASH_ALGORITHM)
-        val hashBytes = digest.digest(saltedPin.toByteArray(Charsets.UTF_8))
-        return Base64.encodeToString(hashBytes, Base64.NO_WRAP)
+    private fun generateSalt(): ByteArray {
+        val salt = ByteArray(SALT_BYTES)
+        SecureRandom().nextBytes(salt)
+        return salt
     }
 
-    /**
-     * Set a new PIN. Stores the hashed version in SharedPreferences.
-     * @param pin The plain-text PIN to store (4-8 digits)
-     * @return true if PIN was set successfully, false if PIN format is invalid
-     */
+    private fun hashPin(pin: String, salt: ByteArray): String {
+        val spec = PBEKeySpec(pin.toCharArray(), salt, ITERATIONS, KEY_LENGTH)
+        val factory = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM)
+        val hash = factory.generateSecret(spec).encoded
+        spec.clearPassword()
+        return Base64.encodeToString(hash, Base64.NO_WRAP)
+    }
+
     fun setPin(pin: String): Boolean {
         if (!isValidPin(pin)) return false
-        val hashed = hashPin(pin)
+        val salt = generateSalt()
+        val hashed = hashPin(pin, salt)
+        prefsManager.pinSalt = Base64.encodeToString(salt, Base64.NO_WRAP)
         prefsManager.pinHash = hashed
         prefsManager.hasPin = true
         return true
     }
 
-    /**
-     * Verify a PIN against the stored hash.
-     * @param pin The plain-text PIN to verify
-     * @return true if PIN matches, false otherwise
-     */
     fun verifyPin(pin: String): Boolean {
         if (!prefsManager.hasPin) return false
         val storedHash = prefsManager.pinHash
-        if (storedHash.isEmpty()) return false
-        val inputHash = hashPin(pin)
+        val storedSalt = prefsManager.pinSalt
+        if (storedHash.isEmpty() || storedSalt.isEmpty()) return false
+        val salt = Base64.decode(storedSalt, Base64.NO_WRAP)
+        val inputHash = hashPin(pin, salt)
         return inputHash == storedHash
     }
 

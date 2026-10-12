@@ -33,6 +33,7 @@ import androidx.appcompat.widget.SwitchCompat
 import com.safeguard.tubeguard.receiver.TimerExpiredReceiver
 import com.safeguard.tubeguard.receiver.TubeGuardDeviceAdminReceiver
 import com.safeguard.tubeguard.service.TubeGuardVpnService
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.safeguard.tubeguard.util.FileLogger
 import com.safeguard.tubeguard.util.PinManager
 import com.safeguard.tubeguard.util.PrefsManager
@@ -204,12 +205,37 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupListeners()
+        showCrashlyticsConsentIfNeeded()
         requestNotificationPermission()
         requestStoragePermissionIfNeeded()
         scheduleMidnightReset()
         if (!prefsManager.initialSetupComplete) {
             ensurePinSetup()
         }
+    }
+
+    private fun showCrashlyticsConsentIfNeeded() {
+        val localPrefs = getPreferences(MODE_PRIVATE)
+        if (localPrefs.getBoolean("crashlytics_consent_asked", false)) return
+        AlertDialog.Builder(this)
+            .setTitle("앱 개선 데이터 수집 동의")
+            .setMessage("앱 안정성 개선을 위해 오류 발생 시 기기 정보와 오류 로그를 수집할 수 있습니다.\n\n개인 식별 정보(이름, 연락처 등)는 수집하지 않습니다.\n\n동의하지 않아도 앱의 모든 기능을 정상적으로 사용할 수 있습니다.")
+            .setPositiveButton("동의") { _, _ ->
+                localPrefs.edit()
+                    .putBoolean("crashlytics_consent_asked", true)
+                    .putBoolean("crashlytics_consent_granted", true)
+                    .apply()
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+            }
+            .setNegativeButton("거부") { _, _ ->
+                localPrefs.edit()
+                    .putBoolean("crashlytics_consent_asked", true)
+                    .putBoolean("crashlytics_consent_granted", false)
+                    .apply()
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun requestStoragePermissionIfNeeded() {

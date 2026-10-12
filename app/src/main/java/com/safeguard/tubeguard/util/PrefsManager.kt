@@ -44,6 +44,7 @@ class PrefsManager(context: Context) {
         const val KEY_TIMER_START_EPOCH = "timer_start_epoch"
         const val KEY_TIMER_RESET_DATE = "timer_reset_date"
         private const val KEY_INITIAL_SETUP_COMPLETE = "initial_setup_complete"
+        const val KEY_PIN_SALT = "pin_salt"
 
         @Volatile
         private var instance: PrefsManager? = null
@@ -86,6 +87,10 @@ class PrefsManager(context: Context) {
     var initialSetupComplete: Boolean
         get() = prefs.getBoolean(KEY_INITIAL_SETUP_COMPLETE, false)
         set(value) = prefs.edit().putBoolean(KEY_INITIAL_SETUP_COMPLETE, value).apply()
+
+    var pinSalt: String
+        get() = prefs.getString(KEY_PIN_SALT, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_PIN_SALT, value).apply()
 
     fun incrementBlockCount() {
         blockCount = blockCount + 1
