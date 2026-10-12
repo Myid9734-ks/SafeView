@@ -205,12 +205,13 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupListeners()
-        showCrashlyticsConsentIfNeeded()
         requestNotificationPermission()
         requestStoragePermissionIfNeeded()
         scheduleMidnightReset()
         if (!prefsManager.initialSetupComplete) {
             ensurePinSetup()
+        } else {
+            showCrashlyticsConsentIfNeeded()
         }
     }
 
@@ -464,6 +465,7 @@ class MainActivity : AppCompatActivity() {
         pendingAdminUnlock = false
         adminUnlocked = false
         prefsManager.initialSetupComplete = true
+        showCrashlyticsConsentIfNeeded()
         // YouTube 차단 자동 활성화
         handleEnableBlocking()
         updateAdminSectionVisibility()
@@ -817,7 +819,7 @@ class MainActivity : AppCompatActivity() {
             tvVpnStatus.setTextColor(getColor(R.color.green_active))
         } else if (hasPermission) {
             tvVpnStatus.text = getString(R.string.vpn_permission_granted)
-            tvVpnStatus.setTextColor(getColor(R.color.orange_warning))
+            tvVpnStatus.setTextColor(getColor(R.color.green_active))
         } else {
             tvVpnStatus.text = getString(R.string.vpn_permission_needed)
             tvVpnStatus.setTextColor(getColor(R.color.red_inactive))
