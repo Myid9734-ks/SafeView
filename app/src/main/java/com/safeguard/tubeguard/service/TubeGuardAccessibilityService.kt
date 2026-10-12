@@ -1990,7 +1990,24 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                     Log.w(TAG, "Watcher: isBlocking=FALSE but targeted app in foreground: $pkg")
                 }
                 if (prefsManager.isBlocking) {
-                    val pkg = rootInActiveWindow?.packageName?.toString()
+                    val pkg = rootInActiveWindow?.packageName?.toString() ?: ""
+                    // 모든 차단 대상 앱 폴링: 타이머 만료 시점에 이미 포그라운드에 있는 앱 즉시 차단
+                    when {
+                        pkg in YOUTUBE_PACKAGES -> blockYouTubeApp(pkg)
+                        pkg in TIKTOK_PACKAGES -> blockTikTokApp(pkg)
+                        pkg in INSTAGRAM_PACKAGES -> blockInstagramApp(pkg)
+                        pkg in FACEBOOK_PACKAGES -> blockFacebookApp(pkg)
+                        pkg in X_PACKAGES -> blockXApp(pkg)
+                        pkg in SNAPCHAT_PACKAGES -> blockSnapchatApp(pkg)
+                        pkg in TWITCH_PACKAGES -> blockTwitchApp(pkg)
+                        pkg in AFREECA_PACKAGES -> blockAfreecaApp(pkg)
+                        pkg in CHZZK_PACKAGES -> blockChzzkApp(pkg)
+                        pkg in DISCORD_PACKAGES -> blockDiscordApp(pkg)
+                        pkg in REDDIT_PACKAGES -> blockRedditApp(pkg)
+                        pkg in PINTEREST_PACKAGES -> blockPinterestApp(pkg)
+                        pkg in BEREAL_PACKAGES -> blockBeRealApp(pkg)
+                        pkg.isNotEmpty() && isBrowser(pkg) -> blockBrowserApp(pkg)
+                    }
                     if (pkg == KAKAO_PACKAGE) {
                         val now = System.currentTimeMillis()
                         val withinKillWindow = now - kakaoLastKilledAt < 10000L
