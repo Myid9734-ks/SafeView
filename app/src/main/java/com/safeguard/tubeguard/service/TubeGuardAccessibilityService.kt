@@ -75,7 +75,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
 
         // 치지직 (Chzzk) — 타이머 연동 차단
         private val CHZZK_PACKAGES = setOf(
-            "com.naver.chzzk"
+            "com.navercorp.game.android.community"
         )
 
         // Discord — 타이머 연동 차단
