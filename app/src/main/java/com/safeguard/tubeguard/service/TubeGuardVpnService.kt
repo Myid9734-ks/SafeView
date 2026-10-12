@@ -505,7 +505,7 @@ class TubeGuardVpnService : VpnService() {
             i += 2
         }
         if ((length % 2) != 0) {
-            sum += (data[offset + length - 1].toInt() and 0xFF) shl 8
+            sum += (data[offset + length - 1].toInt() and 0xFF)
         }
         while (sum ushr 16 != 0) {
             sum = (sum and 0xFFFF) + (sum ushr 16)

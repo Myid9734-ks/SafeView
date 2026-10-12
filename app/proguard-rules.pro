@@ -15,8 +15,17 @@
 -keep class com.safeguard.tubeguard.receiver.** { *; }
 
 # PIN 암호화 클래스
--keep class com.safeguard.tubeguard.util.PinManager { *; }
--keep class com.safeguard.tubeguard.util.PrefsManager { *; }
+-keep class com.safeguard.tubeguard.util.PinManager {
+    public boolean verifyPin(java.lang.String);
+    public boolean setPin(java.lang.String);
+    public boolean hasPin();
+    public void clearPin();
+    public boolean changePin(java.lang.String, java.lang.String);
+}
+-keep class com.safeguard.tubeguard.util.PrefsManager {
+    public static com.safeguard.tubeguard.util.PrefsManager getInstance(android.content.Context);
+    public *;
+}
 -keep class com.safeguard.tubeguard.util.BlockLogEntry { *; }
 
 # Firebase Crashlytics

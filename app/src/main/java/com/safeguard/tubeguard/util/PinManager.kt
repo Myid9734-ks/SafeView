@@ -67,6 +67,7 @@ class PinManager(private val context: Context) {
      */
     fun clearPin() {
         prefsManager.pinHash = ""
+        prefsManager.pinSalt = ""
         prefsManager.hasPin = false
     }
 
