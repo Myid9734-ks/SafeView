@@ -3,6 +3,7 @@ package com.safeguard.tubeguard
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.safeguard.tubeguard.billing.BillingManager
@@ -43,14 +44,22 @@ class PurchaseActivity : AppCompatActivity() {
             btnContinueTrial.visibility = android.view.View.VISIBLE
         }
 
-        billingManager = BillingManager(this) {
-            // Purchase complete callback
-            runOnUiThread {
-                Toast.makeText(this, getString(R.string.purchase_success), Toast.LENGTH_LONG).show()
-                setResult(RESULT_OK)
-                finish()
+        billingManager = BillingManager(this,
+            onPurchaseComplete = {
+                runOnUiThread {
+                    Toast.makeText(this, getString(R.string.purchase_success), Toast.LENGTH_LONG).show()
+                    setResult(RESULT_OK)
+                    finish()
+                }
+            },
+            onProductReady = { price ->
+                runOnUiThread {
+                    if (price != null) {
+                        btnPurchase.text = getString(R.string.purchase_button_format, price)
+                    }
+                }
             }
-        }
+        )
         billingManager.startConnection()
 
         btnPurchase.setOnClickListener {
@@ -66,23 +75,17 @@ class PurchaseActivity : AppCompatActivity() {
             finish()
         }
 
-        // Update price when billing is ready
-        btnPurchase.postDelayed({
-            val price = billingManager.getFormattedPrice()
-            if (price != null) {
-                btnPurchase.text = getString(R.string.purchase_button_format, price)
+        // Handle back press
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (trialExpired) {
+                    Toast.makeText(this@PurchaseActivity, getString(R.string.purchase_required), Toast.LENGTH_SHORT).show()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
             }
-        }, 2000)
-    }
-
-    override fun onBackPressed() {
-        val trialExpired = intent.getBooleanExtra(EXTRA_TRIAL_EXPIRED, false)
-        if (trialExpired) {
-            // Cannot go back if trial expired - must purchase
-            Toast.makeText(this, getString(R.string.purchase_required), Toast.LENGTH_SHORT).show()
-        } else {
-            super.onBackPressed()
-        }
+        })
     }
 
     override fun onDestroy() {

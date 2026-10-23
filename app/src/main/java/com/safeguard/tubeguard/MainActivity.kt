@@ -181,12 +181,11 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // Purchase completed, continue normally
+            // Purchase completed
             Toast.makeText(this, getString(R.string.purchase_success), Toast.LENGTH_SHORT).show()
-        } else {
-            // User chose to continue trial (only possible if trial still active)
-            // If trial expired, PurchaseActivity blocks back press
         }
+        // Proceed with setup after returning from PurchaseActivity
+        proceedWithSetup()
     }
 
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -222,11 +221,13 @@ class MainActivity : AppCompatActivity() {
         trialManager = TrialManager(this)
 
         // Initialize billing and restore purchases
-        billingManager = BillingManager(this) {
-            runOnUiThread {
-                Toast.makeText(this, getString(R.string.purchase_restored), Toast.LENGTH_SHORT).show()
+        billingManager = BillingManager(this,
+            onPurchaseComplete = {
+                runOnUiThread {
+                    Toast.makeText(this, getString(R.string.purchase_restored), Toast.LENGTH_SHORT).show()
+                }
             }
-        }
+        )
         billingManager.startConnection()
 
         initViews()

@@ -9,28 +9,40 @@ import kotlinx.coroutines.*
 
 class BillingManager(
     private val context: Context,
-    private val onPurchaseComplete: (() -> Unit)? = null
+    private val onPurchaseComplete: (() -> Unit)? = null,
+    private val onProductReady: ((price: String?) -> Unit)? = null
 ) : PurchasesUpdatedListener {
 
     companion object {
         private const val TAG = "BillingManager"
         const val PRODUCT_ID = "tubeguard_premium"
+        private const val MAX_RETRY_COUNT = 3
     }
 
     private var billingClient: BillingClient? = null
     private var productDetails: ProductDetails? = null
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private var retryCount = 0
 
     fun startConnection() {
         billingClient = BillingClient.newBuilder(context)
             .setListener(this)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder()
+                    .enableOneTimeProducts()
+                    .build()
+            )
             .build()
 
+        connectBillingClient()
+    }
+
+    private fun connectBillingClient() {
         billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.i(TAG, "Billing client connected")
+                    retryCount = 0
                     queryProduct()
                     queryExistingPurchases()
                 }
@@ -38,8 +50,21 @@ class BillingManager(
 
             override fun onBillingServiceDisconnected() {
                 Log.w(TAG, "Billing service disconnected")
+                retryConnection()
             }
         })
+    }
+
+    private fun retryConnection() {
+        if (retryCount < MAX_RETRY_COUNT) {
+            retryCount++
+            val delayMs = (1000L * retryCount)
+            Log.i(TAG, "Retrying billing connection ($retryCount/$MAX_RETRY_COUNT)")
+            scope.launch {
+                delay(delayMs)
+                connectBillingClient()
+            }
+        }
     }
 
     private fun queryProduct() {
@@ -57,6 +82,7 @@ class BillingManager(
             if (result.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
                 productDetails = productDetailsList[0]
                 Log.i(TAG, "Product loaded: ${productDetails?.title}")
+                onProductReady?.invoke(getFormattedPrice())
             }
         }
     }
