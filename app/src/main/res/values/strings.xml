@@ -168,6 +168,21 @@
     <string name="time_label_hours">hours</string>
     <string name="time_label_minutes">min</string>
 
+    <!-- Purchase / Trial -->
+    <string name="trial_remaining_format">Free trial: %d days remaining</string>
+    <string name="trial_expired_title">Free trial period has ended</string>
+    <string name="trial_expired_description">Your 5-day free trial has ended.\nPurchase to continue using all features.</string>
+    <string name="trial_active_description">You can use all features for free during the %d-day trial period.\nPurchase now for permanent access.</string>
+    <string name="purchase_features_title">Premium features included</string>
+    <string name="purchase_features_list">• YouTube / TikTok / Instagram blocking\n• DNS-level VPN blocking\n• Time management timer\n• PIN protection settings\n• Device admin (uninstall protection)\n• One-time purchase, permanent access</string>
+    <string name="purchase_button">Purchase</string>
+    <string name="purchase_button_format">Purchase (%s)</string>
+    <string name="continue_trial">Continue free trial</string>
+    <string name="purchase_success">Purchase complete! All features are unlocked.</string>
+    <string name="purchase_loading">Loading store information. Please wait.</string>
+    <string name="purchase_required">Purchase is required to use the app.</string>
+    <string name="purchase_restored">Previous purchase has been restored.</string>
+
     <!-- Log Screen -->
     <string name="log_title">Block Log</string>
     <string name="log_delete_title">Delete Logs</string>

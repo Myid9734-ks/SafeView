@@ -45,6 +45,9 @@ class PrefsManager(context: Context) {
         const val KEY_TIMER_RESET_DATE = "timer_reset_date"
         private const val KEY_INITIAL_SETUP_COMPLETE = "initial_setup_complete"
         const val KEY_PIN_SALT = "pin_salt"
+        private const val KEY_IS_PREMIUM = "is_premium"
+        private const val KEY_PURCHASE_TOKEN = "purchase_token"
+        private const val KEY_TRIAL_START_DATE = "trial_start_date"
 
         @Volatile
         private var instance: PrefsManager? = null
@@ -91,6 +94,18 @@ class PrefsManager(context: Context) {
     var pinSalt: String
         get() = prefs.getString(KEY_PIN_SALT, "") ?: ""
         set(value) = prefs.edit().putString(KEY_PIN_SALT, value).apply()
+
+    var isPremium: Boolean
+        get() = prefs.getBoolean(KEY_IS_PREMIUM, false)
+        set(value) = prefs.edit().putBoolean(KEY_IS_PREMIUM, value).apply()
+
+    var purchaseToken: String
+        get() = prefs.getString(KEY_PURCHASE_TOKEN, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_PURCHASE_TOKEN, value).apply()
+
+    var trialStartDate: Long
+        get() = prefs.getLong(KEY_TRIAL_START_DATE, 0L)
+        set(value) = prefs.edit().putLong(KEY_TRIAL_START_DATE, value).apply()
 
     fun incrementBlockCount() {
         blockCount = blockCount + 1

@@ -30,6 +30,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import androidx.appcompat.widget.SwitchCompat
+import com.safeguard.tubeguard.billing.BillingManager
+import com.safeguard.tubeguard.billing.TrialManager
 import com.safeguard.tubeguard.receiver.TimerExpiredReceiver
 import com.safeguard.tubeguard.receiver.TubeGuardDeviceAdminReceiver
 import com.safeguard.tubeguard.service.TubeGuardVpnService
@@ -52,6 +54,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pinManager: PinManager
     private lateinit var devicePolicyManager: DevicePolicyManager
     private lateinit var adminComponentName: ComponentName
+    private lateinit var billingManager: BillingManager
+    private lateinit var trialManager: TrialManager
+    private var trialCheckDone = false
 
     // Views
     private lateinit var switchBlocking: SwitchCompat
@@ -172,6 +177,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val purchaseLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Purchase completed, continue normally
+            Toast.makeText(this, getString(R.string.purchase_success), Toast.LENGTH_SHORT).show()
+        } else {
+            // User chose to continue trial (only possible if trial still active)
+            // If trial expired, PurchaseActivity blocks back press
+        }
+    }
+
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -202,12 +219,59 @@ class MainActivity : AppCompatActivity() {
         pinManager = PinManager(this)
         devicePolicyManager = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
         adminComponentName = ComponentName(this, TubeGuardDeviceAdminReceiver::class.java)
+        trialManager = TrialManager(this)
+
+        // Initialize billing and restore purchases
+        billingManager = BillingManager(this) {
+            runOnUiThread {
+                Toast.makeText(this, getString(R.string.purchase_restored), Toast.LENGTH_SHORT).show()
+            }
+        }
+        billingManager.startConnection()
 
         initViews()
         setupListeners()
         requestNotificationPermission()
         requestStoragePermissionIfNeeded()
         scheduleMidnightReset()
+
+        // Check trial/purchase status before proceeding
+        checkTrialAndPurchaseStatus()
+    }
+
+    private fun checkTrialAndPurchaseStatus() {
+        // Already purchased → skip trial check
+        if (prefsManager.isPremium) {
+            billingManager.queryExistingPurchases()
+            proceedWithSetup()
+            return
+        }
+
+        trialManager.checkTrialStatus { isTrialActive, remainingDays ->
+            runOnUiThread {
+                trialCheckDone = true
+                if (!isTrialActive) {
+                    // Trial expired → must purchase
+                    val intent = Intent(this, PurchaseActivity::class.java).apply {
+                        putExtra(PurchaseActivity.EXTRA_TRIAL_EXPIRED, true)
+                        putExtra(PurchaseActivity.EXTRA_REMAINING_DAYS, 0)
+                    }
+                    purchaseLauncher.launch(intent)
+                } else if (remainingDays <= 2) {
+                    // Trial ending soon → show purchase suggestion
+                    val intent = Intent(this, PurchaseActivity::class.java).apply {
+                        putExtra(PurchaseActivity.EXTRA_TRIAL_EXPIRED, false)
+                        putExtra(PurchaseActivity.EXTRA_REMAINING_DAYS, remainingDays)
+                    }
+                    purchaseLauncher.launch(intent)
+                } else {
+                    proceedWithSetup()
+                }
+            }
+        }
+    }
+
+    private fun proceedWithSetup() {
         if (!prefsManager.initialSetupComplete) {
             ensurePinSetup()
         } else {
@@ -300,6 +364,11 @@ class MainActivity : AppCompatActivity() {
         if (!pendingAdminUnlock) {
             adminUnlocked = false
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        billingManager.destroy()
     }
 
     private fun initViews() {

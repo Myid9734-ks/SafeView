@@ -28,10 +28,17 @@
 }
 -keep class com.safeguard.tubeguard.util.BlockLogEntry { *; }
 
-# Firebase Crashlytics
+# Billing
+-keep class com.safeguard.tubeguard.billing.BillingManager { *; }
+-keep class com.safeguard.tubeguard.billing.TrialManager { *; }
+-keep class com.safeguard.tubeguard.PurchaseActivity { *; }
+-keep class com.android.billingclient.** { *; }
+
+# Firebase Crashlytics & Firestore
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
 -keep class com.google.firebase.crashlytics.** { *; }
+-keep class com.google.firebase.firestore.** { *; }
 
 # Remove Log calls in release build
 -assumenosideeffects class android.util.Log {
