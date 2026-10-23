@@ -197,6 +197,10 @@ class TubeGuardVpnService : VpnService() {
             // Allow our own app to bypass VPN to avoid recursion
             builder.addDisallowedApplication(packageName)
 
+            // Exclude Samsung Wallet from VPN to prevent payment/NFC issues
+            try { builder.addDisallowedApplication("com.samsung.android.spay") } catch (_: Exception) {}
+            try { builder.addDisallowedApplication("com.samsung.android.samsungpay.gear") } catch (_: Exception) {}
+
             vpnInterface = builder.establish()
             if (vpnInterface == null) {
                 Log.e(TAG, "Failed to establish VPN interface")

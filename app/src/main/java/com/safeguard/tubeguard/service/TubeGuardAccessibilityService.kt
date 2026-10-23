@@ -188,9 +188,19 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         private val BLOCKED_SETTINGS_ACTIVITIES = setOf(
             "com.android.settings.DeviceAdminAdd",          // 기기 관리자 해제 화면
             "com.android.settings.applications.AppInfoBase", // 앱 정보 (강제종료 버튼 있음)
-            "com.android.settings.applications.InstalledAppDetailsTop"
+            "com.android.settings.applications.InstalledAppDetailsTop",
+            "ChannelNotificationSettings",                   // 알림 카테고리 (VPN 알림 끄기 방지)
+            "AppNotificationSettings",                       // 앱 알림 설정
+            "ChannelGroupNotificationSettings"               // 알림 그룹 설정
         )
         private const val SETTINGS_PACKAGE = "com.android.settings"
+
+        // 설정 앱 패키지 — PIN 입력 후에만 접속 허용
+        private val SETTINGS_PACKAGES = setOf(
+            "com.android.settings",
+            "com.samsung.android.app.routines",      // 빅스비 루틴 (자동화로 우회 가능)
+            "com.samsung.accessibility"              // 접근성 설정 바로가기
+        )
 
         // 앱 스토어: 타이머(isBlocking)와 무관하게 항상 PIN 입력 후에만 접속 허용
         private val STORE_PACKAGES = setOf(
@@ -209,6 +219,18 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         // PIN 인증으로 잠금 해제된 스토어 패키지. 다른 앱으로 이동하면 다시 잠김.
         @Volatile
         var unlockedStorePackage: String? = null
+
+        // 스토어 PIN 프롬프트 쿨다운 — PinVerifyActivity에서 취소 시에도 갱신하여 연타 방지
+        @Volatile
+        var storePinPromptedAt: Long = 0L
+
+        // PIN 인증으로 잠금 해제된 설정 앱. 다른 앱으로 이동하면 다시 잠김.
+        @Volatile
+        var isSettingsUnlocked: Boolean = false
+
+        // 설정 PIN 프롬프트 쿨다운
+        @Volatile
+        var settingsPinPromptedAt: Long = 0L
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -258,7 +280,6 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     private var installedBrowsers: Set<String> = emptySet()
     private var installedBrowsersRefreshedAt: Long = 0L
     private var browserCheckPending: Boolean = false
-    private var storePinPromptedAt: Long = 0L
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -293,9 +314,10 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             currentKakaoClass = event.className?.toString() ?: ""
         }
 
-        // 스토어 잠금은 타이머와 무관하게 항상 적용
+        // 스토어/설정 잠금은 타이머와 무관하게 항상 적용
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             handleStoreGate(packageName)
+            handleSettingsGate(packageName)
         }
 
         if (!prefsManager.isBlocking) {
@@ -551,6 +573,63 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         }
     }
 
+    /**
+     * 설정 앱 진입 시 PIN 요구. PIN 인증 후에는 다른 앱으로 이동할 때까지 허용.
+     */
+    private fun handleSettingsGate(packageName: String) {
+        if (packageName in SETTINGS_PACKAGES) {
+            if (isSettingsUnlocked) return
+            // 강제종료를 위해 직접 열었을 때는 간섭하지 않음
+            if (isForceStopSettingsOpen) return
+            promptSettingsPin(packageName)
+        } else if (isSettingsUnlocked && !isSettingsTransientPackage(packageName)) {
+            Log.i(TAG, "Left settings → relocking")
+            isSettingsUnlocked = false
+        }
+    }
+
+    private fun isSettingsTransientPackage(packageName: String): Boolean {
+        if (packageName == this.packageName) return true
+        if (packageName in SETTINGS_PACKAGES) return true
+        if (packageName == "android" || packageName == "com.android.systemui") return true
+        // 키보드(IME)
+        return try {
+            val imm = getSystemService(InputMethodManager::class.java)
+            imm?.enabledInputMethodList?.any { it.packageName == packageName } == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun promptSettingsPin(packageName: String) {
+        if (!PinManager(this).hasPin()) return
+        val now = System.currentTimeMillis()
+
+        if (now - settingsPinPromptedAt < 3000L) {
+            performGlobalAction(GLOBAL_ACTION_HOME)
+            return
+        }
+        settingsPinPromptedAt = now
+
+        Log.i(TAG, "Settings opened ($packageName) — requiring PIN")
+        prefsManager.addBlockLog("설정", "설정 실행 → 비밀번호 요청: $packageName")
+
+        performGlobalAction(GLOBAL_ACTION_HOME)
+        handler.postDelayed({
+            try {
+                val intent = Intent(this, PinVerifyActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(PinVerifyActivity.EXTRA_PURPOSE, PinVerifyActivity.PURPOSE_SETTINGS_UNLOCK)
+                    putExtra(PinVerifyActivity.EXTRA_TARGET_PACKAGE, packageName)
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch PIN screen for settings: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+        }, 300)
+    }
+
     private fun isStoreTransientPackage(packageName: String): Boolean {
         if (packageName == this.packageName || packageName in STORE_TRANSIENT_PACKAGES) return true
         // 키보드(IME) 윈도우도 스토어 사용 중 뜨므로 제외
@@ -568,12 +647,20 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             return
         }
         val now = System.currentTimeMillis()
-        if (now - storePinPromptedAt < 1500L) return
+
+        // 쿨다운 중이라도 스토어가 보이지 않도록 무조건 홈으로 이동
+        if (now - storePinPromptedAt < 3000L) {
+            performGlobalAction(GLOBAL_ACTION_HOME)
+            return
+        }
         storePinPromptedAt = now
 
         Log.i(TAG, "Store opened ($packageName) — requiring PIN")
         prefsManager.addBlockLog("스토어", "스토어 실행 → 비밀번호 요청: $packageName")
-        handler.post {
+
+        // 먼저 홈으로 보낸 뒤 PIN 화면을 띄움 (스토어가 잠깐이라도 보이지 않게)
+        performGlobalAction(GLOBAL_ACTION_HOME)
+        handler.postDelayed({
             try {
                 val intent = Intent(this, PinVerifyActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -585,7 +672,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 Log.e(TAG, "Failed to launch PIN screen for store: ${e.message}")
                 performGlobalAction(GLOBAL_ACTION_HOME)
             }
-        }
+        }, 300)
     }
 
     private fun handleSettingsScreen(className: String) {

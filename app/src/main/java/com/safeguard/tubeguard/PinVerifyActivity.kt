@@ -24,6 +24,7 @@ class PinVerifyActivity : AppCompatActivity() {
         const val EXTRA_PURPOSE = "extra_purpose"
         const val EXTRA_TARGET_PACKAGE = "extra_target_package"
         const val PURPOSE_STORE_UNLOCK = "store_unlock"
+        const val PURPOSE_SETTINGS_UNLOCK = "settings_unlock"
         private const val MAX_ATTEMPTS = 5
         private const val LOCKOUT_DURATION_MS = 30_000L // 30 seconds
     }
@@ -93,7 +94,10 @@ class PinVerifyActivity : AppCompatActivity() {
 
         if (pinManager.verifyPin(pin)) {
             // Success
-            if (isStoreUnlock()) openUnlockedStore()
+            when {
+                isStoreUnlock() -> openUnlockedStore()
+                isSettingsUnlock() -> openUnlockedSettings()
+            }
             setResult(RESULT_PIN_VERIFIED)
             finish()
         } else {
@@ -156,6 +160,9 @@ class PinVerifyActivity : AppCompatActivity() {
     private fun isStoreUnlock(): Boolean =
         intent.getStringExtra(EXTRA_PURPOSE) == PURPOSE_STORE_UNLOCK
 
+    private fun isSettingsUnlock(): Boolean =
+        intent.getStringExtra(EXTRA_PURPOSE) == PURPOSE_SETTINGS_UNLOCK
+
     /** 스토어 잠금 해제 후 스토어를 다시 앞으로 가져옴 */
     private fun openUnlockedStore() {
         val target = intent.getStringExtra(EXTRA_TARGET_PACKAGE) ?: return
@@ -166,15 +173,29 @@ class PinVerifyActivity : AppCompatActivity() {
         }
     }
 
-    /** 스토어 잠금 화면에서 취소 시 스토어로 돌아가지 않도록 홈으로 이동 */
+    /** 설정 잠금 해제 후 설정을 다시 앞으로 가져옴 */
+    private fun openUnlockedSettings() {
+        val target = intent.getStringExtra(EXTRA_TARGET_PACKAGE) ?: return
+        TubeGuardAccessibilityService.isSettingsUnlocked = true
+        packageManager.getLaunchIntentForPackage(target)?.let {
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(it)
+        }
+    }
+
+    /** 잠금 화면에서 취소 시 홈으로 이동 + 연타 방지 쿨다운 */
     private fun cancel() {
         setResult(RESULT_CANCELED)
+        val now = System.currentTimeMillis()
         if (isStoreUnlock()) {
-            startActivity(Intent(Intent.ACTION_MAIN).apply {
-                addCategory(Intent.CATEGORY_HOME)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            })
+            TubeGuardAccessibilityService.storePinPromptedAt = now
+        } else if (isSettingsUnlock()) {
+            TubeGuardAccessibilityService.settingsPinPromptedAt = now
         }
+        startActivity(Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
         finish()
     }
 

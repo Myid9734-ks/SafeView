@@ -274,7 +274,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun proceedWithSetup() {
         if (!prefsManager.initialSetupComplete) {
-            ensurePinSetup()
+            initialSetupRunning = true
+            pendingAdminUnlock = true
+            proceedSetupWizard()
         } else {
             showCrashlyticsConsentIfNeeded()
         }
@@ -344,14 +346,12 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         prefsManager.checkMidnightReset()
-        if (initialSetupRunning) {
+        if (initialSetupRunning && !prefsManager.initialSetupComplete) {
             pendingAdminUnlock = true
             updateAllStatusDisplays()
-            // PIN이 설정된 후에만 마법사를 진행 (설정 전에는 PIN 다이얼로그가 먼저 처리되어야 함)
-            if (pinManager.hasPin()) {
-                proceedSetupWizard()
-            }
+            proceedSetupWizard()
         } else {
+            initialSetupRunning = false
             pendingAdminUnlock = false
             updateAdminSectionVisibility()
             updateAllStatusDisplays()
@@ -473,8 +473,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun ensurePinSetup() {
         if (!pinManager.hasPin()) {
-            initialSetupRunning = true
-            pendingAdminUnlock = true
             AlertDialog.Builder(this)
                 .setTitle(getString(R.string.admin_pin_setup_title))
                 .setMessage(getString(R.string.admin_pin_setup_message))
@@ -487,6 +485,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun proceedSetupWizard() {
+        // 이미 초기 설정이 완료된 경우 중복 실행 방지
+        if (prefsManager.initialSetupComplete) {
+            initialSetupRunning = false
+            return
+        }
+
         // VPN 확인
         val vpnIntent = VpnService.prepare(this)
         if (vpnIntent != null) {
@@ -530,17 +534,41 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        // 정확한 알람 권한 확인
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.exact_alarm_title))
+                    .setMessage(getString(R.string.exact_alarm_message))
+                    .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
+                        pendingAdminUnlock = true
+                        startActivity(android.content.Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                    }
+                    .setCancelable(false)
+                    .show()
+                return
+            }
+        }
+
+        // PIN 설정 (마지막 단계)
+        if (!pinManager.hasPin()) {
+            ensurePinSetup()
+            return
+        }
+
         // 모든 설정 완료
         initialSetupRunning = false
         pendingAdminUnlock = false
         adminUnlocked = false
         prefsManager.initialSetupComplete = true
-        showCrashlyticsConsentIfNeeded()
-        // YouTube 차단 자동 활성화
-        handleEnableBlocking()
+        // YouTube 차단 자동 활성화 (셋업에서 VPN 권한을 이미 받았으므로 바로 시작)
+        pendingEnableBlocking = true
+        startVpnService()
         updateAdminSectionVisibility()
-        checkExactAlarmPermission()
         Toast.makeText(this, getString(R.string.setup_complete), Toast.LENGTH_LONG).show()
+        // Crashlytics 동의는 차단 활성화 후 마지막에 표시
+        showCrashlyticsConsentIfNeeded()
     }
 
     // ─────────────────────────── Timer Logic ───────────────────────────
@@ -795,6 +823,12 @@ class MainActivity : AppCompatActivity() {
     // ─────────────────────────── Blocking Logic ───────────────────────────
 
     private fun handleEnableBlocking() {
+        // VPN이 이미 실행 중이면 중복 VPN 다이얼로그 방지
+        if (prefsManager.isBlocking) {
+            updateBlockingSwitchSilently(true)
+            return
+        }
+
         // If timer is running, stop it first
         if (prefsManager.timerIsRunning) {
             prefsManager.pauseTimer()
