@@ -5,16 +5,20 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
+def versionMajor = 1
+def versionMinor = 1
+def versionPatch = 0
+
 android {
     namespace 'com.safeguard.tubeguard'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.safeguard.tubeguard"
         minSdk 26
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        targetSdk 36
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         viewBinding true
@@ -44,7 +48,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Google Play Billing
-    implementation 'com.android.billingclient:billing-ktx:7.0.0'
+    implementation 'com.android.billingclient:billing-ktx:8.0.0'
 
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
     implementation 'androidx.core:core-ktx:1.12.0'

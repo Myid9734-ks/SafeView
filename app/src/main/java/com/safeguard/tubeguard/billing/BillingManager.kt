@@ -78,9 +78,10 @@ class BillingManager(
             .setProductList(productList)
             .build()
 
-        billingClient?.queryProductDetailsAsync(params) { result, productDetailsList ->
-            if (result.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
-                productDetails = productDetailsList[0]
+        billingClient?.queryProductDetailsAsync(params) { result, queryProductDetailsResult ->
+            if (result.responseCode == BillingClient.BillingResponseCode.OK &&
+                queryProductDetailsResult.productDetailsList.isNotEmpty()) {
+                productDetails = queryProductDetailsResult.productDetailsList[0]
                 Log.i(TAG, "Product loaded: ${productDetails?.title}")
                 onProductReady?.invoke(getFormattedPrice())
             }
