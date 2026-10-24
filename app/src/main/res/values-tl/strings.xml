@@ -130,6 +130,14 @@
     <string name="disable_protection_message">I-disable ang pag-block sa YouTube?</string>
     <string name="btn_disable">I-disable</string>
     <string name="allowed_time_setting_title">Setting ng Pinapayagang Oras</string>
+    <string name="kakao_hours_title">Oras ng Paggamit ng KakaoTalk</string>
+    <string name="kakao_hours_format">Oras ng KakaoTalk: %1$s ~ %2$s</string>
+    <string name="kakao_hours_off">Oras ng KakaoTalk: Walang limitasyon</string>
+    <string name="kakao_hours_saved">Na-set na ang oras ng KakaoTalk</string>
+    <string name="kakao_hours_cleared">Inalis na ang limitasyon sa oras ng KakaoTalk</string>
+    <string name="kakao_hours_same_error">Hindi puwedeng magkapareho ang simula at katapusan</string>
+    <string name="btn_kakao_hours_clear">Alisin ang limitasyon</string>
+    <string name="blocked_message_kakao_hours">Magagamit lang ang KakaoTalk mula %1$s hanggang %2$s.</string>
     <string name="btn_save">I-save</string>
     <string name="btn_timer_reset">I-reset ang Timer</string>
     <string name="exact_alarm_title">Unang Setup (4/5) - Kinakailangan ang Pahintulot para sa Exact Alarm</string>

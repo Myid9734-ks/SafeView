@@ -130,6 +130,14 @@
     <string name="disable_protection_message">Tắt chặn YouTube?</string>
     <string name="btn_disable">Tắt</string>
     <string name="allowed_time_setting_title">Cài đặt thời gian cho phép</string>
+    <string name="kakao_hours_title">Giờ được dùng KakaoTalk</string>
+    <string name="kakao_hours_format">Giờ KakaoTalk: %1$s ~ %2$s</string>
+    <string name="kakao_hours_off">Giờ KakaoTalk: Không giới hạn</string>
+    <string name="kakao_hours_saved">Đã thiết lập giờ được dùng KakaoTalk</string>
+    <string name="kakao_hours_cleared">Đã gỡ giới hạn thời gian KakaoTalk</string>
+    <string name="kakao_hours_same_error">Giờ bắt đầu và kết thúc không được trùng nhau</string>
+    <string name="btn_kakao_hours_clear">Gỡ giới hạn</string>
+    <string name="blocked_message_kakao_hours">KakaoTalk chỉ được dùng từ %1$s đến %2$s.</string>
     <string name="btn_save">Lưu</string>
     <string name="btn_timer_reset">Đặt lại hẹn giờ</string>
     <string name="exact_alarm_title">Thiết lập ban đầu (4/5) - Yêu cầu quyền báo thức chính xác</string>

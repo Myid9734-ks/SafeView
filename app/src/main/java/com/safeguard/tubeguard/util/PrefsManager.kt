@@ -48,6 +48,9 @@ class PrefsManager(context: Context) {
         private const val KEY_IS_PREMIUM = "is_premium"
         private const val KEY_PURCHASE_TOKEN = "purchase_token"
         private const val KEY_TRIAL_START_DATE = "trial_start_date"
+        private const val KEY_KAKAO_HOURS_ENABLED = "kakao_hours_enabled"
+        private const val KEY_KAKAO_START_MINUTES = "kakao_start_minutes"
+        private const val KEY_KAKAO_END_MINUTES = "kakao_end_minutes"
 
         @Volatile
         private var instance: PrefsManager? = null
@@ -187,6 +190,29 @@ class PrefsManager(context: Context) {
         checkMidnightReset()
         timerIsRunning = true
         timerStartEpoch = System.currentTimeMillis()
+    }
+
+    // 카카오톡 사용 가능 시간대 (자정 기준 분 단위, 예: 08:00 = 480)
+    var kakaoHoursEnabled: Boolean
+        get() = prefs.getBoolean(KEY_KAKAO_HOURS_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_KAKAO_HOURS_ENABLED, value).apply()
+
+    var kakaoStartMinutes: Int
+        get() = prefs.getInt(KEY_KAKAO_START_MINUTES, 8 * 60)
+        set(value) = prefs.edit().putInt(KEY_KAKAO_START_MINUTES, value).apply()
+
+    var kakaoEndMinutes: Int
+        get() = prefs.getInt(KEY_KAKAO_END_MINUTES, 20 * 60)
+        set(value) = prefs.edit().putInt(KEY_KAKAO_END_MINUTES, value).apply()
+
+    /** 지금 카카오톡을 열 수 있는지. 시작 > 종료이면 자정을 넘기는 구간(예: 22:00~07:00)으로 본다. */
+    fun isKakaoAllowedNow(): Boolean {
+        if (!kakaoHoursEnabled) return true
+        val cal = java.util.Calendar.getInstance()
+        val now = cal.get(java.util.Calendar.HOUR_OF_DAY) * 60 + cal.get(java.util.Calendar.MINUTE)
+        val start = kakaoStartMinutes
+        val end = kakaoEndMinutes
+        return if (start <= end) now in start until end else now >= start || now < end
     }
 
     fun clearAll() {

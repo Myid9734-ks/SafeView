@@ -130,6 +130,14 @@
     <string name="disable_protection_message">Отключить блокировку YouTube?</string>
     <string name="btn_disable">Отключить</string>
     <string name="allowed_time_setting_title">Настройка разрешённого времени</string>
+    <string name="kakao_hours_title">Время использования KakaoTalk</string>
+    <string name="kakao_hours_format">Время KakaoTalk: %1$s ~ %2$s</string>
+    <string name="kakao_hours_off">Время KakaoTalk: без ограничений</string>
+    <string name="kakao_hours_saved">Время использования KakaoTalk установлено</string>
+    <string name="kakao_hours_cleared">Ограничение времени KakaoTalk снято</string>
+    <string name="kakao_hours_same_error">Время начала и окончания не может совпадать</string>
+    <string name="btn_kakao_hours_clear">Снять ограничение</string>
+    <string name="blocked_message_kakao_hours">KakaoTalk можно использовать только с %1$s до %2$s.</string>
     <string name="btn_save">Сохранить</string>
     <string name="btn_timer_reset">Сбросить таймер</string>
     <string name="exact_alarm_title">Начальная настройка (4/5) - Требуется разрешение на точные будильники</string>

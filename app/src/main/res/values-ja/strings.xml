@@ -130,6 +130,14 @@
     <string name="disable_protection_message">YouTubeブロックを無効にしますか？</string>
     <string name="btn_disable">無効にする</string>
     <string name="allowed_time_setting_title">許可時間設定</string>
+    <string name="kakao_hours_title">カカオトーク利用可能時間</string>
+    <string name="kakao_hours_format">カカオトーク利用時間: %1$s ~ %2$s</string>
+    <string name="kakao_hours_off">カカオトーク利用時間: 制限なし</string>
+    <string name="kakao_hours_saved">カカオトークの利用可能時間が設定されました</string>
+    <string name="kakao_hours_cleared">カカオトークの時間制限が解除されました</string>
+    <string name="kakao_hours_same_error">開始時間と終了時間を同じにすることはできません</string>
+    <string name="btn_kakao_hours_clear">制限解除</string>
+    <string name="blocked_message_kakao_hours">カカオトークは %1$s ~ %2$s のみ利用できます。</string>
     <string name="btn_save">保存</string>
     <string name="btn_timer_reset">タイマーをリセット</string>
     <string name="exact_alarm_title">初期設定（4/5）- 正確なアラーム権限が必要です</string>

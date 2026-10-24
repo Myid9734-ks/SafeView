@@ -132,6 +132,14 @@
     <string name="disable_protection_message">Disable YouTube blocking?</string>
     <string name="btn_disable">Disable</string>
     <string name="allowed_time_setting_title">Allowed Time Setting</string>
+    <string name="kakao_hours_title">KakaoTalk Allowed Hours</string>
+    <string name="kakao_hours_format">KakaoTalk hours: %1$s ~ %2$s</string>
+    <string name="kakao_hours_off">KakaoTalk hours: No limit</string>
+    <string name="kakao_hours_saved">KakaoTalk allowed hours have been set</string>
+    <string name="kakao_hours_cleared">KakaoTalk time limit removed</string>
+    <string name="kakao_hours_same_error">Start and end time cannot be the same</string>
+    <string name="btn_kakao_hours_clear">Remove limit</string>
+    <string name="blocked_message_kakao_hours">KakaoTalk can only be used from %1$s to %2$s.</string>
     <string name="btn_save">Save</string>
     <string name="btn_timer_reset">Reset Timer</string>
     <string name="exact_alarm_title">Initial Setup (4/5) - Exact Alarm Permission</string>

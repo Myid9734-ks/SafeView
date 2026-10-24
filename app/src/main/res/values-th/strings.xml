@@ -130,6 +130,14 @@
     <string name="disable_protection_message">ปิดการบล็อก YouTube หรือไม่?</string>
     <string name="btn_disable">ปิด</string>
     <string name="allowed_time_setting_title">ตั้งค่าเวลาที่อนุญาต</string>
+    <string name="kakao_hours_title">เวลาที่ใช้ KakaoTalk ได้</string>
+    <string name="kakao_hours_format">เวลา KakaoTalk: %1$s ~ %2$s</string>
+    <string name="kakao_hours_off">เวลา KakaoTalk: ไม่จำกัด</string>
+    <string name="kakao_hours_saved">ตั้งเวลาที่ใช้ KakaoTalk ได้แล้ว</string>
+    <string name="kakao_hours_cleared">ยกเลิกการจำกัดเวลา KakaoTalk แล้ว</string>
+    <string name="kakao_hours_same_error">เวลาเริ่มและเวลาสิ้นสุดต้องไม่เหมือนกัน</string>
+    <string name="btn_kakao_hours_clear">ยกเลิกการจำกัด</string>
+    <string name="blocked_message_kakao_hours">ใช้ KakaoTalk ได้เฉพาะ %1$s ~ %2$s เท่านั้น</string>
     <string name="btn_save">บันทึก</string>
     <string name="btn_timer_reset">รีเซ็ตตั้งเวลา</string>
     <string name="exact_alarm_title">การตั้งค่าเริ่มต้น (4/5) - ต้องมีสิทธิ์ตั้งปลุกแบบแม่นยำ</string>

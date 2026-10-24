@@ -157,6 +157,10 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "하트", "목숨", "랭킹 보기", "점수 등록",
             "카카오게임"
         )
+        // 게임 광고/실행 링크가 오는 채널 채팅방 — 방 진입 자체를 차단 (타이머 실행 중에는 허용)
+        private const val KAKAO_GAME_PLAY_ROOM_TITLE = "카카오톡 게임플레이"
+        // 채팅방 className이 android.view.View로만 오고 제목도 노출되지 않음 → 방 하단 채널 메뉴 텍스트로 판별
+        private const val KAKAO_GAME_PLAY_ROOM_MENU_TEXT = "게임홈가기"
 
         // 소식탭 차단
         // 소식탭에만 나타나는 고유 텍스트 (친구탭에는 없음)
@@ -194,6 +198,10 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "ChannelGroupNotificationSettings"               // 알림 그룹 설정
         )
         private const val SETTINGS_PACKAGE = "com.android.settings"
+        // 강제종료 진행 중 PIN 없이 허용하는 설정 화면 (앱 정보 / 삼성 딥링크 진입 / 강제 중지 확인 팝업)
+        private val FORCE_STOP_ALLOWED_SETTINGS_CLASSES = listOf(
+            "InstalledAppDetails", "DeepLinkHomepageActivity", "AlertDialog"
+        )
 
         // 설정 앱 패키지 — PIN 입력 후에만 접속 허용
         private val SETTINGS_PACKAGES = setOf(
@@ -213,7 +221,9 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             "com.android.systemui",
             "com.google.android.gms",             // Google 로그인/결제
             "com.osp.app.signin",                 // 삼성 계정 로그인
-            "com.samsung.android.mobileservice"
+            "com.samsung.android.mobileservice",
+            "com.samsung.android.spay",           // 삼성페이 (하단 스와이프 바 등)
+            "com.samsung.android.spayfw"          // 삼성페이 프레임워크
         )
 
         // PIN 인증으로 잠금 해제된 스토어 패키지. 다른 앱으로 이동하면 다시 잠김.
@@ -273,6 +283,14 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     // Settings 앱을 강제종료 목적으로 직접 열었을 때 true.
     // handleSettingsScreen의 간섭 방지용.
     private var isForceStopSettingsOpen: Boolean = false
+    // 강제종료 후 BACK/HOME으로 설정을 닫는 단계 — 이때 지나가는 설정 화면은 모두 허용
+    private var forceStopDismissing: Boolean = false
+    // 강제종료 세션 번호 — 이전 세션의 안전 타이머가 새 세션을 해제하지 않도록 구분
+    private var forceStopSessionId: Int = 0
+    // 강제종료 대상 패키지 — 설정 화면이 밀려났을 때 다시 열기 위함
+    private var forceStopTargetPackage: String = ""
+    // 확인 팝업을 못 찾았을 때(사용자가 취소 등) 강제 중지 버튼 재클릭 횟수
+    private var forceStopReclicks: Int = 0
     // InAppBrowserActivity가 마지막으로 감지된 시각.
     // currentKakaoClass가 stale해져도 최근에 열렸으면 YouTube 체크를 수행하기 위함.
     private var kakaoInAppBrowserLastSeenAt: Long = 0L
@@ -317,7 +335,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         // 스토어/설정 잠금은 타이머와 무관하게 항상 적용
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             handleStoreGate(packageName)
-            handleSettingsGate(packageName)
+            handleSettingsGate(packageName, event.className?.toString() ?: "")
+        }
+
+        // 카카오톡 사용 가능 시간대 밖이면 타이머와 무관하게 카카오톡 전체 차단
+        if (packageName == KAKAO_PACKAGE && !prefsManager.isKakaoAllowedNow()) {
+            blockKakaoOutsideHours()
+            return
         }
 
         if (!prefsManager.isBlocking) {
@@ -350,6 +374,8 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                     if (event.className?.toString()?.contains("ChatRoom") == true) {
                         handler.postDelayed({ checkKakaoChatGptRoom() }, 400)
                     }
+                    // 게임플레이 채팅방은 className으로 구분 불가 → 모든 화면 전환 시 내용 확인
+                    handler.postDelayed({ checkKakaoGamePlayRoom() }, 400)
                 }
                 handleWindowStateChanged(packageName, event)
             }
@@ -417,6 +443,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                         clickedText.startsWith("ChatGPT for Kakao") || contentDesc.startsWith("ChatGPT for Kakao")) {
                         Log.w(TAG, "KakaoTalk ChatGPT tab CLICKED — blocking")
                         blockKakaoChatGpt()
+                    }
+                    // 채팅 목록의 "카카오톡 게임플레이" 채널방 클릭 (text = "카카오톡 게임플레이, 미리보기, 시간")
+                    if (clickedText.startsWith(KAKAO_GAME_PLAY_ROOM_TITLE) ||
+                        contentDesc.startsWith(KAKAO_GAME_PLAY_ROOM_TITLE)) {
+                        Log.w(TAG, "KakaoTalk 게임플레이 room CLICKED — blocking")
+                        FileLogger.log(this, TAG, "카카오톡 게임플레이 채팅방 클릭 → 차단")
+                        blockKakaoGameTab()
                     }
                     // 하단 "친구 탭" 클릭 시 → 소식 서브탭이 열려있을 수 있으므로
                     // 600ms 후 강제로 친구 서브탭 선택
@@ -576,11 +609,15 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     /**
      * 설정 앱 진입 시 PIN 요구. PIN 인증 후에는 다른 앱으로 이동할 때까지 허용.
      */
-    private fun handleSettingsGate(packageName: String) {
+    private fun handleSettingsGate(packageName: String, className: String) {
         if (packageName in SETTINGS_PACKAGES) {
             if (isSettingsUnlocked) return
-            // 강제종료를 위해 직접 열었을 때는 간섭하지 않음
-            if (isForceStopSettingsOpen) return
+            // 강제종료를 위해 직접 열었을 때는 앱 정보/확인 팝업 화면만 허용
+            if (isForceStopSettingsOpen) {
+                if (isForceStopAllowedSettingsClass(className)) return
+                // 그 외 설정 화면(설정 메인, 접근성, 기기 관리자 등) = 사용자가 끼어듦 → 예외 해제 후 PIN 요구
+                abortForceStopSettings("user navigated to $className")
+            }
             promptSettingsPin(packageName)
         } else if (isSettingsUnlocked && !isSettingsTransientPackage(packageName)) {
             Log.i(TAG, "Left settings → relocking")
@@ -1628,6 +1665,45 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     }
 
     /**
+     * 사용 가능 시간대 밖 카카오톡 차단: BlockedActivity 표시 + 강제종료.
+     * isBlocking(타이머)과 무관하게 항상 적용.
+     */
+    private fun blockKakaoOutsideHours() {
+        if (isForceStopSettingsOpen) return
+        val now = System.currentTimeMillis()
+        if (KAKAO_PACKAGE == lastBlockedPackage && now - lastBlockTime < BLOCK_COOLDOWN_MS) return
+        Log.w(TAG, "blockKakaoOutsideHours TRIGGERED — currentClass=$currentKakaoClass")
+        FileLogger.log(this, TAG, "카카오톡 사용 가능 시간 외 실행 → 차단")
+        lastBlockedPackage = KAKAO_PACKAGE
+        lastBlockTime = now
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("카카오톡 시간제한", "사용 가능 시간 외 카카오톡 실행 차단")
+
+        handler.post {
+            try {
+                val intent = Intent(this, BlockedActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(BlockedActivity.EXTRA_BLOCKED_SOURCE, BlockedActivity.SOURCE_KAKAO_HOURS)
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch BlockedActivity for Kakao hours: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            handler.postDelayed({ dismissKakaoFromRecents() }, 500)
+            handler.postDelayed({
+                kakaoLastKilledAt = System.currentTimeMillis()
+                lastBlockedPackage = ""
+                lastBlockTime = 0L
+                currentKakaoClass = ""
+                previousKakaoClass = ""
+                kakaoRestorationHandled = false
+                forceStopViaSettings(KAKAO_PACKAGE)
+            }, 1500)
+        }
+    }
+
+    /**
      * ChatGPT탭 차단: 소식탭과 동일하게 BlockedActivity 표시 + 강제종료.
      */
     private fun blockKakaoChatGpt() {
@@ -1713,6 +1789,38 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error checking ChatGPT chat room: ${e.message}")
+        } finally {
+            try { root.recycle() } catch (ignored: Exception) {}
+        }
+    }
+
+    /**
+     * 게임플레이 채널방 판별 (알림으로 진입하거나 방에 있는 중 타이머 만료된 경우 대비):
+     * 1순위: 채널 메뉴 "게임홈가기" 존재
+     * 2순위: 제목이 정확히 "카카오톡 게임플레이"인 노드 (채팅 목록 이름 id/name 제외)
+     */
+    private fun checkKakaoGamePlayRoom() {
+        if (!prefsManager.isBlocking) return
+        val root = rootInActiveWindow ?: return
+        try {
+            if (root.packageName?.toString() != KAKAO_PACKAGE) return
+            val menuNodes = root.findAccessibilityNodeInfosByText(KAKAO_GAME_PLAY_ROOM_MENU_TEXT)
+            val hasMenu = !menuNodes.isNullOrEmpty()
+            recycleNodes(menuNodes)
+            val nodes = root.findAccessibilityNodeInfosByText(KAKAO_GAME_PLAY_ROOM_TITLE)
+            val hasTitle = nodes?.any {
+                it.text?.toString() == KAKAO_GAME_PLAY_ROOM_TITLE &&
+                    it.viewIdResourceName != "$KAKAO_PACKAGE:id/name"
+            } == true
+            recycleNodes(nodes)
+            val isGamePlayRoom = hasMenu || hasTitle
+            if (isGamePlayRoom) {
+                Log.w(TAG, "KakaoTalk 게임플레이 chat room detected — blocking")
+                FileLogger.log(this, TAG, "카카오톡 게임플레이 채팅방 감지 → 차단")
+                blockKakaoGameTab()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking 게임플레이 chat room: ${e.message}")
         } finally {
             try { root.recycle() } catch (ignored: Exception) {}
         }
@@ -1853,6 +1961,19 @@ class TubeGuardAccessibilityService : AccessibilityService() {
      */
     private fun forceStopViaSettings(packageName: String) {
         isForceStopSettingsOpen = true
+        forceStopDismissing = false
+        forceStopTargetPackage = packageName
+        forceStopReclicks = 0
+        val sessionId = ++forceStopSessionId
+        // 안전 타이머: 어떤 경로로든 플래그가 남아 있으면 10초 후 강제 해제 (설정 PIN 영구 무력화 방지)
+        handler.postDelayed({
+            if (sessionId == forceStopSessionId && isForceStopSettingsOpen) {
+                Log.w(TAG, "Force stop settings flag timed out — forcing reset")
+                FileLogger.log(this, TAG, "강제종료 예외 10초 초과 → 강제 해제")
+                isForceStopSettingsOpen = false
+                forceStopDismissing = false
+            }
+        }, 10_000L)
         try {
             val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = android.net.Uri.parse("package:$packageName")
@@ -1868,7 +1989,45 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         handler.postDelayed({ clickForceStopButton(attempt = 1) }, 1500)
     }
 
+    /**
+     * 강제종료 진행 중 허용되는 설정 화면인지.
+     * - 닫는 단계(BACK/HOME)에서는 모두 허용
+     * - 앱 정보 화면, 삼성 딥링크 진입 화면, 강제 중지 확인 팝업만 허용
+     * - 설정 앱 고유 클래스가 아닌 일반 위젯 이벤트(android.widget.* 등)는 판단 보류(허용)
+     */
+    private fun isForceStopAllowedSettingsClass(className: String): Boolean {
+        if (forceStopDismissing) return true
+        if (FORCE_STOP_ALLOWED_SETTINGS_CLASSES.any { className.contains(it) }) return true
+        val isSettingsOwnClass = className.startsWith("com.android.settings") || className.startsWith("com.samsung")
+        return !isSettingsOwnClass
+    }
+
+    private fun reopenForceStopSettings() {
+        if (forceStopTargetPackage.isEmpty()) return
+        try {
+            val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = android.net.Uri.parse("package:$forceStopTargetPackage")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to reopen app info settings: ${e.message}")
+        }
+    }
+
+    /** 사용자 개입 등으로 강제종료 흐름 중단 — 예외 플래그를 즉시 해제해 보호 기능 복구 */
+    private fun abortForceStopSettings(reason: String) {
+        if (!isForceStopSettingsOpen) return
+        Log.w(TAG, "Force stop flow aborted: $reason")
+        FileLogger.log(this, TAG, "강제종료 중단 → 보호 복구: $reason")
+        isForceStopSettingsOpen = false
+        forceStopDismissing = false
+        forceStopSessionId++
+    }
+
     private fun clickForceStopButton(attempt: Int) {
+        // 사용자 개입으로 중단된 경우 남은 재시도 중지
+        if (!isForceStopSettingsOpen || forceStopDismissing) return
         val maxAttempts = 4
         val root = rootInActiveWindow
         val pkg = root?.packageName?.toString() ?: ""
@@ -1885,8 +2044,11 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         // 삼성/AOSP 둘 다 허용
         val isSettings = pkg == SETTINGS_PACKAGE || pkg.contains("settings", ignoreCase = true)
         if (!isSettings) {
-            Log.w(TAG, "ForceStop attempt=$attempt: settings not in foreground (pkg=$pkg) — retrying")
             root.recycle()
+            // 설정이 밀려남 (사용자 홈 이동, 차단화면 자동 홈 이동, 최근 앱 정리 등) → 설정을 다시 앞으로 불러와 강제종료 계속
+            // 예외는 앱 정보/확인 팝업 화면에만 적용되므로 그 사이 다른 설정 화면 접근은 여전히 PIN 요구
+            Log.w(TAG, "ForceStop attempt=$attempt: settings not in foreground (pkg=$pkg) — reopening")
+            if (attempt < maxAttempts) reopenForceStopSettings()
             scheduleForceStopRetry(attempt, maxAttempts)
             return
         }
@@ -1906,8 +2068,8 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                         handler.postDelayed({ confirmForceStopDialog() }, 500)
                     } else {
                         Log.w(TAG, "ForceStop button disabled — already stopped")
-                        isForceStopSettingsOpen = false
                         performGlobalAction(GLOBAL_ACTION_HOME)
+                        endForceStopSettingsAfterGrace()
                     }
                     recycleNodes(nodes)
                     return
@@ -1931,13 +2093,28 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             handler.postDelayed({ clickForceStopButton(attempt + 1) }, 1000)
         } else {
             Log.w(TAG, "ForceStop gave up after $maxAttempts attempts")
-            isForceStopSettingsOpen = false
             performGlobalAction(GLOBAL_ACTION_HOME)
+            endForceStopSettingsAfterGrace()
         }
     }
 
     private fun confirmForceStopDialog() {
-        val root = rootInActiveWindow ?: return
+        if (!isForceStopSettingsOpen || forceStopDismissing) return
+        val root = rootInActiveWindow
+        val pkg = root?.packageName?.toString() ?: ""
+        // 확인 팝업을 누르기 전에 설정 앱이 앞에 있는지 확인 — 다른 화면이면 아무것도 누르지 않음
+        if (root == null || !(pkg == SETTINGS_PACKAGE || pkg.contains("settings", ignoreCase = true))) {
+            try { root?.recycle() } catch (ignored: Exception) {}
+            if (forceStopReclicks < 2) {
+                forceStopReclicks++
+                Log.w(TAG, "ForceStop confirm: settings not in foreground (pkg=$pkg) — restarting ($forceStopReclicks/2)")
+                handler.postDelayed({ clickForceStopButton(attempt = 1) }, 300)
+            } else {
+                abortForceStopSettings("confirm dialog not in foreground (pkg=$pkg)")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            return
+        }
         try {
             // 1순위: 텍스트로 찾기
             val candidates = listOf("확인", "OK", "강제 종료", "Force stop", "강제종료", "예", "Yes")
@@ -1948,7 +2125,6 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                     Log.i(TAG, "ForceStop confirm dialog: clicked '$label'")
                     recycleNodes(nodes)
                     handler.postDelayed({
-                        isForceStopSettingsOpen = false
                         Log.i(TAG, "KakaoTalk force stopped via Settings")
                         dismissSettingsFromRecents()
                     }, 300)
@@ -1957,49 +2133,23 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             }
             // 2순위: 텍스트 매칭 실패 시 클릭 가능한 버튼 노드 직접 탐색
             val screenText = extractAllText(root).take(200)
-            Log.w(TAG, "ForceStop confirm dialog: text match failed. Screen: $screenText — trying button scan")
-            val button = findClickableButton(root)
-            if (button != null) {
-                val btnText = button.text?.toString() ?: button.contentDescription?.toString() ?: "unknown"
-                button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                Log.i(TAG, "ForceStop confirm dialog: clicked button '$btnText' via scan")
-                try { button.recycle() } catch (ignored: Exception) {}
-                handler.postDelayed({
-                    isForceStopSettingsOpen = false
-                    Log.i(TAG, "KakaoTalk force stopped via Settings")
-                    dismissSettingsFromRecents()
-                }, 300)
+            // 아무 버튼이나 누르지 않음 (이전: '상위 메뉴로 이동'을 눌러 설정 내부로 이동하는 문제)
+            // 팝업이 사라짐 = 사용자가 취소 등 → 강제 중지 버튼부터 다시 시도. 이미 종료됐으면 버튼 비활성으로 끝남
+            if (forceStopReclicks < 2) {
+                forceStopReclicks++
+                Log.w(TAG, "ForceStop confirm dialog: not found (Screen: $screenText) — re-clicking force stop ($forceStopReclicks/2)")
+                FileLogger.log(this, TAG, "강제 중지 확인 팝업 없음 → 재시도 $forceStopReclicks/2")
+                handler.postDelayed({ clickForceStopButton(attempt = 1) }, 300)
             } else {
-                Log.w(TAG, "ForceStop confirm dialog: no clickable button found")
-                isForceStopSettingsOpen = false
+                Log.w(TAG, "ForceStop confirm dialog: not found after re-clicks — closing settings")
                 dismissSettingsFromRecents()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error confirming force stop: ${e.message}")
-            isForceStopSettingsOpen = false
             dismissSettingsFromRecents()
         } finally {
             try { root.recycle() } catch (ignored: Exception) {}
         }
-    }
-
-    private fun findClickableButton(node: AccessibilityNodeInfo?, depth: Int = 0): AccessibilityNodeInfo? {
-        if (node == null || depth > 6) return null
-        val className = node.className?.toString() ?: ""
-        if (node.isClickable && node.isEnabled &&
-            (className.contains("Button") || className.contains("TextView"))) {
-            return node
-        }
-        for (i in 0 until node.childCount) {
-            val child = node.getChild(i) ?: continue
-            val found = findClickableButton(child, depth + 1)
-            if (found != null) {
-                try { child.recycle() } catch (ignored: Exception) {}
-                return found
-            }
-            try { child.recycle() } catch (ignored: Exception) {}
-        }
-        return null
     }
 
     private fun dismissKakaoFromRecents() {
@@ -2048,6 +2198,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     }
 
     private fun dismissSettingsFromRecents() {
+        forceStopDismissing = true
         // Settings 앱 정보 화면이 포그라운드에 있는 동안 BACK을 눌러 액티비티 종료
         performGlobalAction(GLOBAL_ACTION_BACK)
         handler.postDelayed({
@@ -2055,8 +2206,26 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             handler.postDelayed({
                 performGlobalAction(GLOBAL_ACTION_HOME)
                 Log.i(TAG, "Settings closed and returned to home")
+                endForceStopSettingsAfterGrace()
             }, 200)
         }, 300)
+    }
+
+    /**
+     * 강제종료용 설정 화면이 완전히 닫힌 뒤에 예외 플래그를 해제한다.
+     * 바로 해제하면 BACK/HOME 처리 중 늦게 들어온 설정 윈도우 이벤트를
+     * "사용자가 설정을 연 것"으로 오인해 PIN 화면이 잠깐 떴다 사라짐.
+     */
+    private fun endForceStopSettingsAfterGrace() {
+        // HOME 직후 늦게 들어오는 설정 화면 이벤트는 닫는 과정으로 간주
+        forceStopDismissing = true
+        val sessionId = forceStopSessionId
+        handler.postDelayed({
+            if (sessionId != forceStopSessionId) return@postDelayed
+            isForceStopSettingsOpen = false
+            forceStopDismissing = false
+            Log.i(TAG, "Force stop settings flow finished — settings gate re-enabled")
+        }, 1000)
     }
 
     private fun recycleNodes(nodes: List<AccessibilityNodeInfo>?) {
@@ -2075,6 +2244,10 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 val pkg = rootInActiveWindow?.packageName?.toString() ?: ""
                 if (!prefsManager.isBlocking && (pkg in YOUTUBE_PACKAGES || pkg == KAKAO_PACKAGE)) {
                     Log.w(TAG, "Watcher: isBlocking=FALSE but targeted app in foreground: $pkg")
+                }
+                // 카카오톡 사용 중 허용 시간대가 끝난 경우 즉시 차단
+                if (pkg == KAKAO_PACKAGE && !prefsManager.isKakaoAllowedNow()) {
+                    blockKakaoOutsideHours()
                 }
                 if (prefsManager.isBlocking) {
                     val pkg = rootInActiveWindow?.packageName?.toString() ?: ""
@@ -2158,6 +2331,7 @@ class TubeGuardAccessibilityService : AccessibilityService() {
                 handler.postDelayed({
                     checkKakaoGameTabContent()
                     checkKakaoGamePageContent()
+                    checkKakaoGamePlayRoom()
                     checkKakaoInAppBrowserForYouTube()
                     checkKakaoNewsTabActive()
                 }, 200)

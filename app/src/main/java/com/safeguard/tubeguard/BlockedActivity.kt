@@ -19,6 +19,7 @@ class BlockedActivity : Activity() {
         const val SOURCE_KAKAO_NEWS = "kakao_news"
         const val SOURCE_KAKAO_SHORTFORM = "kakao_shortform"
         const val SOURCE_KAKAO_AI = "kakao_ai"
+        const val SOURCE_KAKAO_HOURS = "kakao_hours"
         const val SOURCE_TIKTOK = "tiktok"
         const val SOURCE_INSTAGRAM = "instagram"
         const val SOURCE_FACEBOOK = "facebook"
@@ -50,6 +51,7 @@ class BlockedActivity : Activity() {
             SOURCE_KAKAO_NEWS -> "카카오톡 소식"
             SOURCE_KAKAO_SHORTFORM -> "카카오톡 숏폼"
             SOURCE_KAKAO_AI -> "카카오톡 AI"
+            SOURCE_KAKAO_HOURS -> "카카오톡"
             SOURCE_TIKTOK -> "TikTok"
             SOURCE_INSTAGRAM -> "Instagram"
             SOURCE_FACEBOOK -> "Facebook"
@@ -74,6 +76,11 @@ class BlockedActivity : Activity() {
             SOURCE_KAKAO_NEWS -> getString(R.string.blocked_message_kakao_news)
             SOURCE_KAKAO_SHORTFORM -> getString(R.string.blocked_message_kakao_shortform)
             SOURCE_KAKAO_AI -> getString(R.string.blocked_message_kakao_ai)
+            SOURCE_KAKAO_HOURS -> {
+                val prefs = com.safeguard.tubeguard.util.PrefsManager.getInstance(this)
+                getString(R.string.blocked_message_kakao_hours,
+                    formatMinutes(prefs.kakaoStartMinutes), formatMinutes(prefs.kakaoEndMinutes))
+            }
             SOURCE_TIKTOK -> getString(R.string.blocked_message_tiktok)
             SOURCE_INSTAGRAM -> getString(R.string.blocked_message_instagram)
             SOURCE_FACEBOOK -> getString(R.string.blocked_message_facebook)
@@ -96,6 +103,8 @@ class BlockedActivity : Activity() {
 
         handler.postDelayed({ goHome() }, 5000)
     }
+
+    private fun formatMinutes(minutes: Int) = "%02d:%02d".format(minutes / 60, minutes % 60)
 
     private fun goHome() {
         val intent = Intent(Intent.ACTION_MAIN).apply {

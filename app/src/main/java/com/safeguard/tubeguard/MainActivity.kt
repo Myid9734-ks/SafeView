@@ -81,12 +81,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnTimerStartStop: MaterialButton
     private lateinit var cardTimerSettings: MaterialCardView
     private lateinit var tvTimerSettingsStatus: TextView
+    private lateinit var cardKakaoHours: MaterialCardView
+    private lateinit var tvKakaoHoursStatus: TextView
 
     private var pendingEnableBlocking = false
     private var adminUnlocked = false
     private var pendingAdminUnlock = false
     private var initialSetupRunning = false
     private var setupCompletedAt: Long = 0L  // setup 완료 후 중복 VPN 방지용 타임스탬프
+    private var setupDialog: AlertDialog? = null  // 현재 떠 있는 설정 마법사 다이얼로그 (중복 누적 방지)
 
     // Timer handler
     private val timerHandler = Handler(Looper.getMainLooper())
@@ -376,6 +379,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        dismissSetupDialog()
         billingManager.destroy()
     }
 
@@ -402,6 +406,8 @@ class MainActivity : AppCompatActivity() {
         btnTimerStartStop = findViewById(R.id.btnTimerStartStop)
         cardTimerSettings = findViewById(R.id.cardTimerSettings)
         tvTimerSettingsStatus = findViewById(R.id.tvTimerSettingsStatus)
+        cardKakaoHours = findViewById(R.id.cardKakaoHours)
+        tvKakaoHoursStatus = findViewById(R.id.tvKakaoHoursStatus)
     }
 
     private fun setupListeners() {
@@ -452,6 +458,10 @@ class MainActivity : AppCompatActivity() {
             showAllowedTimePickerDialog()
         }
 
+        cardKakaoHours.setOnClickListener {
+            showKakaoHoursDialog()
+        }
+
         btnTimerStartStop.setOnClickListener {
             if (prefsManager.timerIsRunning) {
                 handleTimerStop()
@@ -481,15 +491,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun ensurePinSetup() {
         if (!pinManager.hasPin()) {
-            AlertDialog.Builder(this)
+            showSetupDialog("PIN", AlertDialog.Builder(this)
                 .setTitle(getString(R.string.admin_pin_setup_title))
                 .setMessage(getString(R.string.admin_pin_setup_message))
                 .setPositiveButton(getString(R.string.btn_setup)) { _, _ ->
                     pinSetupLauncher.launch(Intent(this, PinSetupActivity::class.java))
                 }
-                .setCancelable(false)
-                .show()
+                .setCancelable(false))
         }
+    }
+
+    // 설정 다이얼로그는 항상 하나만 유지한다.
+    // onResume()이 권한 팝업/화면 꺼짐 등으로 여러 번 호출되면 이전 다이얼로그가 아래에 쌓여 있다가
+    // 모든 설정이 끝난 뒤 다시 드러나는 문제(PIN 설정 후 VPN 팝업 재등장)가 있었음.
+    private fun showSetupDialog(step: String, builder: AlertDialog.Builder) {
+        dismissSetupDialog()
+        FileLogger.log(this, TAG, "setup dialog show: $step")
+        setupDialog = builder.show()
+    }
+
+    private fun dismissSetupDialog() {
+        setupDialog?.let {
+            if (it.isShowing) {
+                Log.i(TAG, "setup dialog dismissed (stale)")
+                it.dismiss()
+            }
+        }
+        setupDialog = null
     }
 
     private fun proceedSetupWizard() {
@@ -497,50 +525,55 @@ class MainActivity : AppCompatActivity() {
         if (prefsManager.initialSetupComplete) {
             Log.i(TAG, "proceedSetupWizard: BLOCKED - setup already complete")
             initialSetupRunning = false
+            dismissSetupDialog()
             return
         }
 
-        Log.i(TAG, "proceedSetupWizard: starting checks")
+        FileLogger.log(this, TAG, "proceedSetupWizard: starting checks")
         // VPN 확인
         val vpnIntent = VpnService.prepare(this)
         if (vpnIntent != null) {
-            AlertDialog.Builder(this)
+            showSetupDialog("VPN", AlertDialog.Builder(this)
                 .setTitle(getString(R.string.setup_vpn_title))
                 .setMessage(getString(R.string.setup_vpn_message))
                 .setPositiveButton(getString(R.string.btn_setup)) { _, _ ->
                     pendingAdminUnlock = true
-                    vpnPermissionLauncher.launch(vpnIntent)
+                    // 다이얼로그 생성 시점의 intent는 이미 낡았을 수 있으므로 클릭 시점에 다시 확인
+                    val currentIntent = VpnService.prepare(this)
+                    if (currentIntent != null) {
+                        vpnPermissionLauncher.launch(currentIntent)
+                    } else {
+                        FileLogger.log(this, TAG, "VPN already granted on click - skip")
+                        proceedSetupWizard()
+                    }
                 }
-                .setCancelable(false)
-                .show()
+                .setCancelable(false))
             return
         }
 
         // 접근성 확인
         if (!isAccessibilityServiceEnabled()) {
-            AlertDialog.Builder(this)
+            showSetupDialog("ACCESSIBILITY", AlertDialog.Builder(this)
                 .setTitle(getString(R.string.setup_accessibility_title))
                 .setMessage(getString(R.string.setup_accessibility_message))
                 .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                     pendingAdminUnlock = true
                     openAccessibilitySettings()
                 }
-                .setCancelable(false)
-                .show()
+                .setCancelable(false))
             return
         }
 
         // 기기 관리자 확인
         if (!devicePolicyManager.isAdminActive(adminComponentName)) {
-            AlertDialog.Builder(this)
+            showSetupDialog("DEVICE_ADMIN", AlertDialog.Builder(this)
                 .setTitle(getString(R.string.setup_device_admin_title))
                 .setMessage(getString(R.string.setup_device_admin_message))
                 .setPositiveButton(getString(R.string.btn_setup)) { _, _ ->
                     pendingAdminUnlock = true
                     requestDeviceAdmin()
                 }
-                .setCancelable(false)
-                .show()
+                .setCancelable(false))
             return
         }
 
@@ -548,15 +581,14 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (!alarmManager.canScheduleExactAlarms()) {
-                AlertDialog.Builder(this)
+                showSetupDialog("EXACT_ALARM", AlertDialog.Builder(this)
                     .setTitle(getString(R.string.exact_alarm_title))
                     .setMessage(getString(R.string.exact_alarm_message))
                     .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                         pendingAdminUnlock = true
                         startActivity(android.content.Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
                     }
-                    .setCancelable(false)
-                    .show()
+                    .setCancelable(false))
                 return
             }
         }
@@ -568,7 +600,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 모든 설정 완료
-        Log.i(TAG, "Setup wizard COMPLETED - starting VPN directly")
+        dismissSetupDialog()
+        FileLogger.log(this, TAG, "Setup wizard COMPLETED - starting VPN directly")
         initialSetupRunning = false
         pendingAdminUnlock = false
         adminUnlocked = false
@@ -774,6 +807,64 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun showKakaoHoursDialog() {
+        val layout = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER
+            setPadding(16, 32, 16, 16)
+        }
+
+        fun picker(max: Int, initial: Int) = NumberPicker(this).apply {
+            minValue = 0
+            maxValue = max
+            value = initial
+            setFormatter { "%02d".format(it) }
+        }
+        fun label(text: String) = TextView(this).apply {
+            this.text = text
+            setPadding(8, 0, 8, 0)
+        }
+
+        val start = prefsManager.kakaoStartMinutes
+        val end = prefsManager.kakaoEndMinutes
+        val startH = picker(23, start / 60)
+        val startM = picker(59, start % 60)
+        val endH = picker(23, end / 60)
+        val endM = picker(59, end % 60)
+
+        layout.addView(startH)
+        layout.addView(label(":"))
+        layout.addView(startM)
+        layout.addView(label("~"))
+        layout.addView(endH)
+        layout.addView(label(":"))
+        layout.addView(endM)
+
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.kakao_hours_title))
+            .setView(layout)
+            .setPositiveButton(getString(R.string.btn_save)) { _, _ ->
+                val newStart = startH.value * 60 + startM.value
+                val newEnd = endH.value * 60 + endM.value
+                if (newStart == newEnd) {
+                    Toast.makeText(this, getString(R.string.kakao_hours_same_error), Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                prefsManager.kakaoStartMinutes = newStart
+                prefsManager.kakaoEndMinutes = newEnd
+                prefsManager.kakaoHoursEnabled = true
+                updateKakaoHoursDisplay()
+                Toast.makeText(this, getString(R.string.kakao_hours_saved), Toast.LENGTH_SHORT).show()
+            }
+            .setNeutralButton(getString(R.string.btn_kakao_hours_clear)) { _, _ ->
+                prefsManager.kakaoHoursEnabled = false
+                updateKakaoHoursDisplay()
+                Toast.makeText(this, getString(R.string.kakao_hours_cleared), Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(getString(R.string.btn_cancel), null)
+            .show()
+    }
+
     // ─────────────────────────── AlarmManager ───────────────────────────
 
     private fun scheduleTimerExpiryAlarm(remainingSeconds: Long) {
@@ -930,6 +1021,7 @@ class MainActivity : AppCompatActivity() {
         updateDeviceAdminStatusDisplay()
         updatePinStatusDisplay()
         updateTimerSettingsDisplay()
+        updateKakaoHoursDisplay()
         updateTimerDisplay(prefsManager.getTimerRemainingSeconds())
         updateTimerButtons()
     }
@@ -1020,6 +1112,18 @@ class MainActivity : AppCompatActivity() {
         val h = totalAllowed / 3600
         val m = (totalAllowed % 3600) / 60
         tvTimerSettingsStatus.text = getString(R.string.timer_settings_format, h, m)
+    }
+
+    private fun updateKakaoHoursDisplay() {
+        tvKakaoHoursStatus.text = if (prefsManager.kakaoHoursEnabled) {
+            val start = prefsManager.kakaoStartMinutes
+            val end = prefsManager.kakaoEndMinutes
+            getString(R.string.kakao_hours_format,
+                "%02d:%02d".format(start / 60, start % 60),
+                "%02d:%02d".format(end / 60, end % 60))
+        } else {
+            getString(R.string.kakao_hours_off)
+        }
     }
 
     private fun updatePinStatusDisplay() {

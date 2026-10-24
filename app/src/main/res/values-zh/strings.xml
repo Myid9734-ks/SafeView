@@ -130,6 +130,14 @@
     <string name="disable_protection_message">是否关闭YouTube屏蔽？</string>
     <string name="btn_disable">关闭</string>
     <string name="allowed_time_setting_title">允许时间设置</string>
+    <string name="kakao_hours_title">KakaoTalk可用时间</string>
+    <string name="kakao_hours_format">KakaoTalk可用时间：%1$s ~ %2$s</string>
+    <string name="kakao_hours_off">KakaoTalk可用时间：无限制</string>
+    <string name="kakao_hours_saved">KakaoTalk可用时间已设置</string>
+    <string name="kakao_hours_cleared">KakaoTalk时间限制已解除</string>
+    <string name="kakao_hours_same_error">开始时间和结束时间不能相同</string>
+    <string name="btn_kakao_hours_clear">解除限制</string>
+    <string name="blocked_message_kakao_hours">KakaoTalk仅可在 %1$s ~ %2$s 使用。</string>
     <string name="btn_save">保存</string>
     <string name="btn_timer_reset">重置计时器</string>
     <string name="exact_alarm_title">初始设置（4/5）- 需要精确闹钟权限</string>
