@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     private var adminUnlocked = false
     private var pendingAdminUnlock = false
     private var initialSetupRunning = false
+    private var setupCompletedAt: Long = 0L  // setup 완료 후 중복 VPN 방지용 타임스탬프
 
     // Timer handler
     private val timerHandler = Handler(Looper.getMainLooper())
@@ -108,15 +109,20 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            Log.i(TAG, "VPN permission granted")
+            Log.i(TAG, "VPN permission granted, initialSetupRunning=$initialSetupRunning, setupComplete=${prefsManager.initialSetupComplete}")
             if (!initialSetupRunning) {
-                startVpnService()
+                // setup 완료 직후에도 중복 VPN 시작 방지
+                if (prefsManager.isBlocking) {
+                    Log.i(TAG, "VPN permission granted but already blocking - skipping startVpnService")
+                } else {
+                    startVpnService()
+                }
             }
         } else {
             Log.w(TAG, "VPN permission denied")
             if (!initialSetupRunning) {
                 pendingEnableBlocking = false
-                switchBlocking.isChecked = false
+                updateBlockingSwitchSilently(false)
             }
             Toast.makeText(this, getString(R.string.vpn_permission_required), Toast.LENGTH_LONG).show()
         }
@@ -346,6 +352,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         prefsManager.checkMidnightReset()
+        Log.i(TAG, "onResume: initialSetupRunning=$initialSetupRunning, setupComplete=${prefsManager.initialSetupComplete}, isBlocking=${prefsManager.isBlocking}")
         if (initialSetupRunning && !prefsManager.initialSetupComplete) {
             pendingAdminUnlock = true
             updateAllStatusDisplays()
@@ -399,6 +406,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         switchBlocking.setOnCheckedChangeListener { _, isChecked ->
+            Log.i(TAG, "switchBlocking changed to $isChecked (listener fired)")
             if (isChecked) {
                 handleEnableBlocking()
             } else {
@@ -487,10 +495,12 @@ class MainActivity : AppCompatActivity() {
     private fun proceedSetupWizard() {
         // 이미 초기 설정이 완료된 경우 중복 실행 방지
         if (prefsManager.initialSetupComplete) {
+            Log.i(TAG, "proceedSetupWizard: BLOCKED - setup already complete")
             initialSetupRunning = false
             return
         }
 
+        Log.i(TAG, "proceedSetupWizard: starting checks")
         // VPN 확인
         val vpnIntent = VpnService.prepare(this)
         if (vpnIntent != null) {
@@ -558,10 +568,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 모든 설정 완료
+        Log.i(TAG, "Setup wizard COMPLETED - starting VPN directly")
         initialSetupRunning = false
         pendingAdminUnlock = false
         adminUnlocked = false
         prefsManager.initialSetupComplete = true
+        setupCompletedAt = System.currentTimeMillis()
         // YouTube 차단 자동 활성화 (셋업에서 VPN 권한을 이미 받았으므로 바로 시작)
         pendingEnableBlocking = true
         startVpnService()
@@ -823,9 +835,17 @@ class MainActivity : AppCompatActivity() {
     // ─────────────────────────── Blocking Logic ───────────────────────────
 
     private fun handleEnableBlocking() {
-        // VPN이 이미 실행 중이면 중복 VPN 다이얼로그 방지
+        Log.i(TAG, "handleEnableBlocking: isBlocking=${prefsManager.isBlocking}, setupCompletedAt=$setupCompletedAt, elapsed=${System.currentTimeMillis() - setupCompletedAt}ms")
+
+        // VPN이 이미 실행 중이거나 setup 완료 직후(30초 이내)이면 중복 VPN 다이얼로그 방지
         if (prefsManager.isBlocking) {
+            Log.i(TAG, "handleEnableBlocking: BLOCKED - already blocking")
             updateBlockingSwitchSilently(true)
+            return
+        }
+        if (setupCompletedAt > 0 && System.currentTimeMillis() - setupCompletedAt < 30_000L) {
+            Log.i(TAG, "handleEnableBlocking: BLOCKED - setup just completed ${System.currentTimeMillis() - setupCompletedAt}ms ago")
+            updateBlockingSwitchSilently(prefsManager.isBlocking)
             return
         }
 
@@ -839,6 +859,7 @@ class MainActivity : AppCompatActivity() {
         }
         pendingEnableBlocking = true
         val vpnIntent = VpnService.prepare(this)
+        Log.i(TAG, "handleEnableBlocking: VpnService.prepare() returned ${if (vpnIntent != null) "non-null (needs permission)" else "null (already granted)"}")
         if (vpnIntent != null) {
             vpnPermissionLauncher.launch(vpnIntent)
         } else {
