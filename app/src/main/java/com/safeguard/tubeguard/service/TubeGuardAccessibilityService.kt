@@ -7,12 +7,19 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.PixelFormat
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.safeguard.tubeguard.BlockedActivity
 import com.safeguard.tubeguard.PinVerifyActivity
@@ -241,6 +248,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         // 설정 PIN 프롬프트 쿨다운
         @Volatile
         var settingsPinPromptedAt: Long = 0L
+
+        // 미승인 앱 PIN 프롬프트 쿨다운
+        @Volatile
+        var appApprovePromptedAt: Long = 0L
+
+        // 잠금 오버레이 최대 표시 시간 — PIN 화면/홈 전환 이벤트를 못 받아도 자동 제거
+        private const val LOCK_OVERLAY_MAX_MS = 2000L
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -298,6 +312,34 @@ class TubeGuardAccessibilityService : AccessibilityService() {
     private var installedBrowsers: Set<String> = emptySet()
     private var installedBrowsersRefreshedAt: Long = 0L
     private var browserCheckPending: Boolean = false
+    // 스토어/미승인 앱이 앞에 뜬 순간 터치를 막는 전체 화면 오버레이 (홈 이동 전 틈새 차단)
+    private var lockOverlay: View? = null
+    private var lockOverlayTarget: String = ""
+    private val hideLockOverlayRunnable = Runnable { hideLockOverlay() }
+
+    // 스토어 잠금 상태에서 설치된 앱 → 미승인 목록에 추가 (스토어 잠금 우회 설치 대비 안전망)
+    private val packageInstallReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent == null) return
+            val pkg = intent.data?.schemeSpecificPart ?: return
+            when (intent.action) {
+                Intent.ACTION_PACKAGE_ADDED -> {
+                    if (intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) return
+                    if (pkg == packageName) return
+                    if (!PinManager(this@TubeGuardAccessibilityService).hasPin()) return
+                    if (unlockedStorePackage != null || prefsManager.isWithinStoreUnlockGrace()) {
+                        Log.i(TAG, "Package installed while store unlocked — approved: $pkg")
+                        return
+                    }
+                    Log.w(TAG, "Package installed while store LOCKED — marking unapproved: $pkg")
+                    FileLogger.log(this@TubeGuardAccessibilityService, TAG, "스토어 잠금 중 설치된 앱 → 미승인: $pkg")
+                    prefsManager.addUnapprovedPackage(pkg)
+                    prefsManager.addBlockLog("앱 설치", "비밀번호 없이 설치된 앱 → 실행 차단: ${getAppLabel(pkg)}")
+                }
+                Intent.ACTION_PACKAGE_FULLY_REMOVED -> prefsManager.removeUnapprovedPackage(pkg)
+            }
+        }
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -307,6 +349,11 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             .registerReceiver(forceBlockReceiver, IntentFilter(ACTION_FORCE_BLOCK_NOW))
         startKakaoGameWatcher()
         refreshInstalledBrowsers()
+        registerReceiver(packageInstallReceiver, IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+            addDataScheme("package")
+        })
 
         // Configure service info programmatically as a fallback
         val info = serviceInfo
@@ -334,8 +381,11 @@ class TubeGuardAccessibilityService : AccessibilityService() {
 
         // 스토어/설정 잠금은 타이머와 무관하게 항상 적용
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val className = event.className?.toString() ?: ""
+            maybeHideLockOverlay(packageName, className)
             handleStoreGate(packageName)
-            handleSettingsGate(packageName, event.className?.toString() ?: "")
+            handleSettingsGate(packageName, className)
+            if (handleUnapprovedAppGate(packageName)) return
         }
 
         // 카카오톡 사용 가능 시간대 밖이면 타이머와 무관하게 카카오톡 전체 차단
@@ -603,7 +653,112 @@ class TubeGuardAccessibilityService : AccessibilityService() {
         } else if (unlockedStorePackage != null && !isStoreTransientPackage(packageName)) {
             Log.i(TAG, "Left store ($unlockedStorePackage → $packageName) — relocking")
             unlockedStorePackage = null
+            // 잠금 해제 중 시작된 설치가 재잠금 후 끝나도 승인된 설치로 인정하기 위해 기록
+            prefsManager.markStoreUnlockActive()
         }
+    }
+
+    /**
+     * 스토어 잠금 중 설치된(미승인) 앱 실행 시 PIN 요구. PIN 인증 시 영구 승인.
+     * @return 차단했으면 true
+     */
+    private fun handleUnapprovedAppGate(packageName: String): Boolean {
+        if (packageName !in prefsManager.getUnapprovedPackages()) return false
+        if (!PinManager(this).hasPin()) return false
+        showLockOverlay(packageName)
+        val now = System.currentTimeMillis()
+        if (now - appApprovePromptedAt < 3000L) {
+            performGlobalAction(GLOBAL_ACTION_HOME)
+            return true
+        }
+        appApprovePromptedAt = now
+
+        Log.i(TAG, "Unapproved app opened ($packageName) — requiring PIN")
+        prefsManager.incrementBlockCount()
+        prefsManager.addBlockLog("미승인 앱", "비밀번호 없이 설치된 앱 실행 → 비밀번호 요청: ${getAppLabel(packageName)}")
+
+        performGlobalAction(GLOBAL_ACTION_HOME)
+        handler.postDelayed({
+            try {
+                val intent = Intent(this, PinVerifyActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    putExtra(PinVerifyActivity.EXTRA_PURPOSE, PinVerifyActivity.PURPOSE_APP_APPROVE)
+                    putExtra(PinVerifyActivity.EXTRA_TARGET_PACKAGE, packageName)
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch PIN screen for unapproved app: ${e.message}")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+        }, 300)
+        return true
+    }
+
+    private fun getAppLabel(packageName: String): String = try {
+        packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString()
+    } catch (e: Exception) {
+        packageName
+    }
+
+    /**
+     * 잠긴 앱이 앞에 뜬 순간 즉시 전체 화면 오버레이로 터치를 막음.
+     * 홈 이동이 끝나기 전(수백 ms) 사이에 '설치' 등을 누르는 우회를 차단.
+     */
+    private fun showLockOverlay(targetPackage: String) {
+        lockOverlayTarget = targetPackage
+        handler.removeCallbacks(hideLockOverlayRunnable)
+        handler.postDelayed(hideLockOverlayRunnable, LOCK_OVERLAY_MAX_MS)
+        if (lockOverlay != null) return
+        try {
+            val overlay = FrameLayout(this).apply {
+                setBackgroundColor(Color.parseColor("#FF121212"))
+                isClickable = true
+                setOnTouchListener { _, _ -> true }
+                addView(TextView(this@TubeGuardAccessibilityService).apply {
+                    text = "🔒"
+                    textSize = 48f
+                }, FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER
+                ))
+            }
+            val params = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.OPAQUE
+            )
+            getSystemService(WindowManager::class.java).addView(overlay, params)
+            lockOverlay = overlay
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to show lock overlay: ${e.message}")
+        }
+    }
+
+    private fun hideLockOverlay() {
+        handler.removeCallbacks(hideLockOverlayRunnable)
+        val overlay = lockOverlay ?: return
+        lockOverlay = null
+        try {
+            getSystemService(WindowManager::class.java).removeView(overlay)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to hide lock overlay: ${e.message}")
+        }
+    }
+
+    /** 잠긴 앱을 벗어나면(홈/PIN 화면 등) 오버레이 제거. 오버레이 자체의 창 이벤트는 무시. */
+    private fun maybeHideLockOverlay(packageName: String, className: String) {
+        if (lockOverlay == null || packageName == lockOverlayTarget) return
+        if (packageName == this.packageName) {
+            if (className == PinVerifyActivity::class.java.name) hideLockOverlay()
+            return
+        }
+        if (packageName in STORE_PACKAGES || isStoreTransientPackage(packageName)) return
+        hideLockOverlay()
     }
 
     /**
@@ -683,6 +838,8 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             Log.w(TAG, "Store opened ($packageName) but no PIN set — allowing")
             return
         }
+        // 홈 이동이 끝나기 전 스토어를 터치하지 못하도록 즉시 화면을 덮음
+        showLockOverlay(packageName)
         val now = System.currentTimeMillis()
 
         // 쿨다운 중이라도 스토어가 보이지 않도록 무조건 홈으로 이동
@@ -2395,6 +2552,8 @@ class TubeGuardAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(forceBlockReceiver)
+        try { unregisterReceiver(packageInstallReceiver) } catch (_: Exception) {}
+        hideLockOverlay()
         handler.removeCallbacksAndMessages(null)
         Log.i(TAG, "Accessibility service destroyed")
         super.onDestroy()

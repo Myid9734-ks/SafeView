@@ -37,6 +37,11 @@
         <!-- PIN 인증 후 스토어 재실행용 -->
         <package android:name="com.android.vending" />
         <package android:name="com.sec.android.app.samsungapps" />
+        <!-- 새로 설치된 앱(런처 아이콘 있는 앱)의 설치 브로드캐스트 수신용 — 스토어 잠금 중 설치 감지 -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />

@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.safeguard.tubeguard.service.TubeGuardAccessibilityService
 import com.safeguard.tubeguard.util.PinManager
+import com.safeguard.tubeguard.util.PrefsManager
 
 class PinVerifyActivity : AppCompatActivity() {
 
@@ -25,6 +26,7 @@ class PinVerifyActivity : AppCompatActivity() {
         const val EXTRA_TARGET_PACKAGE = "extra_target_package"
         const val PURPOSE_STORE_UNLOCK = "store_unlock"
         const val PURPOSE_SETTINGS_UNLOCK = "settings_unlock"
+        const val PURPOSE_APP_APPROVE = "app_approve"
         private const val MAX_ATTEMPTS = 5
         private const val LOCKOUT_DURATION_MS = 30_000L // 30 seconds
     }
@@ -97,6 +99,7 @@ class PinVerifyActivity : AppCompatActivity() {
             when {
                 isStoreUnlock() -> openUnlockedStore()
                 isSettingsUnlock() -> openUnlockedSettings()
+                isAppApprove() -> openApprovedApp()
             }
             setResult(RESULT_PIN_VERIFIED)
             finish()
@@ -163,10 +166,14 @@ class PinVerifyActivity : AppCompatActivity() {
     private fun isSettingsUnlock(): Boolean =
         intent.getStringExtra(EXTRA_PURPOSE) == PURPOSE_SETTINGS_UNLOCK
 
+    private fun isAppApprove(): Boolean =
+        intent.getStringExtra(EXTRA_PURPOSE) == PURPOSE_APP_APPROVE
+
     /** 스토어 잠금 해제 후 스토어를 다시 앞으로 가져옴 */
     private fun openUnlockedStore() {
         val target = intent.getStringExtra(EXTRA_TARGET_PACKAGE) ?: return
         TubeGuardAccessibilityService.unlockedStorePackage = target
+        PrefsManager.getInstance(this).markStoreUnlockActive()
         packageManager.getLaunchIntentForPackage(target)?.let {
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(it)
@@ -183,6 +190,16 @@ class PinVerifyActivity : AppCompatActivity() {
         }
     }
 
+    /** 승인되지 않은 새 앱을 PIN으로 승인 → 이후 자유롭게 실행 가능 */
+    private fun openApprovedApp() {
+        val target = intent.getStringExtra(EXTRA_TARGET_PACKAGE) ?: return
+        PrefsManager.getInstance(this).removeUnapprovedPackage(target)
+        packageManager.getLaunchIntentForPackage(target)?.let {
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(it)
+        }
+    }
+
     /** 잠금 화면에서 취소 시 홈으로 이동 + 연타 방지 쿨다운 */
     private fun cancel() {
         setResult(RESULT_CANCELED)
@@ -191,6 +208,8 @@ class PinVerifyActivity : AppCompatActivity() {
             TubeGuardAccessibilityService.storePinPromptedAt = now
         } else if (isSettingsUnlock()) {
             TubeGuardAccessibilityService.settingsPinPromptedAt = now
+        } else if (isAppApprove()) {
+            TubeGuardAccessibilityService.appApprovePromptedAt = now
         }
         startActivity(Intent(Intent.ACTION_MAIN).apply {
             addCategory(Intent.CATEGORY_HOME)

@@ -51,6 +51,10 @@ class PrefsManager(context: Context) {
         private const val KEY_KAKAO_HOURS_ENABLED = "kakao_hours_enabled"
         private const val KEY_KAKAO_START_MINUTES = "kakao_start_minutes"
         private const val KEY_KAKAO_END_MINUTES = "kakao_end_minutes"
+        private const val KEY_UNAPPROVED_PACKAGES = "unapproved_packages"
+        private const val KEY_STORE_UNLOCK_LAST_ACTIVE = "store_unlock_last_active"
+        // 스토어 잠금 해제가 끝난 뒤에도 이 시간 안에 설치 완료된 앱은 보호자가 설치한 것으로 간주 (큰 앱 다운로드 대기)
+        private const val STORE_UNLOCK_GRACE_MS = 30 * 60 * 1000L
 
         @Volatile
         private var instance: PrefsManager? = null
@@ -109,6 +113,28 @@ class PrefsManager(context: Context) {
     var trialStartDate: Long
         get() = prefs.getLong(KEY_TRIAL_START_DATE, 0L)
         set(value) = prefs.edit().putLong(KEY_TRIAL_START_DATE, value).apply()
+
+    // 스토어 잠금 상태에서 설치된 앱 — PIN 승인 전까지 실행 차단
+    fun getUnapprovedPackages(): Set<String> =
+        prefs.getStringSet(KEY_UNAPPROVED_PACKAGES, emptySet())?.toSet() ?: emptySet()
+
+    fun addUnapprovedPackage(packageName: String) {
+        prefs.edit().putStringSet(KEY_UNAPPROVED_PACKAGES, getUnapprovedPackages() + packageName).apply()
+    }
+
+    fun removeUnapprovedPackage(packageName: String) {
+        prefs.edit().putStringSet(KEY_UNAPPROVED_PACKAGES, getUnapprovedPackages() - packageName).apply()
+    }
+
+    /** 스토어가 PIN으로 잠금 해제된 상태였음을 기록 (해제 시점·재잠금 시점에 호출) */
+    fun markStoreUnlockActive() {
+        prefs.edit().putLong(KEY_STORE_UNLOCK_LAST_ACTIVE, System.currentTimeMillis()).apply()
+    }
+
+    fun isWithinStoreUnlockGrace(): Boolean {
+        val last = prefs.getLong(KEY_STORE_UNLOCK_LAST_ACTIVE, 0L)
+        return last > 0L && System.currentTimeMillis() - last < STORE_UNLOCK_GRACE_MS
+    }
 
     fun incrementBlockCount() {
         blockCount = blockCount + 1
