@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == PinVerifyActivity.RESULT_PIN_VERIFIED) {
             performDisableBlocking()
         } else {
-            switchBlocking.isChecked = true
+            updateBlockingSwitchSilently(true)
         }
     }
 
@@ -294,10 +294,12 @@ class MainActivity : AppCompatActivity() {
     private fun showCrashlyticsConsentIfNeeded() {
         val localPrefs = getPreferences(MODE_PRIVATE)
         if (localPrefs.getBoolean("crashlytics_consent_asked", false)) return
+        Log.i(TAG, "showCrashlyticsConsentIfNeeded: showing dialog")
         AlertDialog.Builder(this)
             .setTitle("앱 개선 데이터 수집 동의")
             .setMessage("앱 안정성 개선을 위해 오류 발생 시 기기 정보와 오류 로그를 수집할 수 있습니다.\n\n개인 식별 정보(이름, 연락처 등)는 수집하지 않습니다.\n\n동의하지 않아도 앱의 모든 기능을 정상적으로 사용할 수 있습니다.")
             .setPositiveButton("동의") { _, _ ->
+                Log.i(TAG, "Crashlytics consent: ACCEPTED")
                 localPrefs.edit()
                     .putBoolean("crashlytics_consent_asked", true)
                     .putBoolean("crashlytics_consent_granted", true)
@@ -305,6 +307,7 @@ class MainActivity : AppCompatActivity() {
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
             }
             .setNegativeButton("거부") { _, _ ->
+                Log.i(TAG, "Crashlytics consent: DENIED")
                 localPrefs.edit()
                     .putBoolean("crashlytics_consent_asked", true)
                     .putBoolean("crashlytics_consent_granted", false)
@@ -556,10 +559,11 @@ class MainActivity : AppCompatActivity() {
             showSetupDialog("ACCESSIBILITY", AlertDialog.Builder(this)
                 .setTitle(getString(R.string.setup_accessibility_title))
                 .setMessage(getString(R.string.setup_accessibility_message))
-                .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
+                .setPositiveButton(getString(R.string.btn_agree)) { _, _ ->
                     pendingAdminUnlock = true
                     openAccessibilitySettings()
                 }
+                .setNegativeButton(android.R.string.cancel, null)
                 .setCancelable(false))
             return
         }
@@ -966,7 +970,7 @@ class MainActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.disable_protection_title))
                 .setMessage(getString(R.string.disable_protection_message))
                 .setPositiveButton(getString(R.string.btn_disable)) { _, _ -> performDisableBlocking() }
-                .setNegativeButton(getString(R.string.btn_cancel)) { _, _ -> switchBlocking.isChecked = true }
+                .setNegativeButton(getString(R.string.btn_cancel)) { _, _ -> updateBlockingSwitchSilently(true) }
                 .setCancelable(false)
                 .show()
         }
@@ -990,7 +994,7 @@ class MainActivity : AppCompatActivity() {
             action = TubeGuardVpnService.ACTION_STOP
         }
         startService(serviceIntent)
-        switchBlocking.isChecked = false
+        updateBlockingSwitchSilently(false)
         updateAllStatusDisplays()
         Toast.makeText(this, getString(R.string.blocking_disabled_toast), Toast.LENGTH_SHORT).show()
     }

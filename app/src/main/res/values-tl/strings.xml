@@ -16,8 +16,8 @@
     <string name="timer_start">▶  Simulan</string>
     <string name="timer_pause">⏸  I-pause</string>
     <string name="admin_settings">Mga Setting ng Admin</string>
-    <string name="youtube_blocking">Pag-block sa YouTube</string>
-    <string name="dns_app_blocking">DNS + App level na pag-block</string>
+    <string name="youtube_blocking">Protection Mode</string>
+    <string name="dns_app_blocking">Pag-block sa YouTube, store, at settings</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN: Aktibo - Naka-enable ang DNS blocking</string>
@@ -149,7 +149,8 @@
     <string name="setup_vpn_title">Unang Setup (1/5)</string>
     <string name="setup_vpn_message">Mangyaring payagan ang pahintulot sa VPN para ma-block ang YouTube.</string>
     <string name="setup_accessibility_title">Unang Setup (2/5)</string>
-    <string name="setup_accessibility_message">Mangyaring i-enable ang accessibility service para sa pag-block ng mga app.\n\nInstalled apps → SafeScreen → I-enable</string>
+    <string name="setup_accessibility_message">Ginagamit ng app na ito ang Accessibility Service upang matukoy kung aling mga app ang kasalukuyang tumatakbo sa device ng iyong anak at i-block ang mga pinaghihigpitang app (tulad ng YouTube, app store, at settings).\n\nAng serbisyo ay nagmo-monitor lamang ng foreground app activity. Walang personal na data ang kinokolekta, iniimbak, o ibinabahagi sa mga third party.\n\nSa pag-tap ng \"Sumang-ayon\", pumapayag ka sa pag-enable ng Accessibility Service para sa layuning inilarawan sa itaas.\n\nInstalled apps → SafeScreen → I-enable</string>
+    <string name="btn_agree">Sumang-ayon</string>
     <string name="setup_device_admin_title">Unang Setup (3/5)</string>
     <string name="setup_device_admin_message">Mangyaring i-enable ang device admin para sa proteksyon sa pag-uninstall.</string>
     <string name="setup_complete">Kumpleto na ang unang setup! Na-activate ang pag-block sa YouTube.</string>

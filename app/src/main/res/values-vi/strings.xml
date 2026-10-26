@@ -16,8 +16,8 @@
     <string name="timer_start">▶  Bắt đầu</string>
     <string name="timer_pause">⏸  Tạm dừng</string>
     <string name="admin_settings">Cài đặt quản trị</string>
-    <string name="youtube_blocking">Chặn YouTube</string>
-    <string name="dns_app_blocking">Chặn cấp DNS + Ứng dụng</string>
+    <string name="youtube_blocking">Chế độ bảo vệ</string>
+    <string name="dns_app_blocking">Chặn YouTube, cửa hàng và cài đặt</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN: Đang hoạt động - Chặn DNS đã bật</string>
@@ -149,7 +149,8 @@
     <string name="setup_vpn_title">Thiết lập ban đầu (1/5)</string>
     <string name="setup_vpn_message">Vui lòng cho phép quyền VPN để chặn YouTube.</string>
     <string name="setup_accessibility_title">Thiết lập ban đầu (2/5)</string>
-    <string name="setup_accessibility_message">Vui lòng bật dịch vụ trợ năng để chặn ứng dụng.\n\nỨng dụng đã cài đặt → SafeScreen → Bật</string>
+    <string name="setup_accessibility_message">Ứng dụng này sử dụng Dịch vụ trợ năng để phát hiện ứng dụng nào đang chạy trên thiết bị của con bạn và chặn các ứng dụng bị hạn chế (như YouTube, cửa hàng ứng dụng và cài đặt).\n\nDịch vụ chỉ giám sát hoạt động ứng dụng ở nền trước. Không có dữ liệu cá nhân nào được thu thập, lưu trữ hoặc chia sẻ với bên thứ ba.\n\nBằng cách nhấn \"Đồng ý\", bạn đồng ý cho phép bật Dịch vụ trợ năng cho mục đích được mô tả ở trên.\n\nỨng dụng đã cài đặt → SafeScreen → Bật</string>
+    <string name="btn_agree">Đồng ý</string>
     <string name="setup_device_admin_title">Thiết lập ban đầu (3/5)</string>
     <string name="setup_device_admin_message">Vui lòng bật quản trị thiết bị để bảo vệ gỡ cài đặt.</string>
     <string name="setup_complete">Thiết lập ban đầu hoàn tất! Chặn YouTube đã được kích hoạt.</string>

@@ -16,8 +16,8 @@
     <string name="timer_start">▶  Start</string>
     <string name="timer_pause">⏸  Pause</string>
     <string name="admin_settings">Admin Settings</string>
-    <string name="youtube_blocking">YouTube Blocking</string>
-    <string name="dns_app_blocking">DNS + App level blocking</string>
+    <string name="youtube_blocking">Protection Mode</string>
+    <string name="dns_app_blocking">YouTube, store, and settings blocking</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN: Active - DNS blocking enabled</string>
@@ -151,7 +151,8 @@
     <string name="setup_vpn_title">Initial Setup (1/5)</string>
     <string name="setup_vpn_message">Please allow VPN permission to block YouTube.</string>
     <string name="setup_accessibility_title">Initial Setup (2/5)</string>
-    <string name="setup_accessibility_message">Please enable accessibility service for app blocking.\n\nInstalled apps → SafeScreen → Enable</string>
+    <string name="setup_accessibility_message">This app uses the Accessibility Service to detect which apps are currently running on your child\'s device and block restricted apps (such as YouTube, app stores, and settings).\n\nThe service monitors foreground app activity only. No personal data is collected, stored, or shared with third parties.\n\nBy tapping \"Agree\", you consent to enabling the Accessibility Service for the purpose described above.\n\nInstalled apps → SafeScreen → Enable</string>
+    <string name="btn_agree">Agree</string>
     <string name="setup_device_admin_title">Initial Setup (3/5)</string>
     <string name="setup_device_admin_message">Please enable device admin for uninstall protection.</string>
     <string name="setup_complete">Initial setup is complete! YouTube blocking is activated.</string>

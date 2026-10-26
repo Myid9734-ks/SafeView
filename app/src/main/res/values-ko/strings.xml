@@ -14,8 +14,8 @@
     <string name="timer_start">▶  시작</string>
     <string name="timer_pause">⏸  정지</string>
     <string name="admin_settings">관리자 설정</string>
-    <string name="youtube_blocking">YouTube 차단</string>
-    <string name="dns_app_blocking">DNS + 앱 수준 차단</string>
+    <string name="youtube_blocking">보호 모드</string>
+    <string name="dns_app_blocking">YouTube, 스토어, 설정 차단</string>
 
     <string name="vpn_active">VPN: 활성화 - DNS 차단 중</string>
     <string name="vpn_permission_granted">VPN: 권한 허용됨 (탭하여 시작)</string>
@@ -137,7 +137,8 @@
     <string name="setup_vpn_title">초기 설정 (1/5)</string>
     <string name="setup_vpn_message">YouTube 차단을 위해 VPN 권한을 허용해 주세요.</string>
     <string name="setup_accessibility_title">초기 설정 (2/5)</string>
-    <string name="setup_accessibility_message">앱 차단을 위해 접근성 서비스를 활성화해 주세요.\n\n설치된 앱 → SafeScreen → 활성화</string>
+    <string name="setup_accessibility_message">이 앱은 자녀 기기에서 현재 실행 중인 앱을 감지하고, 제한된 앱(유튜브, 앱 스토어, 설정 등)을 차단하기 위해 접근성 서비스를 사용합니다.\n\n이 서비스는 포그라운드 앱 활동만 모니터링하며, 개인정보를 수집·저장·제3자와 공유하지 않습니다.\n\n\"동의\"를 누르면 위에 설명된 목적으로 접근성 서비스를 활성화하는 데 동의하게 됩니다.\n\n설치된 앱 → SafeScreen → 활성화</string>
+    <string name="btn_agree">동의</string>
     <string name="setup_device_admin_title">초기 설정 (3/5)</string>
     <string name="setup_device_admin_message">앱 삭제 방지를 위해 기기 관리자를 활성화해 주세요.</string>
     <string name="setup_complete">초기 설정이 완료되었습니다! YouTube 차단이 활성화됩니다.</string>

@@ -16,8 +16,8 @@
     <string name="timer_start">▶  เริ่ม</string>
     <string name="timer_pause">⏸  หยุดชั่วคราว</string>
     <string name="admin_settings">การตั้งค่าผู้ดูแล</string>
-    <string name="youtube_blocking">การบล็อก YouTube</string>
-    <string name="dns_app_blocking">การบล็อกระดับ DNS + แอป</string>
+    <string name="youtube_blocking">โหมดป้องกัน</string>
+    <string name="dns_app_blocking">บล็อก YouTube, สโตร์ และการตั้งค่า</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN: ใช้งานอยู่ - เปิดการบล็อก DNS แล้ว</string>
@@ -149,7 +149,8 @@
     <string name="setup_vpn_title">การตั้งค่าเริ่มต้น (1/5)</string>
     <string name="setup_vpn_message">กรุณาอนุญาตสิทธิ์ VPN เพื่อบล็อก YouTube</string>
     <string name="setup_accessibility_title">การตั้งค่าเริ่มต้น (2/5)</string>
-    <string name="setup_accessibility_message">กรุณาเปิดบริการการเข้าถึงเพื่อบล็อกแอป\n\nแอปที่ติดตั้งแล้ว → SafeScreen → เปิดใช้งาน</string>
+    <string name="setup_accessibility_message">แอปนี้ใช้บริการการเข้าถึงเพื่อตรวจจับว่าแอปใดกำลังทำงานอยู่บนอุปกรณ์ของบุตรหลาน และบล็อกแอปที่ถูกจำกัด (เช่น YouTube, แอปสโตร์ และการตั้งค่า)\n\nบริการนี้ตรวจสอบเฉพาะกิจกรรมแอปที่อยู่เบื้องหน้าเท่านั้น ไม่มีการเก็บรวบรวม จัดเก็บ หรือแชร์ข้อมูลส่วนบุคคลกับบุคคลที่สาม\n\nการแตะ \"ยอมรับ\" แสดงว่าคุณยินยอมให้เปิดใช้งานบริการการเข้าถึงเพื่อวัตถุประสงค์ที่อธิบายไว้ข้างต้น\n\nแอปที่ติดตั้งแล้ว → SafeScreen → เปิดใช้งาน</string>
+    <string name="btn_agree">ยอมรับ</string>
     <string name="setup_device_admin_title">การตั้งค่าเริ่มต้น (3/5)</string>
     <string name="setup_device_admin_message">กรุณาเปิดผู้ดูแลอุปกรณ์เพื่อป้องกันการถอนการติดตั้ง</string>
     <string name="setup_complete">การตั้งค่าเริ่มต้นเสร็จสมบูรณ์! เปิดการบล็อก YouTube แล้ว</string>

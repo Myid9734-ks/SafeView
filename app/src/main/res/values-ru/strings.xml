@@ -16,8 +16,8 @@
     <string name="timer_start">▶  Старт</string>
     <string name="timer_pause">⏸  Пауза</string>
     <string name="admin_settings">Настройки администратора</string>
-    <string name="youtube_blocking">Блокировка YouTube</string>
-    <string name="dns_app_blocking">Блокировка на уровне DNS + приложения</string>
+    <string name="youtube_blocking">Режим защиты</string>
+    <string name="dns_app_blocking">Блокировка YouTube, магазина и настроек</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN: Активен — DNS-блокировка включена</string>
@@ -149,7 +149,8 @@
     <string name="setup_vpn_title">Начальная настройка (1/5)</string>
     <string name="setup_vpn_message">Пожалуйста, разрешите VPN для блокировки YouTube.</string>
     <string name="setup_accessibility_title">Начальная настройка (2/5)</string>
-    <string name="setup_accessibility_message">Пожалуйста, включите службу специальных возможностей для блокировки приложений.\n\nУстановленные приложения → SafeScreen → Включить</string>
+    <string name="setup_accessibility_message">Это приложение использует службу специальных возможностей для обнаружения запущенных приложений на устройстве вашего ребёнка и блокировки ограниченных приложений (таких как YouTube, магазины приложений и настройки).\n\nСлужба отслеживает только активность приложений на переднем плане. Личные данные не собираются, не хранятся и не передаются третьим лицам.\n\nНажимая \"Согласен\", вы даёте согласие на включение службы специальных возможностей для описанной выше цели.\n\nУстановленные приложения → SafeScreen → Включить</string>
+    <string name="btn_agree">Согласен</string>
     <string name="setup_device_admin_title">Начальная настройка (3/5)</string>
     <string name="setup_device_admin_message">Пожалуйста, включите администратора устройства для защиты от удаления.</string>
     <string name="setup_complete">Начальная настройка завершена! Блокировка YouTube активирована.</string>

@@ -16,8 +16,8 @@
     <string name="timer_start">▶  開始</string>
     <string name="timer_pause">⏸  一時停止</string>
     <string name="admin_settings">管理者設定</string>
-    <string name="youtube_blocking">YouTubeブロック</string>
-    <string name="dns_app_blocking">DNS + アプリレベルブロック</string>
+    <string name="youtube_blocking">保護モード</string>
+    <string name="dns_app_blocking">YouTube、ストア、設定のブロック</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN: 有効 - DNSブロック動作中</string>
@@ -149,7 +149,8 @@
     <string name="setup_vpn_title">初期設定（1/5）</string>
     <string name="setup_vpn_message">YouTubeをブロックするためにVPN権限を許可してください。</string>
     <string name="setup_accessibility_title">初期設定（2/5）</string>
-    <string name="setup_accessibility_message">アプリブロックのためにアクセシビリティサービスを有効にしてください。\n\nインストール済みアプリ → SafeScreen → 有効にする</string>
+    <string name="setup_accessibility_message">このアプリは、お子様のデバイスで現在実行中のアプリを検出し、制限されたアプリ（YouTube、アプリストア、設定など）をブロックするためにアクセシビリティサービスを使用します。\n\nこのサービスはフォアグラウンドのアプリアクティビティのみを監視します。個人データの収集、保存、第三者への共有は一切行いません。\n\n「同意する」をタップすると、上記の目的でアクセシビリティサービスを有効にすることに同意したものとみなされます。\n\nインストール済みアプリ → SafeScreen → 有効にする</string>
+    <string name="btn_agree">同意する</string>
     <string name="setup_device_admin_title">初期設定（3/5）</string>
     <string name="setup_device_admin_message">アンインストール保護のためにデバイス管理者を有効にしてください。</string>
     <string name="setup_complete">初期設定が完了しました！YouTubeブロックが有効になりました。</string>

@@ -16,8 +16,8 @@
     <string name="timer_start">▶  开始</string>
     <string name="timer_pause">⏸  暂停</string>
     <string name="admin_settings">管理员设置</string>
-    <string name="youtube_blocking">YouTube屏蔽</string>
-    <string name="dns_app_blocking">DNS + 应用级屏蔽</string>
+    <string name="youtube_blocking">保护模式</string>
+    <string name="dns_app_blocking">屏蔽YouTube、商店和设置</string>
 
     <!-- VPN Status -->
     <string name="vpn_active">VPN：已激活 - DNS屏蔽已启用</string>
@@ -149,7 +149,8 @@
     <string name="setup_vpn_title">初始设置（1/5）</string>
     <string name="setup_vpn_message">请允许VPN权限以屏蔽YouTube。</string>
     <string name="setup_accessibility_title">初始设置（2/5）</string>
-    <string name="setup_accessibility_message">请启用无障碍服务以屏蔽应用。\n\n已安装的应用 → SafeScreen → 启用</string>
+    <string name="setup_accessibility_message">此应用使用无障碍服务来检测您孩子设备上当前正在运行的应用，并屏蔽受限应用（如YouTube、应用商店和设置）。\n\n该服务仅监控前台应用活动。不会收集、存储或与第三方共享任何个人数据。\n\n点击"同意"即表示您同意为上述目的启用无障碍服务。\n\n已安装的应用 → SafeScreen → 启用</string>
+    <string name="btn_agree">同意</string>
     <string name="setup_device_admin_title">初始设置（3/5）</string>
     <string name="setup_device_admin_message">请启用设备管理员以保护应用不被卸载。</string>
     <string name="setup_complete">初始设置已完成！YouTube屏蔽已激活。</string>
