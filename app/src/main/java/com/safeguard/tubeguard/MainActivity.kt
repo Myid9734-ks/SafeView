@@ -793,6 +793,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 updateTimerDisplay(prefsManager.getTimerRemainingSeconds())
                 updateTimerButtons()
+                updateTimerSettingsDisplay()
                 Toast.makeText(this, getString(R.string.allowed_time_saved), Toast.LENGTH_SHORT).show()
             }
             .setNeutralButton(getString(R.string.btn_timer_reset)) { _, _ ->
