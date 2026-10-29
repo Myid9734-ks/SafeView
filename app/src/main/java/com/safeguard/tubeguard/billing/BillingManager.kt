@@ -10,7 +10,8 @@ import kotlinx.coroutines.*
 class BillingManager(
     private val context: Context,
     private val onPurchaseComplete: (() -> Unit)? = null,
-    private val onProductReady: ((price: String?) -> Unit)? = null
+    private val onProductReady: ((price: String?) -> Unit)? = null,
+    private val onError: ((message: String) -> Unit)? = null
 ) : PurchasesUpdatedListener {
 
     companion object {
@@ -45,11 +46,16 @@ class BillingManager(
                     retryCount = 0
                     queryProduct()
                     queryExistingPurchases()
+                } else {
+                    val msg = "Billing setup failed: code=${result.responseCode}, ${result.debugMessage}"
+                    Log.e(TAG, msg)
+                    onError?.invoke(msg)
                 }
             }
 
             override fun onBillingServiceDisconnected() {
                 Log.w(TAG, "Billing service disconnected")
+                onError?.invoke("Billing service disconnected, retrying...")
                 retryConnection()
             }
         })
@@ -79,11 +85,20 @@ class BillingManager(
             .build()
 
         billingClient?.queryProductDetailsAsync(params) { result, queryProductDetailsResult ->
-            if (result.responseCode == BillingClient.BillingResponseCode.OK &&
-                queryProductDetailsResult.productDetailsList.isNotEmpty()) {
-                productDetails = queryProductDetailsResult.productDetailsList[0]
-                Log.i(TAG, "Product loaded: ${productDetails?.title}")
-                onProductReady?.invoke(getFormattedPrice())
+            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                if (queryProductDetailsResult.productDetailsList.isNotEmpty()) {
+                    productDetails = queryProductDetailsResult.productDetailsList[0]
+                    Log.i(TAG, "Product loaded: ${productDetails?.title}")
+                    onProductReady?.invoke(getFormattedPrice())
+                } else {
+                    val msg = "Product '$PRODUCT_ID' not found in Play Console"
+                    Log.e(TAG, msg)
+                    onError?.invoke(msg)
+                }
+            } else {
+                val msg = "Product query failed: code=${result.responseCode}, ${result.debugMessage}"
+                Log.e(TAG, msg)
+                onError?.invoke(msg)
             }
         }
     }

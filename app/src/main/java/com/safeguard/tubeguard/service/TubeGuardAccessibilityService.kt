@@ -379,13 +379,13 @@ class TubeGuardAccessibilityService : AccessibilityService() {
             currentKakaoClass = event.className?.toString() ?: ""
         }
 
-        // 스토어/설정 잠금은 보호 모드(isBlocking)가 켜져 있을 때만 적용
+        // 스토어/설정 잠금은 타이머(isBlocking) 여부와 무관하게 항상 적용
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             val className = event.className?.toString() ?: ""
             maybeHideLockOverlay(packageName, className)
+            handleStoreGate(packageName)
+            handleSettingsGate(packageName, className)
             if (prefsManager.isBlocking) {
-                handleStoreGate(packageName)
-                handleSettingsGate(packageName, className)
                 if (handleUnapprovedAppGate(packageName)) return
             }
         }

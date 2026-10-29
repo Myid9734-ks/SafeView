@@ -178,6 +178,7 @@
     <string name="time_label_minutes">min</string>
 
     <!-- Purchase / Trial -->
+    <string name="purchase_premium_title">SafeScreen Premium</string>
     <string name="trial_remaining_format">Free trial: %d days remaining</string>
     <string name="trial_expired_title">Free trial period has ended</string>
     <string name="trial_expired_description">Your 5-day free trial has ended.\nPurchase to continue using all features.</string>

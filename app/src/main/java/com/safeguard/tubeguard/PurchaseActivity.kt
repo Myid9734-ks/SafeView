@@ -1,6 +1,7 @@
 package com.safeguard.tubeguard
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -58,11 +59,26 @@ class PurchaseActivity : AppCompatActivity() {
                         btnPurchase.text = getString(R.string.purchase_button_format, price)
                     }
                 }
+            },
+            onError = { message ->
+                runOnUiThread {
+                    Log.e("PurchaseActivity", "Billing error: $message")
+                    Toast.makeText(this, "Billing error: $message", Toast.LENGTH_LONG).show()
+                }
             }
         )
         billingManager.startConnection()
 
         btnPurchase.setOnClickListener {
+            // DEBUG: simulate purchase without Play Console
+            if (BuildConfig.DEBUG && !billingManager.isReady()) {
+                Log.w("PurchaseActivity", "DEBUG: Simulating purchase (billing not ready)")
+                prefsManager.isPremium = true
+                Toast.makeText(this, getString(R.string.purchase_success), Toast.LENGTH_LONG).show()
+                setResult(RESULT_OK)
+                finish()
+                return@setOnClickListener
+            }
             if (!billingManager.isReady()) {
                 Toast.makeText(this, getString(R.string.purchase_loading), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
